@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { DesktopOutlined, PieChartOutlined, AimOutlined } from "@ant-design/icons";
+import { DesktopOutlined, PieChartOutlined, AimOutlined, FilterOutlined, FileAddFilled } from "@ant-design/icons";
 // import { MenuProps } from "antd";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import { Navigate, Outlet, NavLink } from "react-router-dom";
+import {  Outlet, NavLink } from "react-router-dom";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -17,33 +17,22 @@ function getItem(label, key, icon, children, onTitleClick) {
 }
 
 const items = [
-  getItem("Productos", "1", <div> <PieChartOutlined /> <NavLink to="products"/></div>,[
-    getItem("Buscar", "2", <div> <PieChartOutlined /> <NavLink to="products"/></div>),
-    getItem("Agregar", "2", <div> <PieChartOutlined /> <NavLink to="products"/></div>), 
-    getItem("Modificar", "3", <div> <PieChartOutlined /> <NavLink to="products"/></div>),
+  getItem("Productos", "1",  <PieChartOutlined /> ,[
+    getItem("Buscar", "2", <> <FilterOutlined /> <NavLink to="products/find"/></>),
+    getItem("Agregar", "3", <> <FileAddFilled /> <NavLink to="products/add"/></>), 
+    // getItem("Modificar", "4", <> <PieChartOutlined /> <NavLink to="products/update"/></>),
   ]),
-  getItem("Enfermedades", "4", <div> <DesktopOutlined /> <NavLink to="deceases"/></div>,[
-    getItem("Buscar", "2", <div> <PieChartOutlined /> <NavLink to="products"/></div>),
-    getItem("Agregar", "5", <div> <PieChartOutlined /> <NavLink to="products"/></div>), 
-    getItem("Modificar", "6", <div> <PieChartOutlined /> <NavLink to="products"/></div>),
+  getItem("Enfermedades", "5",  <DesktopOutlined />,[
+    getItem("Buscar", "6", <> <FilterOutlined /> <NavLink to="deceases/find"/></>),
+    getItem("Agregar", "7", <> <FileAddFilled /> <NavLink to="deceases/add"/></>), 
+    // getItem("Modificar", "8", <> <PieChartOutlined /> <NavLink to="deceases/update"/></>),
    
   ]),
-  getItem("Quimicos", "7", <div> <AimOutlined /> <NavLink to="chemicals"/></div>,[
-    getItem("Buscar", "2", <div> <PieChartOutlined /> <NavLink to="products"/></div>),
-    getItem("Agregar", "8", <div> <PieChartOutlined /> <NavLink to="products"/></div>), 
-    getItem("Modificar", "9", <div> <PieChartOutlined /> <NavLink to="products"/></div>),
+  getItem("Quimicos", "9",  <AimOutlined /> ,[
+    getItem("Buscar", "10", <> <FilterOutlined /> <NavLink to="Chemicals/find"/></>),
+    getItem("Agregar", "11", <> <PieChartOutlined /> <NavLink to="Chemicals/add"/></>), 
+    // getItem("Modificar", "12", <> <PieChartOutlined /> <NavLink to="Chemicals/update"/></>),
   ]),
-
-  // getItem("Usearios", "sub1", <UserOutlined />, [
-  //   getItem("Tom", "3"),
-  //   getItem("Bill", "4"),
-  //   getItem("Alex", "5"),
-  // ]),
-  // getItem("Team", "sub2", <TeamOutlined />, [
-  //   getItem("Team 1", "6"),
-  //   getItem("Team 2", "8"),
-  // ]),
-  // getItem("Files", "9", <FileOutlined />),
 ];
 
 const AppLayout = () => {

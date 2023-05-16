@@ -1,9 +1,15 @@
-import React from 'react'
+import React from "react";
+import ProductForm from "./components/ProductForm";
+import {} from "antd";
 
 const CreateProduct = () => {
   return (
-    <div>CreateProduct</div>
-  )
-}
+    <>
+      <h1>Agregar Producto</h1>
+      <br />
+      <ProductForm isUpdate={false} />
+    </>
+  );
+};
 
-export default CreateProduct
+export default CreateProduct;

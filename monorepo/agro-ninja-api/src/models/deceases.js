@@ -7,6 +7,10 @@ const Decease = sequelize.define("decease", {
       alloNull: false,
       unique:true
     },
+    photo: {
+      type: DataTypes.STRING,
+      alloNull: true,
+    },
     description:{
         type: DataTypes.STRING,
         alloNull: false,

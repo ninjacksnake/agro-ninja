@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { Card, List, Drawer, Table } from "antd";
+import {  List, Drawer, Table } from "antd";
 import { NavLink } from "react-router-dom";
-import ProductCard from './ProductCard';
+import DeceaseCard from "./DeceaseCard";
 
 
-
-const ProductCardList = ({ products }) => {
+const DeceaseCardList = ({ deceases }) => {
   const [open, setOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedDecease, setSelectedDecease] = useState(null);
 
   const showDrawer = (name) => {
-    const chosenProduct = products.find((product) => product.name === name)?? null;
-    setSelectedProduct((p) => chosenProduct);
+    const chosenDeceases = deceases.find(decease => decease.name === name)?? null ;
+    setSelectedDecease(p => chosenDeceases);
     setOpen(true);
   };
   const onClose = () => {
@@ -22,15 +21,15 @@ const ProductCardList = ({ products }) => {
     <>
       <List
         grid={{ gutter: 26, column: 4 }}
-        dataSource={products}
-        renderItem={(product, index) => (
+        dataSource={deceases}
+        renderItem={(decease, index) => (
           <List.Item>
-           <ProductCard product={product} showDrawer={showDrawer}/>
+           <DeceaseCard decease={decease} showDrawer={showDrawer}/>
           </List.Item>
         )}
       />
       <Drawer
-        title={selectedProduct?.name}
+        title={selectedDecease?.name}
         placement="right"
         onClose={onClose}
         open={open}
@@ -39,7 +38,7 @@ const ProductCardList = ({ products }) => {
         <ol>
           <Table
           pagination={false}
-          dataSource={selectedProduct?.chemicals}
+          dataSource={selectedDecease?.decease}
           columns={[{title: 'Name', dataIndex: 'name', key: 'id' , render: (text)=> <NavLink to={'/'}>{text}</NavLink>}]}
           >
           </Table>
@@ -49,4 +48,4 @@ const ProductCardList = ({ products }) => {
   );
 };
 
-export default ProductCardList;
+export default DeceaseCardList;

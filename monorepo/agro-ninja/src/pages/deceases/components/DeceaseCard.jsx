@@ -3,7 +3,7 @@ import { Card } from "antd";
 import {
   AuditOutlined,
   EditOutlined,
-  RadarChartOutlined,
+  
 } from "@ant-design/icons";
 
 
@@ -12,26 +12,26 @@ import { useNavigate } from 'react-router-dom';
 
 const { Meta } = Card;
 
-const ChemicalCard = ({ chemical, showDrawer }) => { 
-  console.log(chemical);
+const DeceaseCard = ({ decease, showDrawer }) => { 
+  console.log(decease);
   const navigate =useNavigate();
   const goUpdate = async  () =>{  
-    if(chemical){
-      localStorage.setItem('SelectedChemicalToUpdate', await JSON.stringify(chemical));
+    if(decease){
+      localStorage.setItem('SelectedDeceaseToUpdate', await JSON.stringify(decease));
     }else{
-      return alert('Please select a chemical to update')
+      return alert('Please select a decease to update')
     }
     setTimeout(() => {
-      localStorage.removeItem('SelectedChemicalToUpdate');
+      localStorage.removeItem('SelectedDeceaseToUpdate');
     }, 300000);
-    navigate(`/chemicals/update/${chemical.id}`)
+    navigate(`/deceases/update/${decease.id}`)
   }
   return (
     <Card
-      title={chemical?.name}
+      title={decease?.name}
       cover={
         <img
-          alt={`Imagen de ${chemical?.name}`}
+          alt={`Imagen de ${decease?.name}`}
           src={medBottle2}
           style={{ width: "35%", marginLeft: "27%" }}
         />
@@ -41,9 +41,9 @@ const ChemicalCard = ({ chemical, showDrawer }) => {
         <AuditOutlined key="ellipsis" />
       ]}
     >
-      <Meta title="Test" description={chemical?.description} />
+      <Meta title="Test" description={decease?.description} />
     </Card>
   );
 };
 
-export default ChemicalCard;
+export default DeceaseCard;

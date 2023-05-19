@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import ProductCard from "./components/ProductCardList";
+import ProductCardList from "./components/ProductCardList";
 
 import ApiService from "./../../services/Api.service";
 import { Input, Space, Button } from "antd";
@@ -47,7 +47,7 @@ const FindProducts = () => {
           Buscar
         </Button>
       </Space.Compact>
-      <ProductCard products={filtredProducts} />
+      <ProductCardList products={filtredProducts} />
     </div>
   );
 };

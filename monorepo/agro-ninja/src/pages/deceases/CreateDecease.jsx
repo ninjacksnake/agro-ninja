@@ -1,8 +1,9 @@
 import React from 'react'
+import ChemicalForm from '../chemicals/components/ChemicalForm'
 
 const CreateDecease = () => {
   return (
-    <div>CreateDecease</div>
+   <ChemicalForm />
   )
 }
 

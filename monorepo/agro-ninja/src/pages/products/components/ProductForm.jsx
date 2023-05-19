@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Form, Input, Select, InputNumber } from "antd";
-
+import { Button, Form, Input, Select, InputNumber , notification} from "antd";
 import ApiService from "../../../services/Api.service";
+import ImageUploader from "../../components/ImageUploader";
 const Option = Select.Option;
+
 
 const layout = {
   labelCol: { span: 8 },
@@ -14,11 +15,25 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
+
+
 const ProductForm = ({ isUpdate, product = null, id = null }) => {
   const [form] = Form.useForm();
   const [chemicals, setChemicals] = useState([]);
   const [categories, setCategories] = useState([]);
 
+
+  const openNotification = (title, body )  => {
+    notification.open({
+       message: `${title}`,
+       description: `${body}`,
+       placement:'topRight',
+       style:{
+         backgroundColor: title === 'Error'? '#EB8696':'beige'
+       }
+     });
+   };
+   
   useEffect(() => {
     const getInfo = async () => {
       const dbChemicals = await ApiService.Chemicals.findAll();
@@ -35,15 +50,21 @@ const ProductForm = ({ isUpdate, product = null, id = null }) => {
     values.id = product.id;
     if (isUpdate) {
     return  ApiService.Products.updateProduct(values)
-        .then((result) => {})
+        .then((result) => {
+          openNotification('Success','Your product has been updated')
+        })
         .catch((error) => {
           console.log(error);
+          openNotification('Fail','Failed updating your Product  ')
         });
     }else{
     return  ApiService.Products.createProduct(values)
-      .then((result) => {})
+      .then((result) => {
+        openNotification('Success','Your product has been created')
+      })
       .catch((error) => {
         console.log(error);
+        openNotification('Fail','Failed creating your Product')
       });
     }
     };
@@ -66,6 +87,10 @@ const ProductForm = ({ isUpdate, product = null, id = null }) => {
         chemicals: product?.chemicals.map(chemical => chemical.name) ?? []}
         :null}
     >
+      <Form.Item name={"image"} label="Foto">
+      <ImageUploader />
+
+      </Form.Item>
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
         <Input />
       </Form.Item>

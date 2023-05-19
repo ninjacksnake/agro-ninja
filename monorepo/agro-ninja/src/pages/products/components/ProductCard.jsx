@@ -6,8 +6,8 @@ import {
   RadarChartOutlined,
 } from "@ant-design/icons";
 
-import medBottle from "../../../assets/images/productsImages/medbottle2.png";
-import medBottle2 from "../../../assets/images/productsImages/medicineBottle.png";
+import medBottle from "../../../assets/images/products/medbottle2.png";
+import medBottle2 from "../../../assets/images/products/medicineBottle.png";
 import { NavLink, useNavigate } from 'react-router-dom';
 
 const { Meta } = Card;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, List, Drawer, Table } from "antd";
+import {  List, Drawer, Table } from "antd";
 import { NavLink } from "react-router-dom";
 import ChemicalCard from "./ChemicalCard";
 

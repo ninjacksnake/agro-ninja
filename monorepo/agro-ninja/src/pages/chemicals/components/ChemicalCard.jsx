@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "antd";
+import { Card , Image} from "antd";
 import {
   AuditOutlined,
   EditOutlined,
@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 const { Meta } = Card;
 
 const ChemicalCard = ({ chemical, showDrawer }) => { 
-  console.log('chemical card', chemical)
+  
   const navigate =useNavigate();
   const goUpdate = async  () =>{  
     if(chemical){
@@ -30,7 +30,7 @@ const ChemicalCard = ({ chemical, showDrawer }) => {
     <Card
       title={chemical?.name}
       cover={
-        <img
+        <Image
           alt={`Imagen de ${chemical?.name}`}
           src={chemical?.photo ? JSON.parse(chemical?.photo) : noPhoto}
           style={{ width: "35%", marginLeft: "27%" }}

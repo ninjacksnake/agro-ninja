@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom';
 
 const UpdateChemical = () => {
   const id = useParams();
-  const decease = JSON.parse(localStorage.getItem("SelectedChemicalToUpdate"));
+  const chemical = JSON.parse(localStorage.getItem("SelectedChemicalToUpdate"));
   return (
-    <ChemicalForm isUpdate={true} decease={decease} id={id} />
+    <ChemicalForm isUpdate={true} chemical={chemical} id={id} />
   )
 }
 

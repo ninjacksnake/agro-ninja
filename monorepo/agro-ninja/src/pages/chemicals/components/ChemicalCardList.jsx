@@ -8,16 +8,17 @@ const ChemicalCardList = ({   chemicals }) => {
  
   const [open, setOpen] = useState(false);
   const [selectedChemical, setSelectedChemical] = useState(null);
-console.log('chemicals,', chemicals)
+
   const showDrawer = (name) => {
     const chosenChemicals = chemicals.find(chemical => chemical.name === name)?? null ;
     setSelectedChemical(p => chosenChemicals);
     setOpen(true);
   };
+
   const onClose = () => {
     setOpen(false);
   };
-
+console.log(chemicals)
   return (
     <>
       <List
@@ -25,7 +26,7 @@ console.log('chemicals,', chemicals)
         dataSource={chemicals}
         renderItem={(chemical, index) => (
           <List.Item>
-           <ChemicalCard decease={chemical} showDrawer={showDrawer}/>
+           <ChemicalCard chemical={chemical} showDrawer={showDrawer}/>
           </List.Item>
         )}
       />

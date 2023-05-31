@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "antd";
+import { Card, Image } from "antd";
 import {
   AuditOutlined,
   EditOutlined,
@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 const { Meta } = Card;
 
 const DeceaseCard = ({ decease, showDrawer }) => { 
-  
   const navigate =useNavigate();
   const goUpdate = async  () =>{  
     if(decease){
@@ -30,7 +29,7 @@ const DeceaseCard = ({ decease, showDrawer }) => {
     <Card
       title={decease?.name}
       cover={
-        <img
+        <Image
           alt={`Imagen de ${decease?.name}`}
           src={decease?.photo ? JSON.parse(decease?.photo) : noPhoto}
           style={{ width: "35%", marginLeft: "27%" }}

@@ -23,6 +23,7 @@ const DeceaseCardList = ({ deceases }) => {
         grid={{ gutter: 26, column: 4 }}
         dataSource={deceases}
         renderItem={(decease, index) => (
+         
           <List.Item>
            <DeceaseCard decease={decease} showDrawer={showDrawer}/>
           </List.Item>

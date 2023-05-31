@@ -7,7 +7,6 @@ const getChemicals = () => {
     try {
       const Chemical = await axios.get(`${apiUrl}/chemicals
       `);
-      console.log(Chemical.data);
       return Chemical.data;
     } catch (error) {
       console.log(error);

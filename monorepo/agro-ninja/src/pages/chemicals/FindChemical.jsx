@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 import ChemicalService from "./../../services/Chemical.service";
 import { Input, Space, Button } from "antd";
-import ChemicalCardList from './components/ChemicalCardList';
-
+import ChemicalCardList from "./components/ChemicalCardList";
 
 const FindChemical = () => {
   const [chemicals, setChemicals] = useState([]);
@@ -15,14 +14,11 @@ const FindChemical = () => {
         const result = await ChemicalService.Chemicals.findAll();
         setChemicals((r) => result);
         setFiltredChemicals((r) => result);
-        console.log(filtredChemicals);
-      } catch (error) 
-      {
-        console.log(error)
+      } catch (error) {
+        console.log(error);
       }
-    }
+    };
     getData();
-
   }, []);
 
   const filterChemicals = (e) => {
@@ -34,7 +30,7 @@ const FindChemical = () => {
       chemical.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setFiltredChemicals(filteredChemicals);
-    console.log(filteredChemicals)
+    console.log(filteredChemicals);
   };
 
   return (

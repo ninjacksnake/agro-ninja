@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react'
 
-import ApiService from "./../../services/Api.service";
+import ChemicalService from "./../../services/Chemical.service";
 import { Input, Space, Button } from "antd";
 import ChemicalCardList from './components/ChemicalCardList';
 
 
 const FindChemical = () => {
-  const [Chemicals, setChemicals] = useState([]);
+  const [chemicals, setChemicals] = useState([]);
   const [filtredChemicals, setFiltredChemicals] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const result = await ApiService.Chemicals.findAll();
+        const result = await ChemicalService.Chemicals.findAll();
         setChemicals((r) => result);
         setFiltredChemicals((r) => result);
+        console.log(filtredChemicals);
       } catch (error) 
       {
         console.log(error)
@@ -29,11 +30,11 @@ const FindChemical = () => {
       e.target.value = document.getElementById("si").value;
     }
     console.log(e.target.value);
-    const filteredChemicals = Chemicals.filter((chemical) =>
+    const filteredChemicals = chemicals.filter((chemical) =>
       chemical.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
-
     setFiltredChemicals(filteredChemicals);
+    console.log(filteredChemicals)
   };
 
   return (
@@ -41,7 +42,7 @@ const FindChemical = () => {
       <Space.Compact style={{ width: "100%", marginBottom: "2rem" }}>
         <Input
           id="si"
-          placeholder="Escriba aqui el producto que desea buscar"
+          placeholder="Escriba aqui el quimico que desea buscar"
           onKeyUp={filterChemicals}
         />
         <Button type="primary" onClick={filterChemicals}>

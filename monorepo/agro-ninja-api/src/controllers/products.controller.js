@@ -52,9 +52,9 @@ const find = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const product = req.body;
-    console.log(product);
+    // console.log(product);
     const isUpdated = await Product.update(
-      { name: product.name, description: product.description },
+      product ,
       { where: { id: product.id } }
     );
     const chemicals = await Chemical.findAll({

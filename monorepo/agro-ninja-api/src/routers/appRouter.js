@@ -18,10 +18,10 @@ router.put("/products", productsController.update);
 
 router.post("/deceases", deceasesController.create);
 router.get("/deceases", deceasesController.find);
-router.put("/deceases", deceasesController.create);
+router.put("/deceases", deceasesController.update);
 
 router.post("/chemicals", chemicalsController.create);
 router.get("/chemicals", chemicalsController.find);
-router.put("/chemicals", chemicalsController.create);
+router.put("/chemicals", chemicalsController.update);
 
 module.exports = router;

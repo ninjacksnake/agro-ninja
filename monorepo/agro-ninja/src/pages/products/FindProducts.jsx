@@ -28,7 +28,7 @@ const FindProducts = () => {
     if (e.target.value === undefined || e.target.value === "") {
       e.target.value = document.getElementById("si").value;
     }
-    console.log(e.target.value);
+   
     const filteredProducts = products.filter((product) =>
       product.name.toLowerCase().includes(e.target.value.toLowerCase())
     );

@@ -3,9 +3,10 @@ const app = express();
 const cors = require('cors');
 const port = 3004;
 const router = require('./routers/appRouter.js');
+const bodyParser = require('body-parser');
 
 require('dotenv').config();
-app.use(express.json());
+app.use(bodyParser.json({limit: '10mb'}));
 app.use(cors());
 app.use(router);
 

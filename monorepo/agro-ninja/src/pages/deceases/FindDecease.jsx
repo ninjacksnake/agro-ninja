@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import ApiService from "./../../services/Api.service";
+import DeceaseService from "./../../services/Decease.service";
 import { Input, Space, Button } from "antd";
 import DeceaseCardList from './components/DeceaseCardList';
 
@@ -12,7 +12,7 @@ const FindDecease = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const result = await ApiService.Deceases.findAll();
+        const result = await DeceaseService.Deceases.findAll();
         setDeceases((r) => result);
         setFiltredDeceases((r) => result);
       } catch (error) {

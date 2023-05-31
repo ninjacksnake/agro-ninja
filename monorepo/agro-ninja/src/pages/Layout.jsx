@@ -60,7 +60,7 @@ const AppLayout = () => {
           }}
         >
           {" "}
-          Agro Ninja{" "}
+          AGRO {" "}
         </div>
         <Menu
           theme="dark"
@@ -73,15 +73,15 @@ const AppLayout = () => {
         <Header style={{ padding: 0, background: colorBgContainer }} />
         <Content style={{ margin: "0 16px" }}>
           <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            <Breadcrumb.Item>Route</Breadcrumb.Item>
+            <Breadcrumb.Item>SubRoute</Breadcrumb.Item>
           </Breadcrumb>
           <div
             style={{
               padding: 24,
               minHeight: 360,
               background: colorBgContainer,
-            }}
+            }}l
           >
             <Outlet />
           </div>

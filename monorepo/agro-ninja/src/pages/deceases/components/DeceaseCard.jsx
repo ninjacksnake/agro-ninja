@@ -7,13 +7,13 @@ import {
 } from "@ant-design/icons";
 
 
-import medBottle2 from "../../../assets/images/chemicals/chem.png";
+import noPhoto from "../../../assets/images/chemicals/no-photos.png";
 import { useNavigate } from 'react-router-dom';
 
 const { Meta } = Card;
 
 const DeceaseCard = ({ decease, showDrawer }) => { 
-  console.log(decease);
+  
   const navigate =useNavigate();
   const goUpdate = async  () =>{  
     if(decease){
@@ -32,7 +32,7 @@ const DeceaseCard = ({ decease, showDrawer }) => {
       cover={
         <img
           alt={`Imagen de ${decease?.name}`}
-          src={medBottle2}
+          src={decease?.photo ? JSON.parse(decease?.photo) : noPhoto}
           style={{ width: "35%", marginLeft: "27%" }}
         />
       }

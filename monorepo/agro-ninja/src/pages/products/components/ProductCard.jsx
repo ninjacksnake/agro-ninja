@@ -1,18 +1,18 @@
 import React from "react";
-import { Card } from "antd";
+import { Card , Image, message} from "antd";
 import {
   AuditOutlined,
   EditOutlined,
   RadarChartOutlined,
 } from "@ant-design/icons";
 
-import medBottle from "../../../assets/images/products/medbottle2.png";
-import medBottle2 from "../../../assets/images/products/medicineBottle.png";
 import { NavLink, useNavigate } from 'react-router-dom';
+
 
 const { Meta } = Card;
 
-const ProductCard = ({ product, showDrawer }) => { 
+const ProductCard = ({ product, showDrawer }) => {
+ 
   const navigate =useNavigate();
   const goUpdate = async  () =>{  
     if(product){
@@ -25,14 +25,26 @@ const ProductCard = ({ product, showDrawer }) => {
     }, 300000);
     navigate(`/products/update/${product.id}`)
   }
+
+const decodeImage =  (photo)=>{
+    try {
+      const parsed =  JSON.parse(photo);
+      console.log(parsed);
+      return parsed
+    } catch (error) {
+      console.log(error)
+      
+    }
+};
+ 
   return (
     <Card
       title={product.name}
       cover={
-        <img
+        <Image
           alt={`Imagen de ${product.name}`}
-          src={medBottle2}
-          style={{ width: "35%", marginLeft: "27%" }}
+          src= { decodeImage(product.photo)}
+          style={{ width: "35%", marginLeft:"35%" }}
         />
       }
       actions={[

@@ -4,12 +4,13 @@ import { NavLink } from "react-router-dom";
 import ChemicalCard from "./ChemicalCard";
 
 
-const ChemicalCardList = ({ chemicals }) => {
+const ChemicalCardList = ({   chemicals }) => {
+ 
   const [open, setOpen] = useState(false);
   const [selectedChemical, setSelectedChemical] = useState(null);
-
+console.log('chemicals,', chemicals)
   const showDrawer = (name) => {
-    const chosenChemicals = chemicals.find(chemicals => chemicals.name === name)?? null ;
+    const chosenChemicals = chemicals.find(chemical => chemical.name === name)?? null ;
     setSelectedChemical(p => chosenChemicals);
     setOpen(true);
   };
@@ -24,7 +25,7 @@ const ChemicalCardList = ({ chemicals }) => {
         dataSource={chemicals}
         renderItem={(chemical, index) => (
           <List.Item>
-           <ChemicalCard chemical={chemical} showDrawer={showDrawer}/>
+           <ChemicalCard decease={chemical} showDrawer={showDrawer}/>
           </List.Item>
         )}
       />
@@ -38,7 +39,7 @@ const ChemicalCardList = ({ chemicals }) => {
         <ol>
           <Table
           pagination={false}
-          dataSource={selectedChemical?.chemicals}
+          dataSource={selectedChemical?.decease}
           columns={[{title: 'Name', dataIndex: 'name', key: 'id' , render: (text)=> <NavLink to={'/'}>{text}</NavLink>}]}
           >
           </Table>

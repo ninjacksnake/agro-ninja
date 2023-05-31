@@ -1,79 +1,130 @@
-import React from "react";
-import { Button, Form, Input, notification } from "antd";
-import ApiService from "../../../services/Api.service";
+import React, { useEffect, useState } from "react";
 
+import {
+  Button,
+  Form,
+  Input,
+  notification,
 
-const ChemicalForm = () => {
+} from "antd";
+import ChemicalService from "../../../services/Chemical.service.jsx";
+import ImageUploader from "../../components/ImageUploader";
+const noPhoto = require("../../../assets/images/deceases/no-photos.png"); // check the folder is for the module
 
+const layout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
+};
 
-  const openNotification = (title, body )  => {
-   notification.open({
+const tailLayout = {
+  wrapperCol: { offset: 8, span: 16 },
+};
+
+const ChemicalForm = ({ isUpdate, chemical = null }) => {
+  const [form] = Form.useForm();
+  const [photoBinary, setPhotoBinary] = useState([]);
+
+  const openNotification = (title, body) => {
+    notification.open({
       message: `${title}`,
       description: `${body}`,
-      placement:'topRight',
-      style:{
-        backgroundColor: title === 'Error'? '#EB8696':'beige'
-      }
+      placement: "topRight",
+      style: {
+        backgroundColor: title === "Error" ? "#EB8696" : "beige",
+      },
     });
   };
 
-  const onfinish = (values) => {
-    console.log(values);
-    return ApiService.Chemicals.createChemical(values)
-      .then((result) =>{ 
-        console.log(result)
-        openNotification('Success','Your Chemical has been created')
-      })
-      .catch((err) => {
-        console.log(err)
-        openNotification('Error','Your Chemical creation failed')
-      });
+  useEffect(() => {
+    const getInfo = async () => {
+      if (isUpdate) {
+      //  console.log(decease.photo)
+        setPhotoBinary(chemical.photo);
+      }
+    };
+    getInfo();
+  }, []);
+
+  const onFinish = (values) => {
+    if (isUpdate) {
+      values.id = chemical.id;
+      values.photo = JSON.stringify(photoBinary);
+     // console.log(values);
+      return ChemicalService.Chemicals.updateChemical(values)
+        .then((result) => {
+          openNotification("Success", "Your decease has been updated");
+        })
+        .catch((error) => {
+          console.log(error);
+          openNotification("Fail", "Failed updating your Decease  ");
+        });
+    } else {
+      values.photo = photoBinary === "" ? noPhoto : JSON.stringify(photoBinary); // default no photo photo
+      return ChemicalService.Chemicals.createChemical(values)
+        .then((result) => {
+          openNotification("Success", "Your decease has been created");
+        })
+        .catch((error) => {
+          console.log(error);
+          openNotification("Fail", "Failed creating your Decease");
+        });
+    }
   };
 
-  const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
+  const onReset = () => {
+    form.resetFields();
   };
 
-  const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 },
+  const handleFileSelected = (photobinaries) => {
+    setPhotoBinary(`${photobinaries}`);
   };
-  const [form] = Form.useForm();
 
   return (
-    
     <Form
       {...layout}
       form={form}
-      labelCol={{ span: 4 }}
-      wrapperCol={{ span: 14 }}
+      onFinish={onFinish}
       style={{ maxWidth: 600 }}
-      onFinish={onfinish}
-      name="add_chem_form"
+      initialValues={
+        isUpdate
+          ? {
+              name: chemical?.name ?? "",
+              photo: chemical?.photo ?? "",
+              description: chemical?.description ?? "",
+             // products: decease?.products ??"", 
+            }
+          : null
+      }
     >
-      <Form.Item label="Nombre :" name="name" rules={[{ required: true }]}>
+      <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
+        <ImageUploader
+          onFileSelected={handleFileSelected}
+          decease={chemical}
+        />
+        <br />
+        {/* {isUpdate ? <Image src={photoBinary} alt="Image" width="100px" /> : ""} */}
+      </Form.Item>
+      <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-
       <Form.Item
-        label="Descripción :"
         name="description"
+        label="Descripción"
         rules={[{ required: true }]}
       >
-        <Input name="description" />
-      </Form.Item>
-
+        <Input />
+       </Form.Item>
+     
       <Form.Item {...tailLayout}>
-        <Button
-          type="primary"
-          htmlType="submit"
-          style={{ marginLeft: "10.5rem", clear: "both" }}
-        >
-          Guardar
+        <Button type="primary" htmlType="submit" style={{ marginRight: "8px" }}>
+          Submit
+        </Button>
+
+        <Button htmlType="button" onClick={onReset}>
+          Reset
         </Button>
       </Form.Item>
     </Form>
-    
   );
 };
 

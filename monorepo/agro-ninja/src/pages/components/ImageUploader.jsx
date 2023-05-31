@@ -1,95 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { UploadOutlined } from "@ant-design/icons";
+import { Upload, Button, message, Image } from "antd";
 
-import { PlusOutlined } from "@ant-design/icons";
-import { Modal, Upload } from "antd";
+const ImageUploader = ({ onFileSelected , decease}) => {
+  const [fileList, setFileList] = useState([]);
+  const [currentImage, setCurrentImage] = useState([]);
 
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
 
-const ImageUploader = (moduleName) => {
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-
-  const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState([
-    // {
-    //   uid: "-1",
-    //   name: "medbottle2.png",
-    //   status: "done",
-    //   url: '../../assets/images/productsImages/medbottle2.png'
-    //     // "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-    // }
-  ]);
-
-  const handleCancel = () => setPreviewOpen(false);
-
-  const handlePreview = async (file) => {
-    console.log(
-      file.url
-    )
-    try {
-      if (file?.url && file?.preview) {
-        file.preview = await getBase64(file.url);
-        console.log(file.preview);
-      }
-
-      setPreviewImage(file.url || file.preview);
-      setPreviewOpen(true);
-      setPreviewTitle(
-        file?.name || file.url?.substring(file.url?.lastIndexOf("/") + 1)
-      );
-    } catch (error) {
-      console.log(error);
+useEffect(() =>{
+  try {
+    console.log(decease?.photo)
+    if (decease?.photo){
+      setCurrentImage(JSON.parse(decease.photo))
     }
-  };
+} catch (error) {
+  console.error('image is not valid try to set image again')
+}
+}, [])
 
-  const handleFileUpload = (name) => {
-    const relativePath = `../../assets/images/products/${name}`;
-    console.log(relativePath);
-       
+  const props = {
+    name: "photo",
+    accept: "image/png, image/jpeg",
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: (file) => {
+      return false;
+    },
+    onChange: (info) => {
+      setFileList([info.fileList[info.fileList.length - 1]]);
+      const imageReader = new FileReader();
+      imageReader.onloadend = () => {
+        const base64Image = imageReader.result;
+        setCurrentImage(base64Image);
+        onFileSelected(base64Image);
+      };
+      imageReader.readAsDataURL(
+        info.fileList[info.fileList.length - 1].originFileObj
+      );
+    },
+    
+    fileList,
   };
-
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
 
   return (
     <>
-      <Upload
-        action=""
-        listType="picture-card"
-        fileList={fileList}
-        onPreview={handlePreview}
-        onChange={(info) => {
-         const name = info.file.name;
-         handleFileUpload(name);
-         setFileList([{
-          uid: "-1",
-             name: name,
-             status: "done",
-             url: '../../assets/images/products/medbottle2.png'
-         }]);
-        }}
-        beforeUpload={() => false}
-      >
-        {fileList.length === 0 ? uploadButton : null}
+      <Upload {...props}>
+        <Button icon={<UploadOutlined />}>Select File</Button>
       </Upload>
-      <Modal
-        open={previewOpen}
-        title={previewTitle}
-        footer={null}
-        onCancel={handleCancel}
-      >
-        <img alt="example" style={{ width: "100%" }} src={previewImage} />
-      </Modal>
+      <Image src={currentImage} width={"7rem"} />
     </>
   );
 };

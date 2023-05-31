@@ -6,11 +6,6 @@ const create = async (req, res, next) => {
   const deceaseInfo = req.body;
   try {
     const newDecease = await Decease.create(deceaseInfo);
-    const product = await Product.findAll({
-      where: { name:{ [Op.in]: deceaseInfo.products} },
-    });
-  
-    await newDecease.addProducts(product);
     return res.status(201).send(newDecease);
   } catch (err) {
     console.log(err)
@@ -45,14 +40,12 @@ const find = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const decease = req.body;
+    console.log(decease);
     const updatedDecease = await Decease.update(
-      { name: decease.name, description: decease.description },
+      { name: decease.name, description: decease.description, photo: decease.photo  },
       { where: { id: decease.id } }
     );
-    const products = await Products.findAll({
-      where: { name: { [Op.in]: decease.products } },
-    });
-    await updatedDecease[0].setProductss(products);
+    return res.status(200).send(updatedDecease);
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -61,7 +54,6 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
   try {
     const product = req.body;
-    // Product.create({}, {});
   } catch (err) {
     res.status(500).send(err.message);
   }

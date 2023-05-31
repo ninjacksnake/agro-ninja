@@ -3,17 +3,17 @@ import { Card } from "antd";
 import {
   AuditOutlined,
   EditOutlined,
-  RadarChartOutlined,
+  
 } from "@ant-design/icons";
 
 
-import medBottle2 from "../../../assets/images/chemicals/chem.png";
+import noPhoto from "../../../assets/images/chemicals/no-photos.png";
 import { useNavigate } from 'react-router-dom';
 
 const { Meta } = Card;
 
 const ChemicalCard = ({ chemical, showDrawer }) => { 
-  console.log(chemical);
+  console.log('chemical card', chemical)
   const navigate =useNavigate();
   const goUpdate = async  () =>{  
     if(chemical){
@@ -32,7 +32,7 @@ const ChemicalCard = ({ chemical, showDrawer }) => {
       cover={
         <img
           alt={`Imagen de ${chemical?.name}`}
-          src={medBottle2}
+          src={chemical?.photo ? JSON.parse(chemical?.photo) : noPhoto}
           style={{ width: "35%", marginLeft: "27%" }}
         />
       }
@@ -41,7 +41,7 @@ const ChemicalCard = ({ chemical, showDrawer }) => {
         <AuditOutlined key="ellipsis" />
       ]}
     >
-      <Meta title="Test" description={chemical?.description} />
+      <Meta title={chemical?.name} description={chemical?.description} />
     </Card>
   );
 };

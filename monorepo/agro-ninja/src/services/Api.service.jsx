@@ -90,7 +90,7 @@ const updateChemical = (chemical) => {
 const getCategories = async () => {
   const callApi = async () => {
     try {
-      const chemicals = await axios.get(`${apiUrl}/chemicals`);
+      const chemicals = await axios.get(`${apiUrl}/categories`);
       return chemicals.data;
     } catch (error) {
       console.log(error);
@@ -104,7 +104,7 @@ const createCategory = (category) => {
   console.log("create Category", category);
   const callApi = async (product) => {
     try {
-      const newCategory = await axios.post(`${apiUrl}/Categorys`, category);
+      const newCategory = await axios.post(`${apiUrl}/categorie`, category);
       return newCategory.data;
     } catch (error) {
       console.log(error);
@@ -118,7 +118,7 @@ const updateCategory = (category) => {
   console.log("create Category", category);
   const callApi = async (product) => {
     try {
-      const updatedCategory = await axios.put(`${apiUrl}/Categorys`, category);
+      const updatedCategory = await axios.put(`${apiUrl}/categorie`, category);
       console.log(updatedCategory);
       return updatedCategory.data;
     } catch (error) {

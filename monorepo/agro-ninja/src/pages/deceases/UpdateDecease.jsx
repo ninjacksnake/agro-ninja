@@ -1,8 +1,12 @@
 import React from 'react'
+import DeceaseForm from './components/DeceaseForm'
+import { useParams } from 'react-router-dom';
 
 const UpdateDecease = () => {
+  const id = useParams();
+  const decease = JSON.parse(localStorage.getItem("SelectedDeceaseToUpdate"));
   return (
-    <div>UpdateDecease</div>
+    <DeceaseForm isUpdate={true} decease={decease} id={id} />
   )
 }
 

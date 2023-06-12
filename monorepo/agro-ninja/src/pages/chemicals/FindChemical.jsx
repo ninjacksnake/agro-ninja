@@ -25,12 +25,12 @@ const FindChemical = () => {
     if (e.target.value === undefined || e.target.value === "") {
       e.target.value = document.getElementById("si").value;
     }
-    console.log(e.target.value);
+  //  console.log(e.target.value);
     const filteredChemicals = chemicals.filter((chemical) =>
       chemical.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setFiltredChemicals(filteredChemicals);
-    console.log(filteredChemicals);
+ ///   console.log(filteredChemicals);
   };
 
   return (

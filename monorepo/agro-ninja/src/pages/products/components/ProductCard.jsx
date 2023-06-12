@@ -29,7 +29,7 @@ const ProductCard = ({ product, showDrawer }) => {
 const decodeImage =  (photo)=>{
     try {
       const parsed =  JSON.parse(photo);
-      console.log(parsed);
+      //console.log(parsed);
       return parsed
     } catch (error) {
       console.log(error)

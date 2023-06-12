@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { DesktopOutlined, PieChartOutlined, AimOutlined, FilterOutlined, FileAddFilled } from "@ant-design/icons";
 // import { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Layout, Menu, theme } from "antd";
 import {  Outlet, NavLink } from "react-router-dom";
+import BreadCrumbs from "./components/BreadCrumbs";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -72,10 +73,7 @@ const AppLayout = () => {
       <Layout className="site-layout">
         <Header style={{ padding: 0, background: colorBgContainer }} />
         <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Route</Breadcrumb.Item>
-            <Breadcrumb.Item>SubRoute</Breadcrumb.Item>
-          </Breadcrumb>
+         <BreadCrumbs />
           <div
             style={{
               padding: 24,

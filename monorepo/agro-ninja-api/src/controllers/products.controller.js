@@ -12,14 +12,21 @@ const product = {
 
 const create = async (req, res, next) => {
   const product = req.body;
+  console.log(product);
   try {
     const newProduct = await Product.create(product);
+    console.log(product.chemicals);
     const chemicals = await Chemical.findAll({
       where: { name: [...product.chemicals] },
     });
     await newProduct.addChemicals(chemicals);
+    const deceases = await Deceases.findAll({
+      where: { name: [...product.deceases] },
+    });
+    await newProduct.addDeceases(deceases);
     return res.status(201).send(newProduct);
   } catch (err) {
+    console.log(err);
     return res.status(500).send(err.message500);
   }
 };
@@ -45,6 +52,7 @@ const find = async (req, res, next) => {
       return res.status(200).send(result);
     }
   } catch (err) {
+    console.log(err);
     res.status(500).send(err.message);
   }
 };
@@ -53,19 +61,20 @@ const update = async (req, res, next) => {
   try {
     const product = req.body;
     // console.log(product);
-    const isUpdated = await Product.update(
-      product ,
-      { where: { id: product.id } }
-    );
+    const isUpdated = await Product.update(product, {
+      where: { id: product.id },
+    });
     const chemicals = await Chemical.findAll({
       where: { name: { [Op.in]: product.chemicals } },
     });
-   if(isUpdated){
-    let updatedProduct = await Product.findByPk(product.id, {include: {model: Chemical}});
-    await updatedProduct.setChemicals(chemicals);
-    await Product.findByPk(product.id, {include: {model: Chemical}});
-    res.status(200).send(updatedProduct);
-   }
+    if (isUpdated) {
+      let updatedProduct = await Product.findByPk(product.id, {
+        include: { model: Chemical },
+      });
+      await updatedProduct.setChemicals(chemicals);
+      await Product.findByPk(product.id, { include: { model: Chemical } });
+      res.status(200).send(updatedProduct);
+    }
   } catch (err) {
     console.log(err);
     res.status(500).send(err.message);

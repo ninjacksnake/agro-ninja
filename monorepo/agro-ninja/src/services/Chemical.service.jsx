@@ -17,7 +17,7 @@ const getChemicals = () => {
 };
 
 const createChemical = (chemical) => {
-  console.log("create Chemical ", chemical);
+//  console.log("create Chemical ", chemical);
   const callApi = async (chemical) => {
     try {
       const newChemical = await axios.post(
@@ -37,7 +37,7 @@ const createChemical = (chemical) => {
 const updateChemical = (chemical) => {
   
   const callApi = async (chemical) => {
-    console.log("update Chemical ")
+ //  console.log("update Chemical ")
     try {
       const newChemical = await axios.put(
         `${apiUrl}/chemicals

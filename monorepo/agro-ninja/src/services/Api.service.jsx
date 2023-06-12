@@ -6,7 +6,7 @@ const getProducts = () => {
   const callApi = async () => {
     try {
       const products = await axios.get(`${apiUrl}/products`);
-      console.log(products.data);
+    //  console.log(products.data);
       return products.data;
     } catch (error) {
       console.log(error);
@@ -18,7 +18,7 @@ const getProducts = () => {
 };
 
 const createProduct = (product) => {
-  console.log("create products", product);
+ // console.log("create products", product);
   const callApi = async (product) => {
     try {
       const products = await axios.post(`${apiUrl}/products`, product);
@@ -32,7 +32,7 @@ const createProduct = (product) => {
 };
 
 const updateProduct = (product) => {
-  console.log("update products", product);
+ //  console.log("update products", product);
   const callApi = async (product) => {
     try {
       const products = await axios.put(`${apiUrl}/products`, product);
@@ -49,7 +49,7 @@ const getChemicals = () => {
   const callApi = async () => {
     try {
       const chemicals = await axios.get(`${apiUrl}/chemicals`);
-      console.log(chemicals.data)
+      //console.log(chemicals.data)
       return chemicals.data;
     } catch (error) {
       console.log(error);
@@ -60,7 +60,7 @@ const getChemicals = () => {
 };
 
 const createChemical = (chemical) => {
-  console.log("create chemical", chemical);
+ // console.log("create chemical", chemical);
   const callApi = async (product) => {
     try {
       const newChemical = await axios.post(`${apiUrl}/chemicals`, chemical);
@@ -73,7 +73,7 @@ const createChemical = (chemical) => {
 };
 
 const updateChemical = (chemical) => {
-  console.log("create chemical", chemical);
+//  console.log("create chemical", chemical);
   const callApi = async (product) => {
     try {
       const updatedChemical = await axios.put(`${apiUrl}/chemicals`, chemical);
@@ -101,7 +101,7 @@ const getCategories = async () => {
 };
 
 const createCategory = (category) => {
-  console.log("create Category", category);
+  // console.log("create Category", category);
   const callApi = async (product) => {
     try {
       const newCategory = await axios.post(`${apiUrl}/categorie`, category);
@@ -115,11 +115,11 @@ const createCategory = (category) => {
 };
 
 const updateCategory = (category) => {
-  console.log("create Category", category);
+ /// console.log("create Category", category);
   const callApi = async (product) => {
     try {
       const updatedCategory = await axios.put(`${apiUrl}/categorie`, category);
-      console.log(updatedCategory);
+     // console.log(updatedCategory);
       return updatedCategory.data;
     } catch (error) {
       console.log(error);

@@ -18,7 +18,7 @@ const ChemicalCardList = ({   chemicals }) => {
   const onClose = () => {
     setOpen(false);
   };
-console.log(chemicals)
+// console.log(chemicals)
   return (
     <>
       <List

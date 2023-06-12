@@ -3,6 +3,7 @@ const productsController = require("../controllers/products.controller");
 const { syncDb } = require("../controllers/app.controller");
 const chemicalsController = require("../controllers/chemicals.controller");
 const deceasesController = require("../controllers/deceases.controller");
+const categoriesController = require("../controllers/categories.controller");
 
 const router = express.Router();
 
@@ -23,5 +24,9 @@ router.put("/deceases", deceasesController.update);
 router.post("/chemicals", chemicalsController.create);
 router.get("/chemicals", chemicalsController.find);
 router.put("/chemicals", chemicalsController.update);
+
+router.post("/categories", categoriesController.create);
+router.get("/categories", categoriesController.find);
+router.put("/categories", categoriesController.update);
 
 module.exports = router;

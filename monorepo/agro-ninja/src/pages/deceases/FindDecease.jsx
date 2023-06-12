@@ -26,7 +26,7 @@ const FindDecease = () => {
     if (e.target.value === undefined || e.target.value === "") {
       e.target.value = document.getElementById("si").value;
     }
-    console.log(e.target.value);
+    //console.log(e.target.value);
     const filteredDeceases = deceases.filter((decease) =>
       decease.name.toLowerCase().includes(e.target.value.toLowerCase())
     );

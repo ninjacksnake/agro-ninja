@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Upload, Button, message, Image } from "antd";
 
-const ImageUploader = ({ onFileSelected , decease}) => {
+const ImageUploader = ({ onFileSelected ,  entity}) => {
   const [fileList, setFileList] = useState([]);
   const [currentImage, setCurrentImage] = useState([]);
 
 
 useEffect(() =>{
   try {
-    console.log(decease?.photo)
-    if (decease?.photo){
-      setCurrentImage(JSON.parse(decease.photo))
+  //  console.log(entity?.photo)
+    if (entity?.photo){
+      setCurrentImage(JSON.parse(entity.photo))
     }
 } catch (error) {
   console.error('image is not valid try to set image again')

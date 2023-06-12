@@ -20,9 +20,14 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-const ChemicalForm = ({ isUpdate, chemical = null }) => {
+const ChemicalForm = ({ isUpdate, chemical = null, addCatOrComp = null, onClose = null}) => {
   const [form] = Form.useForm();
   const [photoBinary, setPhotoBinary] = useState([]);
+
+  const clearForm = () => {
+form.resetFields();
+
+  };
 
   const openNotification = (title, body) => {
     notification.open({
@@ -52,21 +57,26 @@ const ChemicalForm = ({ isUpdate, chemical = null }) => {
      // console.log(values);
       return ChemicalService.Chemicals.updateChemical(values)
         .then((result) => {
-          openNotification("Success", "Your decease has been updated");
+          openNotification("Success", "Your Component has been updated");
         })
         .catch((error) => {
           console.log(error);
-          openNotification("Fail", "Failed updating your Decease  ");
+          openNotification("Fail", "Failed updating your Component  ");
         });
     } else {
       values.photo = photoBinary === "" ? noPhoto : JSON.stringify(photoBinary); // default no photo photo
       return ChemicalService.Chemicals.createChemical(values)
         .then((result) => {
-          openNotification("Success", "Your decease has been created");
+          openNotification("Success", "Your Component has been created");
+          if (addCatOrComp) {
+            addCatOrComp('comp',values);
+            clearForm();
+            onClose();
+          }
         })
         .catch((error) => {
           console.log(error);
-          openNotification("Fail", "Failed creating your Decease");
+          openNotification("Fail", "Failed creating your Component");
         });
     }
   };
@@ -79,7 +89,7 @@ const ChemicalForm = ({ isUpdate, chemical = null }) => {
     setPhotoBinary(`${photobinaries}`);
   };
 
-  return (
+  return ( 
     <Form
       {...layout}
       form={form}
@@ -99,7 +109,7 @@ const ChemicalForm = ({ isUpdate, chemical = null }) => {
       <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
         <ImageUploader
           onFileSelected={handleFileSelected}
-          decease={chemical}
+          entity={chemical}
         />
         <br />
         {/* {isUpdate ? <Image src={photoBinary} alt="Image" width="100px" /> : ""} */}
@@ -117,11 +127,11 @@ const ChemicalForm = ({ isUpdate, chemical = null }) => {
      
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit" style={{ marginRight: "8px" }}>
-          Submit
+          Guardar
         </Button>
 
         <Button htmlType="button" onClick={onReset}>
-          Reset
+          Limpiar
         </Button>
       </Form.Item>
     </Form>

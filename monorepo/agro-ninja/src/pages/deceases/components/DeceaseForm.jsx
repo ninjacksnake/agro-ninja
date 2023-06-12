@@ -99,7 +99,7 @@ const DeceaseForm = ({ isUpdate, decease = null }) => {
       <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
         <ImageUploader
           onFileSelected={handleFileSelected}
-          decease={decease}
+          entity={decease}
         />
         <br />
         {/* {isUpdate ? <Image src={photoBinary} alt="Image" width="100px" /> : ""} */}

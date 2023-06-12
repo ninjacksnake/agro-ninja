@@ -7,7 +7,7 @@ const getDeceases = () => {
     try {
       const Decease = await axios.get(`${apiUrl}/deceases
       `);
-      console.log(Decease.data);
+    //  console.log(Decease.data);
       return Decease.data;
     } catch (error) {
       console.log(error);
@@ -18,7 +18,7 @@ const getDeceases = () => {
 };
 
 const createDecease = (decease) => {
-  console.log("create Decease ", decease);
+ //console.log("create Decease ", decease);
   const callApi = async (decease) => {
     try {
       const newDecease = await axios.post(
@@ -38,7 +38,7 @@ const createDecease = (decease) => {
 const updateDecease = (decease) => {
   
   const callApi = async (decease) => {
-    console.log("update Decease ")
+  //  console.log("update Decease ")
     try {
       const newDecease = await axios.put(
         `${apiUrl}/deceases
@@ -55,14 +55,14 @@ const updateDecease = (decease) => {
 };
 
 
-const ApiService = {
+const DeceaseService = {
     Deceases: {
       findAll: getDeceases,
-      createDecease,
-      updateDecease,
+      create: createDecease,
+      update: updateDecease,
     }
   
   };
   
-  export default ApiService;
+  export default DeceaseService;
   

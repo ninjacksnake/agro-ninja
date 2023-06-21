@@ -9,7 +9,6 @@ const ImageUploader = ({ onFileSelected ,  entity}) => {
 
 useEffect(() =>{
   try {
-  //  console.log(entity?.photo)
     if (entity?.photo){
       setCurrentImage(JSON.parse(entity.photo))
     }

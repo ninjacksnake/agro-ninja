@@ -9,7 +9,7 @@ const translator = (word) =>  {
    
   const  englishToSpanish ={
     Products: 'Productos',
-    Deceases: 'Enfermedades',
+    diceases: 'Enfermedades',
     Chemicals: 'Quimicos',
     Find: 'Buscar',
     Add: 'Agregar',

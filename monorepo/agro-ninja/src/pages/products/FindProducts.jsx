@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import ProductCardList from "./components/ProductCardList";
 
-import ApiService from "./../../services/Api.service";
+import ProductService from "../../services/Product.service";
 import { Input, Space, Button } from "antd";
 
 const FindProducts = () => {
@@ -12,7 +12,7 @@ const FindProducts = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const result = await ApiService.Products.findAll();
+        const result = await ProductService.Products.findAll();
         setProducts((r) => result);
         setFiltredProducts((r) => result);
       } catch (error) 

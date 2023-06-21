@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  Button,
-  Form,
-  Input,
-  notification,
-
-} from "antd";
+import { Button, Form, Input, notification } from "antd";
 import ChemicalService from "../../../services/Chemical.service.jsx";
 import ImageUploader from "../../components/ImageUploader";
-const noPhoto = require("../../../assets/images/deceases/no-photos.png"); // check the folder is for the module
+import { useNavigate } from "react-router-dom";
+const noPhoto = require("../../../assets/images/diceases/no-photos.png"); // check the folder is for the module
 
 const layout = {
   labelCol: { span: 8 },
@@ -20,13 +15,17 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-const ChemicalForm = ({ isUpdate, chemical = null, addCatOrComp = null, onClose = null}) => {
+const ChemicalForm = ({
+  isUpdate,
+  chemical = null,
+  addCatOrComp = null,
+  onClose = null,
+}) => {
   const [form] = Form.useForm();
   const [photoBinary, setPhotoBinary] = useState([]);
-
+const navigate = useNavigate();
   const clearForm = () => {
-form.resetFields();
-
+    form.resetFields();
   };
 
   const openNotification = (title, body) => {
@@ -43,7 +42,6 @@ form.resetFields();
   useEffect(() => {
     const getInfo = async () => {
       if (isUpdate) {
-      //  console.log(decease.photo)
         setPhotoBinary(chemical.photo);
       }
     };
@@ -53,11 +51,13 @@ form.resetFields();
   const onFinish = (values) => {
     if (isUpdate) {
       values.id = chemical.id;
-      values.photo = JSON.stringify(photoBinary);
-     // console.log(values);
+      if(values.photo !== photoBinary){
+        values.photo = JSON.stringify(photoBinary);
+      }
       return ChemicalService.Chemicals.updateChemical(values)
         .then((result) => {
           openNotification("Success", "Your Component has been updated");
+          navigate(`/chemicals/details/${chemical.id}`)
         })
         .catch((error) => {
           console.log(error);
@@ -69,10 +69,12 @@ form.resetFields();
         .then((result) => {
           openNotification("Success", "Your Component has been created");
           if (addCatOrComp) {
-            addCatOrComp('comp',values);
+            addCatOrComp("comp", values);
             clearForm();
             onClose();
           }
+          navigate(`/chemicals/details/${chemical.id}`)
+
         })
         .catch((error) => {
           console.log(error);
@@ -89,7 +91,7 @@ form.resetFields();
     setPhotoBinary(`${photobinaries}`);
   };
 
-  return ( 
+  return (
     <Form
       {...layout}
       form={form}
@@ -101,31 +103,29 @@ form.resetFields();
               name: chemical?.name ?? "",
               photo: chemical?.photo ?? "",
               description: chemical?.description ?? "",
-             // products: decease?.products ??"", 
+             
             }
           : null
       }
     >
       <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
-        <ImageUploader
-          onFileSelected={handleFileSelected}
-          entity={chemical}
-        />
-        <br />
-        {/* {isUpdate ? <Image src={photoBinary} alt="Image" width="100px" /> : ""} */}
+        <ImageUploader onFileSelected={handleFileSelected} entity={chemical} />
       </Form.Item>
+
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
+      
       <Form.Item
         name="description"
         label="Descripción"
         rules={[{ required: true }]}
       >
         <Input />
-       </Form.Item>
-     
+      </Form.Item>
+
       <Form.Item {...tailLayout}>
+        <>
         <Button type="primary" htmlType="submit" style={{ marginRight: "8px" }}>
           Guardar
         </Button>
@@ -133,6 +133,7 @@ form.resetFields();
         <Button htmlType="button" onClick={onReset}>
           Limpiar
         </Button>
+        </>
       </Form.Item>
     </Form>
   );

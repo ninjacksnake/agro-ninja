@@ -1,0 +1,28 @@
+
+.photo-box{
+     display: flex;
+     flex-direction: column;
+     border: 0cm solid rgb(249, 243, 243);
+     justify-content: center;
+     align-items: center;
+    
+ }
+
+.box-1{
+    padding: 8px 0;
+  
+}
+.box-2{
+     border: 1px solid black;
+     padding: 8px 0;
+ }
+ .box-3{
+     padding: 8px 0;
+     border: 1px solid black;
+ }
+
+.tableContainer{
+    padding:10px;
+    border-radius: 5px;;
+    border: 1px solid rgb(246, 241, 241);
+}

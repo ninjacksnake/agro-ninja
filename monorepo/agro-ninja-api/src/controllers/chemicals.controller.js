@@ -1,6 +1,7 @@
 const Chemical = require("../models/index").Chemical;
 const Product = require("../models/index").Product;
 
+
 // create a new record in the database
 const create = async (req, res, next) => {
   try {
@@ -25,6 +26,20 @@ const find = async (req, res, next) => {
       chemical = await Chemical.findAll({ include: {model: Product} });
     }
     res.status(200).send(chemical);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err.message);
+  }
+};
+
+const findById = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const result = await Chemical.findByPk(id, {
+      include: [{ model: Product }],
+      where: { id: id },
+    });
+    return res.status(200).send(result);
   } catch (err) {
     console.log(err);
     res.status(500).send(err.message);
@@ -60,4 +75,5 @@ module.exports = {
   update,
   find,
   remove,
+  findById
 };

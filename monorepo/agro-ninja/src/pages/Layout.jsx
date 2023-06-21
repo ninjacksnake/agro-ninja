@@ -24,9 +24,9 @@ const items = [
     // getItem("Modificar", "4", <> <PieChartOutlined /> <NavLink to="products/update"/></>),
   ]),
   getItem("Enfermedades", "5",  <DesktopOutlined />,[
-    getItem("Buscar", "6", <> <FilterOutlined /> <NavLink to="deceases/find"/></>),
-    getItem("Agregar", "7", <> <FileAddFilled /> <NavLink to="deceases/add"/></>), 
-    // getItem("Modificar", "8", <> <PieChartOutlined /> <NavLink to="deceases/update"/></>),
+    getItem("Buscar", "6", <> <FilterOutlined /> <NavLink to="diceases/find"/></>),
+    getItem("Agregar", "7", <> <FileAddFilled /> <NavLink to="diceases/add"/></>), 
+    // getItem("Modificar", "8", <> <PieChartOutlined /> <NavLink to="diceases/update"/></>),
    
   ]),
   getItem("Quimicos", "9",  <AimOutlined /> ,[

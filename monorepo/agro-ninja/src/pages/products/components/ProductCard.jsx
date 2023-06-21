@@ -16,6 +16,7 @@ const ProductCard = ({ product, showDrawer }) => {
   const navigate =useNavigate();
   const goUpdate = async  () =>{  
     if(product){
+      localStorage.clear();
       localStorage.setItem('SelectedProductToUpdate', await JSON.stringify(product));
     }else{
       return alert('Please select a product to update')
@@ -29,7 +30,7 @@ const ProductCard = ({ product, showDrawer }) => {
 const decodeImage =  (photo)=>{
     try {
       const parsed =  JSON.parse(photo);
-      //console.log(parsed);
+     
       return parsed
     } catch (error) {
       console.log(error)
@@ -50,10 +51,10 @@ const decodeImage =  (photo)=>{
       actions={[
         <RadarChartOutlined key="setting" onClick={() => showDrawer(product.name)} />,
         <EditOutlined key="edit" onClick={()=>goUpdate()} />,
-        <AuditOutlined key="ellipsis" />
+        <AuditOutlined key="ellipsis" onClick={ ()=> navigate(`/products/details/${product.id}`)} />
       ]}
     >
-      <Meta title="Test" description={product.description} />
+      <Meta title={product.description}  />
     </Card>
   );
 };

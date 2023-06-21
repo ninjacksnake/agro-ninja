@@ -11,7 +11,7 @@ const AddCategoryDrawer = ({ open, onClose, openNotification , addCatOrComp}) =>
     try {
        categoryService.Categories.Create(values)
         .then((result) => {
-             console.log(result)
+             //console.log(result)
             openNotification("Success", "El Registro ha sido actualizado");
         })
         .catch((error) => {

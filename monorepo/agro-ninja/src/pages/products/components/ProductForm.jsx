@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Form, Input, Select, InputNumber, notification } from "antd";
 import { PlusCircleFilled } from "@ant-design/icons";
-import ApiService from "../../../services/Api.service";
+import ProductService from "../../../services/Product.service";
 import ImageUploader from "../../components/ImageUploader";
 import AddCategoryDrawer from "./AddCategoryDrawer";
 import AddComponentDrawer from "./AddComponentDrawer";
 import ChemicalService from "../../../services/Chemical.service";
 import categoryService from "../../../services/CategoriesService";
-import DeceaseService from "../../../services/Decease.service";
-import AddDeceaseDrawer from "./AddDeceaseDrawer";
+import DiceaseService from "../../../services/Dicease.service";
+import { useNavigate } from "react-router-dom";
+import AddDiceaseDrawer from "./AddDiceaseDrawer";
+
 const noPhoto = require("../../../assets/images/products/no-photos.png");
 const Option = Select.Option;
 
@@ -26,11 +28,12 @@ const ProductForm = ({ isUpdate, product = null }) => {
   const [form] = Form.useForm();
   const [components, setComponents] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [deceases, setDeceases] = useState([]);
+  const [diceases, setDiceases] = useState([]);
   const [photoBinary, setPhotoBinary] = useState([]);
   const [openCCDrawer, setOpenCCDrawer] = useState(false); //CC = Create Category
   const [openCChemicalDrawer, setOpenCChemicalDrawer] = useState(false); //CCH = Create Chemical
-  const [openDeceaseDrawer, setOpenDeceaseDrawer] = useState(false);
+  const [openDiceaseDrawer, setOpenDiceaseDrawer] = useState(false);
+  const navigate = useNavigate();
 
   const openCatDrawer = () => {
     setOpenCCDrawer(true);
@@ -45,9 +48,12 @@ const ProductForm = ({ isUpdate, product = null }) => {
   const onCloseChemDrawer = () => {
     setOpenCChemicalDrawer(false);
   };
+const openDicDrawer =() =>{
+  setOpenDiceaseDrawer(true)
+}
 
-  const onCloseDeceaseDrawer = () => {
-    setOpenDeceaseDrawer(false);
+  const onCloseDiceaseDrawer = () => {
+    setOpenDiceaseDrawer(false);
   };
 
   const openNotification = (title, body) => {
@@ -68,8 +74,8 @@ const ProductForm = ({ isUpdate, product = null }) => {
         setCategories([...categories, values]);
       } else if (listName === "comp") {
         setComponents([...components, values]);
-      }  else if (listName === "dec") {
-
+      } else if (listName === "dic") {
+        setDiceases([...diceases, values] );
       }
     } catch (error) {
       console.log(error);
@@ -83,24 +89,28 @@ const ProductForm = ({ isUpdate, product = null }) => {
       const dbCategories = await categoryService.Categories.FindAll();
       // console.log(categories);
       setCategories((ca) => dbCategories);
-      const dbDeceases = await DeceaseService.Deceases.findAll();
-      //  console.log(dbDeceases);
-      setDeceases((d) => dbDeceases);
+      const dbdiceases = await DiceaseService.diceases.findAll();
+      //  console.log(dbdiceases);
+      setDiceases((d) => dbdiceases);
       if (isUpdate) {
         setPhotoBinary(product.photo);
       }
     };
     getInfo();
-  }, []);
+  },  []);
 
   const onFinish = (values) => {
     //console.log("onFinish", values);
     if (isUpdate) {
       values.id = product.id;
-      values.photo = JSON.stringify(photoBinary);
-      return ApiService.Products.updateProduct(values)
+      if(values.photo !== photoBinary){
+        values.photo = JSON.stringify(photoBinary);
+      }
+       
+      return ProductService.Products.updateProduct(values)
         .then((result) => {
           openNotification("Success", "El Registro ha sido actualizado");
+          navigate( `/products/details/${values.id}`,{state: result});
         })
         .catch((error) => {
           console.log(error);
@@ -108,9 +118,10 @@ const ProductForm = ({ isUpdate, product = null }) => {
         });
     } else {
       values.photo = photoBinary === "" ? noPhoto : JSON.stringify(photoBinary); // default no photo photo
-      return ApiService.Products.createProduct(values)
+      return ProductService.Products.createProduct(values)
         .then((result) => {
           openNotification("Success", "El producto ha sido creado");
+          navigate(`/products/details/${result.id}`, { state:  result });
         })
         .catch((error) => {
           console.log(error);
@@ -124,7 +135,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
   };
 
   const handleFileSelected = (photobinaries) => {
-    setPhotoBinary(`${photobinaries}`);
+    setPhotoBinary(photobinaries);
   };
 
   return (
@@ -146,13 +157,15 @@ const ProductForm = ({ isUpdate, product = null }) => {
                 price: product?.price ?? 0,
                 chemicals:
                   product?.chemicals.map((chemical) => chemical.name) ?? [],
+                  diceases:
+                  product?.diceases.map((chemical) => chemical.name) ?? [],
               }
             : null
         }
       >
         <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
           <ImageUploader onFileSelected={handleFileSelected} entity={product} />
-          <br />
+     
           {/* {isUpdate ? <Image src={photoBinary} alt="Image" width="100px" /> : ""} */}
         </Form.Item>
         <Form.Item
@@ -238,22 +251,23 @@ const ProductForm = ({ isUpdate, product = null }) => {
           />
         </Form.Item>
         <Form.Item
-          name="deceases"
+          name="diceases"
           label="Enfermedades"
           rules={[
             { required: true, message: "Este campo no puede estar vacío" },
           ]}
         >
           <Select
-            name="deceases"
+            name="diceases"
             mode="multiple"
             placeholder="Seleccionar una opción"
             allowClear
+          //  defaultValue={}
           >
-            {deceases.map((decease, index) => {
+            {diceases.map((dicease, index) => {
               return (
-                <Option value={decease.name} key={index}>
-                  {decease.name}
+                <Option  value={dicease.name} key={index}>
+                  {dicease.name}
                 </Option>
               );
             })}
@@ -265,8 +279,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
             type="dashed"
             shape="round"
             icon={<PlusCircleFilled />}
-            onClick={openChemDrawer}
-            //  style={{ marginLeft: 10, marginRight: 10, marginTop: 10 }}
+            onClick={openDicDrawer}
           />
         </Form.Item>
 
@@ -317,9 +330,10 @@ const ProductForm = ({ isUpdate, product = null }) => {
         onClose={onCloseChemDrawer}
         addCatOrComp={addToList}
       />
-      <addDeceaseDrawer
-        open={openDeceaseDrawer}
-        onClose={onCloseDeceaseDrawer}
+      <AddDiceaseDrawer
+        open={openDiceaseDrawer}
+        onClose={onCloseDiceaseDrawer}
+        addCatOrComp={addToList}
       />
     </>
   );

@@ -17,6 +17,7 @@ const ChemicalCard = ({ chemical, showDrawer }) => {
   const navigate =useNavigate();
   const goUpdate = async  () =>{  
     if(chemical){
+      localStorage.clear();
       localStorage.setItem('SelectedChemicalToUpdate', await JSON.stringify(chemical));
     }else{
       return alert('Please select a chemical to update')
@@ -38,7 +39,7 @@ const ChemicalCard = ({ chemical, showDrawer }) => {
       }
       actions={[
         <EditOutlined key="edit" onClick={()=>goUpdate()} />,
-        <AuditOutlined key="ellipsis" />
+        <AuditOutlined key="ellipsis" onClick={()=>  navigate(`/chemicals/details/${chemical.id}`)} />
       ]}
     >
       <Meta title={chemical?.name} description={chemical?.description} />

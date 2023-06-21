@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const Deceases = require("../models/index").Decease;
+const Diceases = require("../models/index").Dicease;
 const Product = require("../models/index").Product;
 const Chemical = require("../models/index").Chemical;
 
@@ -12,22 +12,49 @@ const product = {
 
 const create = async (req, res, next) => {
   const product = req.body;
-  console.log(product);
   try {
     const newProduct = await Product.create(product);
-    console.log(product.chemicals);
     const chemicals = await Chemical.findAll({
       where: { name: [...product.chemicals] },
     });
     await newProduct.addChemicals(chemicals);
-    const deceases = await Deceases.findAll({
-      where: { name: [...product.deceases] },
+    const diceases = await Diceases.findAll({
+      where: { name: [...product.diceases] },
     });
-    await newProduct.addDeceases(deceases);
+    await newProduct.addDiceases(diceases);
     return res.status(201).send(newProduct);
   } catch (err) {
     console.log(err);
-    return res.status(500).send(err.message500);
+    return res.status(500).send(err.message);
+  }
+};
+
+const update = async (req, res, next) => {
+  try {
+    const productInfo = req.body;
+    const product = await Product.findByPk(productInfo.id);
+    product.name = productInfo.name;
+    product.description = productInfo.description;
+    product.photo = productInfo.photo;
+    product.price = productInfo.price;
+    product.category = productInfo.category;
+
+    const chemicals = await Chemical.findAll({ 
+      where: { name: [...productInfo.chemicals] },
+    });
+    const diceases = await Diceases.findAll({
+      where: { name: [...productInfo.diceases] },
+    });
+    await product.setChemicals(chemicals);
+    await product.setDiceases(diceases);
+    await product.save();
+    await Product.findByPk(productInfo.id, {
+      include: [{ model: Chemical }, { model: Diceases }],
+    });
+    res.status(200).send(product);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err.message);
   }
 };
 
@@ -37,17 +64,17 @@ const find = async (req, res, next) => {
     const product = req.query;
     if (product.productId !== undefined) {
       result = await Product.findAll({
-        include: [{ model: Chemical }, { model: Deceases }],
+        include: [{ model: Chemical }, { model: Diceases }],
         where: { productId: product.productId },
       });
     } else if (product.productName !== undefined) {
       result = await Product.findAll({
-        include: [{ model: Chemical }, { model: Deceases }],
+        include: [{ model: Chemical }, { model: Diceases }],
         where: { productName: product.productName },
       });
     } else {
       result = await Product.findAll({
-        include: [{ model: Chemical }, { model: Deceases }],
+        include: [{ model: Chemical }, { model: Diceases }],
       });
       return res.status(200).send(result);
     }
@@ -57,26 +84,15 @@ const find = async (req, res, next) => {
   }
 };
 
-const update = async (req, res, next) => {
+const findById = async (req, res, next) => {
   try {
-    const product = req.body;
-    // console.log(product);
-    const isUpdated = await Product.update(product, {
-      where: { id: product.id },
+    const id = req.params.id;
+    const result = await Product.findByPk(id, {
+      include: [{ model: Chemical }, { model: Diceases }],
+      where: { productId: product.productId },
     });
-    const chemicals = await Chemical.findAll({
-      where: { name: { [Op.in]: product.chemicals } },
-    });
-    if (isUpdated) {
-      let updatedProduct = await Product.findByPk(product.id, {
-        include: { model: Chemical },
-      });
-      await updatedProduct.setChemicals(chemicals);
-      await Product.findByPk(product.id, { include: { model: Chemical } });
-      res.status(200).send(updatedProduct);
-    }
+    return res.status(200).send(result);
   } catch (err) {
-    console.log(err);
     res.status(500).send(err.message);
   }
 };
@@ -95,4 +111,5 @@ module.exports = {
   find,
   update,
   remove,
+  findById,
 };

@@ -1,6 +1,8 @@
 import axios from "axios";
 import UpdateChemical from '../pages/chemicals/UpdateChemical';
-const apiUrl = "http://localhost:3004";
+import Utils from "./Utils";
+
+const apiUrl = Utils.production.apiURl;
 
 const getProducts = () => {
   const callApi = async () => {

@@ -82,7 +82,12 @@ const openDicDrawer =() =>{
       console.log(error);
     }
   };
-
+  function toBase64(arr) {
+    arr = new Uint8Array(arr) //if it's an ArrayBuffer
+    return btoa(
+       arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+  }
   useEffect(() => {
     const getInfo = async () => {
       const dbChemicals = await ChemicalService.Chemicals.findAll();
@@ -93,7 +98,8 @@ const openDicDrawer =() =>{
       const dbdiceases = await DiceaseService.diceases.findAll();
       setDiceases((d) => dbdiceases);
       if (isUpdate) {
-        setPhotoBinary( JSON.parse(product.photo));
+       
+        setPhotoBinary(product?.photo);
       }
     };
     getInfo();
@@ -135,7 +141,9 @@ const openDicDrawer =() =>{
   };
 
   const handleFileSelected = (photobinaries) => {
-    setPhotoBinary(photobinaries);
+    
+      setPhotoBinary(photobinaries);
+    
   };
 
   return (

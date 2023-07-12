@@ -8,7 +8,7 @@ function fileParser(file) {
       const imageReader = new FileReader();
       imageReader.onloadend = () => {
         const base64Image = imageReader.result;
-        // setCurrentImage(base64Image);
+        console.log(base64Image)
         resolve(base64Image);
       };
       imageReader.readAsDataURL(file);
@@ -49,13 +49,10 @@ const ImageUploader = ({ onFileSelected, entity }) => {
       setFileList([info.fileList[info.fileList.length - 1]]);
       fileParser(info.file)
         .then((parsed) => {
-          if (parsed) {
-            ImageResizer.resizeBase64Image(parsed, 150, 150).then((resized) => {
-              onFileSelected(resized);
-              setCurrentImage(resized);
-              setFileList(x => [info.fileList[info.fileList.length - 1]])
-            });
-          }
+             console.log(parsed)
+              onFileSelected(parsed);
+              setCurrentImage(parsed);
+              setFileList(x => [info.fileList[info.fileList.length - 1]])    
         })
         .catch((err) => {
           console.log(err);

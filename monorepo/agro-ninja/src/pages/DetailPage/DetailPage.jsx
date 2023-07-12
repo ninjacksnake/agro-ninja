@@ -19,6 +19,7 @@ const chemicalsColumns = [
     key: "description",
   },
 ];
+
 const diceasesColumns = [
   {
     title: "Nombre",
@@ -50,12 +51,15 @@ const DetailPage = () => {
       result();
     } else if (module === "diceases") {
       result = async () => {
-        DiceaseService.diceases.findById(pId)
-          .then((diceases) =>{ setInformation(diceases)})
+        DiceaseService.diceases
+          .findById(pId)
+          .then((diceases) => {
+            setInformation(diceases);
+          })
           .catch((error) => console.log(error));
       };
       result();
-    } else if(module === "chemicals"){
+    } else if (module === "chemicals") {
       result = async () => {
         ChemicalService.Chemicals.findById(pId)
           .then((chemicals) => setInformation(chemicals))
@@ -65,6 +69,17 @@ const DetailPage = () => {
     }
   }, []);
 
+  const decodeImage = (photo) => {
+    try {
+      photo = new Uint8Array(photo); //if it's an ArrayBuffer
+      return btoa(
+        photo.reduce((data, byte) => data + String.fromCharCode(byte), "")
+      );
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="detail-page-container">
@@ -76,7 +91,9 @@ const DetailPage = () => {
             <div className="photo-box">
               <Image
                 src={
-                  information?.photo ? JSON.parse(information?.photo) : noPhoto
+                  information?.photo
+                    ? JSON.parse(information?.photo)
+                    : noPhoto
                 }
                 alt="Foto de "
                 width="250px"
@@ -103,28 +120,62 @@ const DetailPage = () => {
           </Col>
         </Row>
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-          {module !== "diceases" ? 
-          <Col className="gutter-row" span={12}>
-            <div className="tableContainer">
-            <h2>{module === "diceases" ? `N/A`: module === "chemicals"? 'Componentes Relacionados': module === "products"? "Componentes": ""}</h2>
-              <Table
-                dataSource={module === "products" ? information?.chemicals: module === "chemicals" ? information.products :module === "diceases" ? [] : []}
-                columns={chemicalsColumns}
-                pagination={{position: ["bottomCenter"]}}
-              />
-            </div>
-          </Col> : <Col className="gutter-row" span={8} />}
-          {module !== "chemicals" ?
-          <Col className="gutter-row" span={12}>
-            <div className="tableContainer">
-              <h2>{module === "diceases" ? `Productos relacionados`: module === "chemicals"? 'N/A': module === "products"? "Enfermedades Relacionadas": ""}</h2>
-              <Table
-                dataSource={module === "diceases" ? information?.products : module === "products" ? information.diceases: []}
-                columns={diceasesColumns}
-                pagination={{position: ["bottomCenter"]}}
-              />
-            </div>
-          </Col> : null}
+          {module !== "diceases" ? (
+            <Col className="gutter-row" span={12}>
+              <div className="tableContainer">
+                <h2>
+                  {module === "diceases"
+                    ? `N/A`
+                    : module === "chemicals"
+                    ? "Componentes Relacionados"
+                    : module === "products"
+                    ? "Componentes"
+                    : ""}
+                </h2>
+                <Table
+                  dataSource={
+                    module === "products"
+                      ? information?.chemicals
+                      : module === "chemicals"
+                      ? information.products
+                      : module === "diceases"
+                      ? []
+                      : []
+                  }
+                  columns={chemicalsColumns}
+                  pagination={{ position: ["bottomCenter"] }}
+                />
+              </div>
+            </Col>
+          ) : (
+            <Col className="gutter-row" span={8} />
+          )}
+          {module !== "chemicals" ? (
+            <Col className="gutter-row" span={12}>
+              <div className="tableContainer">
+                <h2>
+                  {module === "diceases"
+                    ? `Productos relacionados`
+                    : module === "chemicals"
+                    ? "N/A"
+                    : module === "products"
+                    ? "Enfermedades Relacionadas"
+                    : ""}
+                </h2>
+                <Table
+                  dataSource={
+                    module === "diceases"
+                      ? information?.products
+                      : module === "products"
+                      ? information.diceases
+                      : []
+                  }
+                  columns={diceasesColumns}
+                  pagination={{ position: ["bottomCenter"] }}
+                />
+              </div>
+            </Col>
+          ) : null}
         </Row>
       </div>
     </>

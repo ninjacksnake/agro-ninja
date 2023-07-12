@@ -11,6 +11,7 @@ import categoryService from "../../../services/CategoriesService";
 import DiceaseService from "../../../services/Dicease.service";
 import { useNavigate } from "react-router-dom";
 import AddDiceaseDrawer from "./AddDiceaseDrawer";
+import ImageCompressor from "../../../utils/ImageCompressor";
 
 const noPhoto = require("../../../assets/images/products/no-photos.png");
 const Option = Select.Option;
@@ -90,10 +91,9 @@ const openDicDrawer =() =>{
       // console.log(categories);
       setCategories((ca) => dbCategories);
       const dbdiceases = await DiceaseService.diceases.findAll();
-      //  console.log(dbdiceases);
       setDiceases((d) => dbdiceases);
       if (isUpdate) {
-        setPhotoBinary(product.photo);
+        setPhotoBinary( JSON.parse(product.photo));
       }
     };
     getInfo();
@@ -163,7 +163,7 @@ const openDicDrawer =() =>{
             : null
         }
       >
-        <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
+        <Form.Item name={"photo"} label="Foto Actual" rules={[{ required: false }]}>
           <ImageUploader onFileSelected={handleFileSelected} entity={product} />
      
           {/* {isUpdate ? <Image src={photoBinary} alt="Image" width="100px" /> : ""} */}

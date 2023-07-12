@@ -12,7 +12,7 @@ const Product = sequelize.define("products", {
     allowNull: true,
   },
   photo: {
-    type: DataTypes.STRING,
+    type: DataTypes.BLOB,
     allowNull: true,
   },
   category: {

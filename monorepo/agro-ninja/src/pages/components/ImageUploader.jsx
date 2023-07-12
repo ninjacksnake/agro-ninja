@@ -1,24 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Upload, Button, message, Image } from "antd";
+import ImageResizer from "../../utils/ImageResizer";
+function fileParser(file) {
+  return new Promise((resolve, reject) => {
+    try {
+      const imageReader = new FileReader();
+      imageReader.onloadend = () => {
+        const base64Image = imageReader.result;
+        // setCurrentImage(base64Image);
+        resolve(base64Image);
+      };
+      imageReader.readAsDataURL(file);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
 
-const ImageUploader = ({ onFileSelected ,  entity}) => {
+const ImageUploader = ({ onFileSelected, entity }) => {
   const [fileList, setFileList] = useState([]);
   const [currentImage, setCurrentImage] = useState([]);
-
-
-useEffect(() =>{
-  try {
-    if (entity?.photo){
-      setCurrentImage(JSON.parse(entity.photo))
+  useEffect(() => {
+    try {
+      if (entity?.photo) {
+        setCurrentImage(JSON.parse(entity.photo));
+      }
+    } catch (error) {
+      message.error("image is not valid try to set image again");
     }
-} catch (error) {
-  console.error('image is not valid try to set image again')
-}
-}, [])
+  }, [entity?.photo]);
 
   const props = {
+    preview: false,
     name: "photo",
+    listType: "picture",
     accept: "image/png, image/jpeg",
     onRemove: (file) => {
       const index = fileList.indexOf(file);
@@ -31,26 +47,31 @@ useEffect(() =>{
     },
     onChange: (info) => {
       setFileList([info.fileList[info.fileList.length - 1]]);
-      const imageReader = new FileReader();
-      imageReader.onloadend = () => {
-        const base64Image = imageReader.result;
-        setCurrentImage(base64Image);
-        onFileSelected(base64Image);
-      };
-      imageReader.readAsDataURL(
-        info.fileList[info.fileList.length - 1].originFileObj
-      );
+      fileParser(info.file)
+        .then((parsed) => {
+          if (parsed) {
+            ImageResizer.resizeBase64Image(parsed, 150, 150).then((resized) => {
+              onFileSelected(resized);
+              setCurrentImage(resized);
+              setFileList(x => [info.fileList[info.fileList.length - 1]])
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    
-    fileList,
   };
 
   return (
     <>
-      <Upload {...props}>
-        <Button icon={<UploadOutlined />}>Select File</Button>
-      </Upload>
       <Image src={currentImage} width={"7rem"} />
+      <br />
+      <br />
+      <Upload {...props}>
+        <Button icon={<UploadOutlined />}>Seleccionar Archivo</Button>
+      </Upload>
+      {/* <img src={currentImage} alt="Photos" /> */}
     </>
   );
 };

@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Form, Input, Select, InputNumber, notification } from "antd";
 import { PlusCircleFilled } from "@ant-design/icons";
+import { Button, Form, Input, InputNumber, notification, Select } from "antd";
+import { useNavigate } from "react-router-dom";
+import categoryService from "../../../services/CategoriesService";
+import ChemicalService from "../../../services/Chemical.service";
+import DiceaseService from "../../../services/Dicease.service";
 import ProductService from "../../../services/Product.service";
-import ImageUploader from "../../components/ImageUploader";
+import ImageUploader1 from "../../components/ImageUploader1";
 import AddCategoryDrawer from "./AddCategoryDrawer";
 import AddComponentDrawer from "./AddComponentDrawer";
-import ChemicalService from "../../../services/Chemical.service";
-import categoryService from "../../../services/CategoriesService";
-import DiceaseService from "../../../services/Dicease.service";
-import { useNavigate } from "react-router-dom";
 import AddDiceaseDrawer from "./AddDiceaseDrawer";
-import ImageCompressor from "../../../utils/ImageCompressor";
 
-const noPhoto = require("../../../assets/images/products/no-photos.png");
+const noPhoto = "../../../assets/images/no-photos.png";
 const Option = Select.Option;
 
 const layout = {
@@ -30,7 +29,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
   const [components, setComponents] = useState([]);
   const [categories, setCategories] = useState([]);
   const [diceases, setDiceases] = useState([]);
-  const [photoBinary, setPhotoBinary] = useState([]);
+  const [photo, setPhoto] = useState([]);
   const [openCCDrawer, setOpenCCDrawer] = useState(false); //CC = Create Category
   const [openCChemicalDrawer, setOpenCChemicalDrawer] = useState(false); //CCH = Create Chemical
   const [openDiceaseDrawer, setOpenDiceaseDrawer] = useState(false);
@@ -49,9 +48,9 @@ const ProductForm = ({ isUpdate, product = null }) => {
   const onCloseChemDrawer = () => {
     setOpenCChemicalDrawer(false);
   };
-const openDicDrawer =() =>{
-  setOpenDiceaseDrawer(true)
-}
+  const openDicDrawer = () => {
+    setOpenDiceaseDrawer(true);
+  };
 
   const onCloseDiceaseDrawer = () => {
     setOpenDiceaseDrawer(false);
@@ -76,18 +75,18 @@ const openDicDrawer =() =>{
       } else if (listName === "comp") {
         setComponents([...components, values]);
       } else if (listName === "dic") {
-        setDiceases([...diceases, values] );
+        setDiceases([...diceases, values]);
       }
     } catch (error) {
       console.log(error);
     }
   };
-  function toBase64(arr) {
-    arr = new Uint8Array(arr) //if it's an ArrayBuffer
-    return btoa(
-       arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
-    );
-  }
+  // function toBase64(arr) {
+  //   arr = new Uint8Array(arr) //if it's an ArrayBuffer
+  //   return btoa(
+  //      arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
+  //   );
+  // }
   useEffect(() => {
     const getInfo = async () => {
       const dbChemicals = await ChemicalService.Chemicals.findAll();
@@ -98,36 +97,34 @@ const openDicDrawer =() =>{
       const dbdiceases = await DiceaseService.diceases.findAll();
       setDiceases((d) => dbdiceases);
       if (isUpdate) {
-       
-        setPhotoBinary(product?.photo);
+        setPhoto(product?.photo);
       }
     };
     getInfo();
-  },  []);
+  }, []);
 
   const onFinish = (values) => {
     //console.log("onFinish", values);
     if (isUpdate) {
       values.id = product.id;
-      if(values.photo !== photoBinary){
-        values.photo = JSON.stringify(photoBinary);
+      if (values.photo !== photo) {
+        values.photo = photo;
       }
-       
       return ProductService.Products.updateProduct(values)
         .then((result) => {
           openNotification("Success", "El Registro ha sido actualizado");
-          navigate( `/products/details/${values.id}`,{state: result});
+          navigate(`/products/details/${values.id}`, { state: result });
         })
         .catch((error) => {
           console.log(error);
           openNotification("Fail", "El Registro no ha sido actualizado");
         });
     } else {
-      values.photo = photoBinary === "" ? noPhoto : JSON.stringify(photoBinary); // default no photo photo
+      values.photo = photo || noPhoto;
       return ProductService.Products.createProduct(values)
         .then((result) => {
           openNotification("Success", "El producto ha sido creado");
-          navigate(`/products/details/${result.id}`, { state:  result });
+          navigate(`/products/details/${result.id}`, { state: result });
         })
         .catch((error) => {
           console.log(error);
@@ -140,10 +137,8 @@ const openDicDrawer =() =>{
     form.resetFields();
   };
 
-  const handleFileSelected = (photobinaries) => {
-    
-      setPhotoBinary(photobinaries);
-    
+  const handleFileSelected = (photo) => {
+    setPhoto(photo);
   };
 
   return (
@@ -165,16 +160,19 @@ const openDicDrawer =() =>{
                 price: product?.price ?? 0,
                 chemicals:
                   product?.chemicals.map((chemical) => chemical.name) ?? [],
-                  diceases:
+                diceases:
                   product?.diceases.map((chemical) => chemical.name) ?? [],
               }
             : null
         }
       >
-        <Form.Item name={"photo"} label="Foto Actual" rules={[{ required: false }]}>
-          <ImageUploader onFileSelected={handleFileSelected} entity={product} />
-     
-          {/* {isUpdate ? <Image src={photoBinary} alt="Image" width="100px" /> : ""} */}
+        <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
+          <ImageUploader1
+            onFileSelected={handleFileSelected}
+            folder="products"
+            initialPhoto={product?.photo || noPhoto}
+          />
+          <input type="text" name="photo" value={photo} />
         </Form.Item>
         <Form.Item
           name="name"
@@ -270,11 +268,11 @@ const openDicDrawer =() =>{
             mode="multiple"
             placeholder="Seleccionar una opción"
             allowClear
-          //  defaultValue={}
+            //  defaultValue={}
           >
             {diceases.map((dicease, index) => {
               return (
-                <Option  value={dicease.name} key={index}>
+                <Option value={dicease.name} key={index}>
                   {dicease.name}
                 </Option>
               );

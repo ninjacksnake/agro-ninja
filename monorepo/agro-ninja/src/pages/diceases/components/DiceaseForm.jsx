@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  Button,
-  Form,
-  Input,
-  notification,
-
-} from "antd";
-import DiceaseService from "../../../services/Dicease.service";
-import ImageUploader from "../../components/ImageUploader";
+import { Button, Form, Input, notification } from "antd";
 import { useNavigate } from "react-router-dom";
+import DiceaseService from "../../../services/Dicease.service";
+import ImageUploader1 from "../../components/ImageUploader1";
 const noPhoto = require("../../../assets/images/diceases/no-photos.png"); // check the folder is for the module
 const layout = {
   labelCol: { span: 8 },
@@ -22,8 +16,8 @@ const tailLayout = {
 
 const DiceaseForm = ({ isUpdate, dicease = null }) => {
   const [form] = Form.useForm();
-  const [photoBinary, setPhotoBinary] = useState([]);
-  const navigate=  useNavigate();
+  const [photo, setPhoto] = useState("");
+  const navigate = useNavigate();
 
   const openNotification = (title, body) => {
     notification.open({
@@ -39,7 +33,7 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
   useEffect(() => {
     const getInfo = async () => {
       if (isUpdate) {
-        setPhotoBinary(dicease.photo);
+        setPhoto(dicease.photo);
       }
     };
     getInfo();
@@ -48,12 +42,12 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
   const onFinish = (values) => {
     if (isUpdate) {
       values.id = dicease.id;
-      if(values.photo !== photoBinary){
-        values.photo = JSON.stringify(photoBinary);
+      if (values.photo !== photo) {
+        values.photo = photo;
       }
-      return DiceaseService.diceases.update(values)
+      return DiceaseService.diceases
+        .update(values)
         .then((result) => {
-        //  console.log(result);
           openNotification("Success", "Your dicease has been updated");
           navigate(`/diceases/details/${result.id}`);
         })
@@ -62,10 +56,11 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
           openNotification("Fail", "Failed updating your dicease  ");
         });
     } else {
-      values.photo = photoBinary === "" ? noPhoto : JSON.stringify(photoBinary); // default no photo photo
-      return DiceaseService.diceases.create(values)
+      values.photo = photo || noPhoto; // default no photo photo
+      return DiceaseService.diceases
+        .create(values)
         .then((result) => {
-          openNotification("Success", "Your dicease has been created");
+          openNotification("Success", "Has creado una nueva enfermedad");
           navigate(`/diceases/details/${result.id}`);
         })
         .catch((error) => {
@@ -79,8 +74,8 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
     form.resetFields();
   };
 
-  const handleFileSelected = (photobinaries) => {
-    setPhotoBinary(`${photobinaries}`);
+  const handleFileSelected = (photName) => {
+    setPhoto(photName);
   };
 
   return (
@@ -95,18 +90,18 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
               name: dicease?.name ?? "",
               photo: dicease?.photo ?? "",
               description: dicease?.description ?? "",
-             // products: dicease?.products ??"", 
+              // products: dicease?.products ??"",
             }
           : null
       }
     >
-      <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
-        <ImageUploader
+      <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
+        <ImageUploader1
           onFileSelected={handleFileSelected}
-          entity={dicease}
+          initialPhoto={dicease?.photo || noPhoto}
+          folder="diceases"
         />
-
-        {/* {isUpdate ? <Image src={photoBinary} alt="Image" width="100px" /> : ""} */}
+        <input type="text" name="photo" value={photo} />
       </Form.Item>
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
         <Input />
@@ -117,8 +112,8 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
         rules={[{ required: true }]}
       >
         <Input />
-       </Form.Item>
-     
+      </Form.Item>
+
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit" style={{ marginRight: "8px" }}>
           Submit

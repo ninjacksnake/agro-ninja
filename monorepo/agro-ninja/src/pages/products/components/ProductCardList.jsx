@@ -1,16 +1,15 @@
+import { Drawer, List, Table } from "antd";
 import React, { useState } from "react";
-import { Card, List, Drawer, Table } from "antd";
 import { NavLink } from "react-router-dom";
-import ProductCard from './ProductCard';
-
-
+import ProductCard from "./ProductCard";
 
 const ProductCardList = ({ products }) => {
   const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const showDrawer = (name) => {
-    const chosenProduct = products.find((product) => product.name === name)?? null;
+    const chosenProduct =
+      products.find((product) => product.name === name) ?? null;
     setSelectedProduct((p) => chosenProduct);
     setOpen(true);
   };
@@ -25,7 +24,7 @@ const ProductCardList = ({ products }) => {
         dataSource={products}
         renderItem={(product, index) => (
           <List.Item>
-           <ProductCard product={product} showDrawer={showDrawer}/>
+            <ProductCard product={product} showDrawer={showDrawer} />
           </List.Item>
         )}
       />
@@ -38,11 +37,17 @@ const ProductCardList = ({ products }) => {
         <h2>Componentes Quimicos :</h2>
         <ol>
           <Table
-          pagination={false}
-          dataSource={selectedProduct?.chemicals}
-          columns={[{title: 'Name', dataIndex: 'name', key: 'id' , render: (text)=> <NavLink to={'/'}>{text}</NavLink>}]}
-          >
-          </Table>
+            pagination={false}
+            dataSource={selectedProduct?.chemicals}
+            columns={[
+              {
+                title: "Name",
+                dataIndex: "name",
+                key: "id",
+                render: (text) => <NavLink to={"/"}>{text}</NavLink>,
+              },
+            ]}
+          ></Table>
         </ol>
       </Drawer>
     </>

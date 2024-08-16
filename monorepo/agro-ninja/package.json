@@ -11,10 +11,12 @@
     "browser-image-compression": "^2.0.2",
     "dotenv": "^10.0.0",
     "fs": "^0.0.1-security",
+    "imagekitio-react": "^4.2.0",
+    "nodemon": "3.1.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-zlib-js": "^1.0.5",
     "web-vitals": "^2.1.4"
   },

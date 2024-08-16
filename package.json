@@ -7,13 +7,15 @@
     "monorepo/*"
   ],
   "scripts": {
+    "start": "npx serve ./agro-ninja/ & npm start ./agro-ninja-api/",
     "co": "sui-mono commit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Michael Fermin",
   "license": "ISC",
   "dependencies": {
-    "@s-ui/mono": "^2.34.0"
+    "@s-ui/mono": "^2.34.0",
+    "concurrently": "^8.2.2"
   }
 }

@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import { Upload, Button, message, Image } from "antd";
-import ImageResizer from "../../utils/ImageResizer";
+import { Button, Image, message, Upload } from "antd";
+import React, { useEffect, useState } from "react";
+
 function fileParser(file) {
-  return new Promise((resolve, reject) => {
-    try {
-      const imageReader = new FileReader();
-      imageReader.onloadend = () => {
-        const base64Image = imageReader.result;
-        console.log(base64Image)
-        resolve(base64Image);
-      };
-      imageReader.readAsDataURL(file);
-    } catch (error) {
-      reject(error);
-    }
-  });
+  // return new Promise((resolve, reject) => {
+  //   try {
+  // const imageReader = new FileReader();
+  // imageReader.onloadend = () => {
+  // const base64Image = imageReader.result;
+  // console.log(base64Image);
+  //   resolve(base64Image);
+  // };
+  // imageReader.readAsDataURL(file);
+  //   } catch (error) {
+  //     reject(error);
+  //   }
+  // });
 }
 
 const ImageUploader = ({ onFileSelected, entity }) => {
@@ -24,7 +24,7 @@ const ImageUploader = ({ onFileSelected, entity }) => {
   useEffect(() => {
     try {
       if (entity?.photo) {
-        setCurrentImage(JSON.parse(entity.photo));
+        setCurrentImage(entity.photo);
       }
     } catch (error) {
       message.error("image is not valid try to set image again");
@@ -47,16 +47,15 @@ const ImageUploader = ({ onFileSelected, entity }) => {
     },
     onChange: (info) => {
       setFileList([info.fileList[info.fileList.length - 1]]);
-      fileParser(info.file)
-        .then((parsed) => {
-             console.log(parsed)
-              onFileSelected(parsed);
-              setCurrentImage(parsed);
-              setFileList(x => [info.fileList[info.fileList.length - 1]])    
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      // fileParser(info.file)
+      //   .then((parsed) => {
+      onFileSelected(info.file);
+      setCurrentImage(info.file);
+      // setFileList((x) => [info.fileList[info.fileList.length - 1]]);
+      // })
+      // .catch((err) => {
+      //   console.log(err);
+      // });
     },
   };
 

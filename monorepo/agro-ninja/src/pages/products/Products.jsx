@@ -3,9 +3,7 @@ import React from "react";
 const Products = () => {
   return (
     <div>
-      <ul>
-         List of Products
-      </ul>
+      <ul>Productos</ul>
     </div>
   );
 };

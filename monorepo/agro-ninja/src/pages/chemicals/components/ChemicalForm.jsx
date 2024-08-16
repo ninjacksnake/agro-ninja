@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-
 import { Button, Form, Input, notification } from "antd";
-import ChemicalService from "../../../services/Chemical.service.jsx";
-import ImageUploader from "../../components/ImageUploader";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-const noPhoto = require("../../../assets/images/diceases/no-photos.png"); // check the folder is for the module
+import ChemicalService from "../../../services/Chemical.service.jsx";
+import ImageUploader1 from "../../components/ImageUploader1";
+const noPhoto = require("../../../assets/images/no-photos.png");
 
 const layout = {
   labelCol: { span: 8 },
@@ -22,16 +21,17 @@ const ChemicalForm = ({
   onClose = null,
 }) => {
   const [form] = Form.useForm();
-  const [photoBinary, setPhotoBinary] = useState([]);
-const navigate = useNavigate();
+  const [photo, setPhoto] = useState(""); // State to store the image URL
+  const navigate = useNavigate();
+
   const clearForm = () => {
     form.resetFields();
   };
 
   const openNotification = (title, body) => {
     notification.open({
-      message: `${title}`,
-      description: `${body}`,
+      message: title,
+      description: body,
       placement: "topRight",
       style: {
         backgroundColor: title === "Error" ? "#EB8696" : "beige",
@@ -40,55 +40,54 @@ const navigate = useNavigate();
   };
 
   useEffect(() => {
-    const getInfo = async () => {
+    if (isUpdate && chemical) {
+      setPhoto(chemical.photo);
+    }
+  }, [isUpdate, chemical]);
+
+  const onFinish = async (values) => {
+    values.photo = photo; // Add the image URL to the form values
+
+    try {
       if (isUpdate) {
-        setPhotoBinary(chemical.photo);
+        values.id = chemical.id;
+        await ChemicalService.Chemicals.updateChemical(values);
+        openNotification(
+          "Success",
+          "Has actualizado el quimico sastifactoriamente"
+        );
+        navigate(`/chemicals/details/${chemical.id}`);
+      } else {
+        values.photo = photo || noPhoto; // Use the uploaded photo or a default
+        const result = await ChemicalService.Chemicals.createChemical(values);
+        openNotification(
+          "Success",
+          "El quimico ha sido creado sastifactoriamente"
+        );
+        if (addCatOrComp) {
+          addCatOrComp("comp", values);
+          clearForm();
+          onClose();
+        }
+        navigate(`/chemicals/details/${result.id}`);
       }
-    };
-    getInfo();
-  }, []);
-
-  const onFinish = (values) => {
-    if (isUpdate) {
-      values.id = chemical.id;
-      if(values.photo !== photoBinary){
-        values.photo = JSON.stringify(photoBinary);
-      }
-      return ChemicalService.Chemicals.updateChemical(values)
-        .then((result) => {
-          openNotification("Success", "Your Component has been updated");
-          navigate(`/chemicals/details/${chemical.id}`)
-        })
-        .catch((error) => {
-          console.log(error);
-          openNotification("Fail", "Failed updating your Component  ");
-        });
-    } else {
-      values.photo = photoBinary === "" ? noPhoto : JSON.stringify(photoBinary); // default no photo photo
-      return ChemicalService.Chemicals.createChemical(values)
-        .then((result) => {
-          openNotification("Success", "Your Component has been created");
-          if (addCatOrComp) {
-            addCatOrComp("comp", values);
-            clearForm();
-            onClose();
-          }
-          navigate(`/chemicals/details/${chemical.id}`)
-
-        })
-        .catch((error) => {
-          console.log(error);
-          openNotification("Fail", "Failed creating your Component");
-        });
+    } catch (error) {
+      console.log(error);
+      openNotification(
+        "Fail",
+        isUpdate
+          ? "Failed updating your Component"
+          : "Failed creating your Component"
+      );
     }
   };
 
   const onReset = () => {
-    form.resetFields();
+    clearForm();
   };
 
-  const handleFileSelected = (photobinaries) => {
-    setPhotoBinary(`${photobinaries}`);
+  const handleFileSelected = (photoName) => {
+    setPhoto(photoName); // Set the uploaded photo URL
   };
 
   return (
@@ -100,22 +99,26 @@ const navigate = useNavigate();
       initialValues={
         isUpdate
           ? {
-              name: chemical?.name ?? "",
-              photo: chemical?.photo ?? "",
-              description: chemical?.description ?? "",
-             
+              name: chemical?.name || "",
+              photo: chemical?.photo || "",
+              description: chemical?.description || "",
             }
           : null
       }
     >
-      <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
-        <ImageUploader onFileSelected={handleFileSelected} entity={chemical} />
+      <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
+        <ImageUploader1
+          onFileSelected={handleFileSelected}
+          initialPhoto={chemical?.photo || ""}
+          folder="chemicals"
+        />
+        <input type="text" name="photo" value={photo} />
       </Form.Item>
 
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      
+
       <Form.Item
         name="description"
         label="Descripción"
@@ -125,15 +128,12 @@ const navigate = useNavigate();
       </Form.Item>
 
       <Form.Item {...tailLayout}>
-        <>
         <Button type="primary" htmlType="submit" style={{ marginRight: "8px" }}>
           Guardar
         </Button>
-
         <Button htmlType="button" onClick={onReset}>
           Limpiar
         </Button>
-        </>
       </Form.Item>
     </Form>
   );

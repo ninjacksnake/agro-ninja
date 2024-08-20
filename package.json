@@ -7,7 +7,7 @@
     "monorepo/*"
   ],
   "scripts": {
-    "start": "npx serve ./agro-ninja/ & npm start ./agro-ninja-api/",
+    "start": "npx serve ./agro-ninja/ & npm run start ./agro-ninja-api/",
     "co": "sui-mono commit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

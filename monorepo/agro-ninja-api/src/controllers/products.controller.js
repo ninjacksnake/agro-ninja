@@ -36,10 +36,10 @@ const update = async (req, res, next) => {
     product.name = productInfo.name;
     product.description = productInfo.description;
     product.photo = productInfo.photo;
-    product.price = productInfo.price;
+    product.dossage = productInfo.dossage;
     product.category = productInfo.category;
 
-    const chemicals = await Chemical.findAll({ 
+    const chemicals = await Chemical.findAll({
       where: { name: [...productInfo.chemicals] },
     });
     const diceases = await Diceases.findAll({

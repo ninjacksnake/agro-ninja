@@ -19,8 +19,8 @@ const Product = sequelize.define("products", {
     type: DataTypes.STRING,
     alloNull: false,
   },
-  price: {
-    type: DataTypes.DECIMAL,
+  dossage: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
 });

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { PlusCircleFilled } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, notification, Select } from "antd";
+import { Button, Form, Input, notification, Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import categoryService from "../../../services/CategoriesService";
 import ChemicalService from "../../../services/Chemical.service";
@@ -157,7 +157,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
                 description: product?.description ?? "",
                 imageLocation: product?.photo ?? "",
                 category: product?.category ?? "",
-                price: product?.price ?? 0,
+                dossage: product?.dossage ?? 0,
                 chemicals:
                   product?.chemicals.map((chemical) => chemical.name) ?? [],
                 diceases:
@@ -172,7 +172,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
             folder="products"
             initialPhoto={product?.photo || noPhoto}
           />
-          <input type="text" name="photo" value={photo} />
+          <input type="text" name="photo" value={photo} hidden />
         </Form.Item>
         <Form.Item
           name="name"
@@ -290,19 +290,13 @@ const ProductForm = ({ isUpdate, product = null }) => {
         </Form.Item>
 
         <Form.Item
-          name="price"
-          label="Precio"
+          name="dossage"
+          label="Dosificacion Recomendada"
           rules={[
-            { required: true, message: "El precio no puede estar vacío" },
+            { required: true, message: "Este campo no puede estar vacío" },
           ]}
         >
-          <InputNumber
-            placeholder="$1,000"
-            formatter={(value) =>
-              `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            }
-            parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-          />
+          <Input placeholder="500ml/H" />
         </Form.Item>
 
         <Form.Item

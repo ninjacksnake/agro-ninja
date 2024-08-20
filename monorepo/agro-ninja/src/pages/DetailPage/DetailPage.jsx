@@ -116,8 +116,8 @@ const DetailPage = () => {
                   {information?.category ?? "N/A"}
                 </p>
                 <p>
-                  {information?.price ? "Precio :" : ""}{" "}
-                  {information?.price ?? "N/A"}
+                  {information?.dossage ? "Dosificación :" : ""}{" "}
+                  {information?.dossage ?? "N/A"}
                 </p>
               </ul>
             </Card>

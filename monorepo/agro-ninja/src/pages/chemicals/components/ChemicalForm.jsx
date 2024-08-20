@@ -47,7 +47,6 @@ const ChemicalForm = ({
 
   const onFinish = async (values) => {
     values.photo = photo; // Add the image URL to the form values
-
     try {
       if (isUpdate) {
         values.id = chemical.id;
@@ -112,7 +111,7 @@ const ChemicalForm = ({
           initialPhoto={chemical?.photo || ""}
           folder="chemicals"
         />
-        <input type="text" name="photo" value={photo} />
+        <input type="text" name="photo" value={photo} hidden />
       </Form.Item>
 
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>

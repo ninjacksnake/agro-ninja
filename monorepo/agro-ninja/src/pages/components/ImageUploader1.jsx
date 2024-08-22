@@ -10,7 +10,8 @@ const ImageUploader = ({
   const [image, setImage] = useState(initialPhoto || "");
   const [uploading, setUploading] = useState(false);
 
-  const authenticationEndpoint = "http://localhost:3004/auth";
+  //const authenticationEndpoint = "http://localhost:3004/auth";
+  const authenticationEndpoint = "https://agroninjaapi.onrender.com/";
   const publicKey = "public_6/9NIuIR3FHdww7FEDSO88fb9vA=";
   const urlEndpoint = "https://ik.imagekit.io/kr9btn6cw/agroninja/";
 

@@ -44,13 +44,24 @@ const ProductCard = ({ product, showDrawer }) => {
         title={product.name}
         cover={
           <IKContext urlEndpoint={urlEndpoint}>
-            <IKImage
-              path={product.photo}
+            <div
               style={{
-                borderRadius: "5px",
-                border: "solid 0.2px gray",
+                display: "flex",
+                justifyContent: "center",
+                padding: "10px",
+                backgroundColor: "#f0f0f0",
               }}
-            />
+            >
+              <IKImage
+                path={product.photo}
+                style={{
+                  borderRadius: "5px",
+                  width: "150px",
+                  objectFit: "cover",
+                  border: "solid 0.1px #d0cccc",
+                }}
+              />
+            </div>
           </IKContext>
         }
         actions={[

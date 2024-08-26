@@ -2,6 +2,7 @@ import axios from "axios";
 import Utils from "./Utils";
 
 const apiUrl = Utils.apiURl;
+console.log(apiUrl);
 
 const getDiceases = () => {
   const callApi = async () => {

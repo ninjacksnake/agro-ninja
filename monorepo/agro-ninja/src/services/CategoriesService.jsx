@@ -1,9 +1,9 @@
 import axios from "axios";
 import Utils from "./Utils";
 
-const apiUrl = Utils.production.apiURl;
+const apiUrl = Utils.apiURl;
 
-const moduleNameUrl = "/categories"
+const moduleNameUrl = "/categories";
 
 const getCategories = () => {
   const callApi = async () => {
@@ -19,7 +19,7 @@ const getCategories = () => {
 };
 
 const createCategory = (category) => {
- // console.log("create category ", category);
+  // console.log("create category ", category);
   const callApi = async (category) => {
     try {
       const newCategory = await axios.post(
@@ -37,9 +37,8 @@ const createCategory = (category) => {
 };
 
 const updateCategory = (category) => {
-  
   const callApi = async (category) => {
-  //  console.log("update category ")
+    //  console.log("update category ")
     try {
       const newCategory = await axios.put(
         `${apiUrl}${moduleNameUrl}
@@ -55,15 +54,12 @@ const updateCategory = (category) => {
   return callApi(category);
 };
 
-
 const categoryService = {
-    Categories: {
-      FindAll: getCategories,
-     Create: createCategory,
-     Update: updateCategory,
-    }
-  
-  };
-  
-  export default categoryService;
-  
+  Categories: {
+    FindAll: getCategories,
+    Create: createCategory,
+    Update: updateCategory,
+  },
+};
+
+export default categoryService;

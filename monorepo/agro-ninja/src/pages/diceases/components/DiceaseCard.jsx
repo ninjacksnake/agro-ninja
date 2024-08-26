@@ -4,9 +4,10 @@ import React from "react";
 
 import { IKContext, IKImage } from "imagekitio-react";
 import { useNavigate } from "react-router-dom";
+import Utils from "../../../services/Utils";
 
 const { Meta } = Card;
-const urlEndpoint = "https://ik.imagekit.io/kr9btn6cw/agroninja/";
+const urlEndpoint = Utils.urlEndpoint;
 
 const DiceaseCard = ({ dicease, showDrawer }) => {
   const navigate = useNavigate();

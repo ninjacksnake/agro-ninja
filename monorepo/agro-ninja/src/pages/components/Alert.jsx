@@ -1,21 +1,9 @@
-import { Button, Divider, Space,  } from 'antd';
-import { useMemo, React } from 'react';
-import { RadiusUpleftOutlined } from 'antd/es/radio/radioButton';
+import { React, useMemo } from "react";
 
+const GenAlert = ({ title, notiBody, openNotification }) => {
+  const contextValue = useMemo(() => ({ name: "Ant Design" }), []);
 
-
-
-const GenAlert = ({title, notiBody, openNotification}) => {
-  
-
-  const contextValue = useMemo(() => ({ name: 'Ant Design' }), []);
-
-  return (
-   
-     <></>
-  
-  
-  );
+  return <></>;
 };
 
-export default GenAlert
+export default GenAlert;

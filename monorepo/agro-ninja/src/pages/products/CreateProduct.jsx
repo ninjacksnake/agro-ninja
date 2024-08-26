@@ -1,6 +1,5 @@
 import React from "react";
 import ProductForm from "./components/ProductForm";
-import {} from "antd";
 
 const CreateProduct = () => {
   return (

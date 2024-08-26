@@ -5,7 +5,10 @@ import { useLocation } from "react-router-dom";
 import ChemicalService from "../../services/Chemical.service";
 import DiceaseService from "../../services/Dicease.service";
 import ProductService from "../../services/Product.service";
+import Utils from "../../services/Utils";
 import "./DetailPage.css";
+
+const urlEndpoint = Utils.urlEndpoint;
 
 const chemicalsColumns = [
   {
@@ -40,7 +43,7 @@ const DetailPage = () => {
   const location = useLocation();
   const module = location.pathname.split("/").slice(1)[0];
   const pId = location.pathname.split("/").slice(-1)[0];
-  const urlEndpoint = "https://ik.imagekit.io/kr9btn6cw/agroninja/";
+  //const urlEndpoint = "https://ik.imagekit.io/kr9btn6cw/agroninja/";
 
   useEffect(() => {
     const fetchData = async () => {

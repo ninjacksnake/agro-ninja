@@ -1,18 +1,19 @@
 import axios from "axios";
-import UpdateChemical from '../pages/chemicals/UpdateChemical';
+import UpdateChemical from "../pages/chemicals/UpdateChemical";
 import Utils from "./Utils";
 
-const apiUrl = Utils.production.apiURl;
+//const apiUrl = Utils.production.apiURl;
+const apiUrl = Utils.apiURl;
 
 const getProducts = () => {
   const callApi = async () => {
     try {
       const products = await axios.get(`${apiUrl}/products`);
-    //  console.log(products.data);
+      //  console.log(products.data);
       return products.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
   return callApi();
@@ -25,24 +26,24 @@ const getProductById = (id) => {
       return products.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
   return callApi();
 };
 
 const createProduct = (product) => {
- // console.log("create products", product);
+  // console.log("create products", product);
   const callApi = async (product) => {
     try {
       const products = await axios.post(`${apiUrl}/products`, product);
       return products.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
-  return callApi(product)
+  return callApi(product);
 };
 
 const updateProduct = (product) => {
@@ -52,10 +53,10 @@ const updateProduct = (product) => {
       return products.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
-  return callApi(product)
+  return callApi(product);
 };
 
 const getChemicals = () => {
@@ -66,23 +67,23 @@ const getChemicals = () => {
       return chemicals.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
- return callApi();
+  return callApi();
 };
 
 const createChemical = (chemical) => {
- // console.log("create chemical", chemical);
+  // console.log("create chemical", chemical);
   const callApi = async (product) => {
     try {
       const newChemical = await axios.post(`${apiUrl}/chemicals`, chemical);
       return newChemical.data;
     } catch (error) {
-      throw (error)
+      throw error;
     }
   };
-  return callApi(chemical)
+  return callApi(chemical);
 };
 
 const updateChemical = (chemical) => {
@@ -92,10 +93,10 @@ const updateChemical = (chemical) => {
       return updatedChemical.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
-  return callApi(chemical)
+  return callApi(chemical);
 };
 
 const getCategories = async () => {
@@ -105,10 +106,10 @@ const getCategories = async () => {
       return chemicals.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
- return callApi();
+  return callApi();
 };
 
 const createCategory = (category) => {
@@ -119,27 +120,26 @@ const createCategory = (category) => {
       return newCategory.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
-  return callApi(category)
+  return callApi(category);
 };
 
 const updateCategory = (category) => {
- /// console.log("create Category", category);
+  /// console.log("create Category", category);
   const callApi = async (product) => {
     try {
       const updatedCategory = await axios.put(`${apiUrl}/categorie`, category);
-     // console.log(updatedCategory);
+      // console.log(updatedCategory);
       return updatedCategory.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
-  return callApi(category)
+  return callApi(category);
 };
-
 
 const ProductService = {
   Products: {
@@ -147,19 +147,17 @@ const ProductService = {
     findById: getProductById,
     createProduct,
     updateProduct,
-    
   },
-  Chemicals:{
+  Chemicals: {
     findAll: getChemicals,
-     createChemical,
-     UpdateChemical,
+    createChemical,
+    UpdateChemical,
   },
   Categories: {
     findAll: getCategories,
     createCategory,
-    updateCategory
-  }
-
+    updateCategory,
+  },
 };
 
 export default ProductService;

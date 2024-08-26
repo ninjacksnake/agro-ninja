@@ -1,7 +1,7 @@
 import axios from "axios";
 import Utils from "./Utils";
 
-const apiUrl = Utils.production.apiURl;
+const apiUrl = Utils.apiURl;
 
 const getChemicals = () => {
   const callApi = async () => {
@@ -24,12 +24,11 @@ const getChemicalById = (id) => {
       return chemical.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
   return callApi();
 };
-
 
 const createChemical = (chemical) => {
   const callApi = async (chemical) => {
@@ -49,9 +48,8 @@ const createChemical = (chemical) => {
 };
 
 const updateChemical = (chemical) => {
-  
   const callApi = async (chemical) => {
- //  console.log("update Chemical ")
+    //  console.log("update Chemical ")
     try {
       const newChemical = await axios.put(
         `${apiUrl}/chemicals
@@ -67,16 +65,13 @@ const updateChemical = (chemical) => {
   return callApi(chemical);
 };
 
-
 const ChemicalService = {
-    Chemicals: {
-      findAll: getChemicals,
-      findById: getChemicalById,
-      createChemical,
-      updateChemical,
-    }
-  
-  };
-  
-  export default ChemicalService;
-  
+  Chemicals: {
+    findAll: getChemicals,
+    findById: getChemicalById,
+    createChemical,
+    updateChemical,
+  },
+};
+
+export default ChemicalService;

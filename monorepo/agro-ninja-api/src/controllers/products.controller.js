@@ -25,6 +25,8 @@ const create = async (req, res, next) => {
     return res.status(201).send(newProduct);
   } catch (err) {
     console.log(err);
+    if (err.name === "SequelizeUniqueConstraintError")
+      return res.status(500).send(err.errors[0].message);
     return res.status(500).send(err.message);
   }
 };

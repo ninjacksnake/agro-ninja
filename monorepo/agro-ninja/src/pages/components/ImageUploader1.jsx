@@ -1,5 +1,6 @@
 import { IKContext, IKImage, IKUpload } from "imagekitio-react";
 import React, { useState } from "react";
+import Utils from "../../services/Utils";
 
 const ImageUploader = ({
   onFileSelected,
@@ -9,16 +10,14 @@ const ImageUploader = ({
 }) => {
   const [image, setImage] = useState(initialPhoto || "");
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
-  //const authenticationEndpoint = "http://localhost:3004/auth";
-  const authenticationEndpoint = "https://agroninjaapi.onrender.com/";
-  const publicKey = "public_6/9NIuIR3FHdww7FEDSO88fb9vA=";
-  const urlEndpoint = "https://ik.imagekit.io/kr9btn6cw/agroninja/auth";
+  const publicKey = Utils.publicKey;
+  const authenticationEndpoint = Utils.authenticationEndpoint;
+  const urlEndpoint = Utils.urlEndpoint;
 
   const authenticator = async () => {
     try {
-      // You can pass headers as well and later validate the request source in the backend, or you can use headers for any other use case.
-
       const response = await fetch(authenticationEndpoint);
 
       if (!response.ok) {
@@ -37,38 +36,72 @@ const ImageUploader = ({
   };
 
   const onError = (err) => {
-    console.log("Error", err);
+    console.error("Upload Error:", err);
+    setUploading(false);
+    setError("Failed to upload image. Please try again.");
   };
+
   const onSuccess = (res) => {
-    console.log("Success", res);
+    console.log("Upload Success:", res);
     setImage(res.filePath);
+    setUploading(false);
+    setError("");
     onFileSelected(res.filePath);
   };
 
+  const handleUploadStart = () => {
+    setUploading(true);
+    setError("");
+  };
+
   return (
-    <div>
+    <div className="image-uploader">
+      {uploading && <p className="loading-message">Uploading...</p>}
+      {error && <p className="error-message">{error}</p>}
+
       <IKContext
         publicKey={publicKey}
         urlEndpoint={urlEndpoint}
         authenticator={authenticator}
       >
-        <IKImage
-          path={image}
-          width={"45%"}
-          style={{
-            borderRadius: "5px",
-            border: "solid 1px gray",
-            margin: "10px",
-          }}
-        />
+        {image && (
+          <IKImage
+            path={image}
+            width="45%"
+            style={{
+              borderRadius: "5px",
+              border: "solid 1px gray",
+              margin: "10px",
+            }}
+          />
+        )}
 
         <IKUpload
-          fileName={`Chemical-${name}}`}
+          fileName={`Chemical-${name}`}
           onError={onError}
           onSuccess={onSuccess}
           folder={folder}
+          onUploadStart={handleUploadStart}
         />
       </IKContext>
+
+      <style jsx>{`
+        .image-uploader {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .loading-message {
+          color: blue;
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+        .error-message {
+          color: red;
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+      `}</style>
     </div>
   );
 };

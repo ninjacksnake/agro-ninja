@@ -56,10 +56,10 @@ const ProductForm = ({ isUpdate, product = null }) => {
     setOpenDiceaseDrawer(false);
   };
 
-  const openNotification = (title, body) => {
+  const openNotification = (title, body, reason = "") => {
     notification.open({
       message: `${title}`,
-      description: `${body}`,
+      description: `${body} ${reason}`,
       placement: "topRight",
       style: {
         backgroundColor: title === "Error" ? "#EB8696" : "beige",
@@ -101,7 +101,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
       }
     };
     getInfo();
-  }, []);
+  }, [product?.photo, isUpdate]);
 
   const onFinish = (values) => {
     //console.log("onFinish", values);
@@ -112,12 +112,12 @@ const ProductForm = ({ isUpdate, product = null }) => {
       }
       return ProductService.Products.updateProduct(values)
         .then((result) => {
-          openNotification("Success", "El Registro ha sido actualizado");
+          openNotification("Success", "El Producto ha sido actualizado");
           navigate(`/products/details/${values.id}`, { state: result });
         })
         .catch((error) => {
           console.log(error);
-          openNotification("Fail", "El Registro no ha sido actualizado");
+          openNotification("Fail", "El Producto no ha sido actualizado");
         });
     } else {
       values.photo = photo || noPhoto;
@@ -128,7 +128,11 @@ const ProductForm = ({ isUpdate, product = null }) => {
         })
         .catch((error) => {
           console.log(error);
-          openNotification("Fail", "El producto no ha sido creado");
+          openNotification(
+            "Fail",
+            "El producto no ha sido creado, ",
+            error.request.response
+          );
         });
     }
   };

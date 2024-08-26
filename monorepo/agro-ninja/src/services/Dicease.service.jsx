@@ -1,14 +1,14 @@
 import axios from "axios";
 import Utils from "./Utils";
 
-const apiUrl = Utils.production.apiURl;
+const apiUrl = Utils.apiURl;
 
 const getDiceases = () => {
   const callApi = async () => {
     try {
       const dicease = await axios.get(`${apiUrl}/diceases
       `);
-    //  console.log(dicease.data);
+      //  console.log(dicease.data);
       return dicease.data;
     } catch (error) {
       console.log(error);
@@ -24,14 +24,14 @@ const getDiceaseById = (id) => {
       return dicease.data;
     } catch (error) {
       console.log(error);
-      throw (error)
+      throw error;
     }
   };
   return callApi();
 };
 
 const createDicease = (dicease) => {
-   const callApi = async (dicease) => {
+  const callApi = async (dicease) => {
     try {
       const newdicease = await axios.post(
         `${apiUrl}/diceases
@@ -49,7 +49,7 @@ const createDicease = (dicease) => {
 
 const updateDicease = (dicease) => {
   const callApi = async (dicease) => {
-  //  console.log("update dicease ")
+    //  console.log("update dicease ")
     try {
       const updatedDicease = await axios.put(
         `${apiUrl}/diceases
@@ -65,16 +65,13 @@ const updateDicease = (dicease) => {
   return callApi(dicease);
 };
 
-
 const DiceaseService = {
-    diceases: {
-      findAll: getDiceases,
-      findById: getDiceaseById,
-      create: createDicease,
-      update: updateDicease,
-    }
-  
-  };
-  
-  export default DiceaseService;
-  
+  diceases: {
+    findAll: getDiceases,
+    findById: getDiceaseById,
+    create: createDicease,
+    update: updateDicease,
+  },
+};
+
+export default DiceaseService;

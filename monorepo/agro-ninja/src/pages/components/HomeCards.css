@@ -1,0 +1,28 @@
+.card-row {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.data-card {
+    background-color: #fff;
+    /* White background */
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    /* Professional and readable font */
+    font-size: 1.2em;
+    color: #000;
+    /* Black text */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for a professional look */
+}
+
+.data-card .ant-card-head-title {
+    font-size: 1.4em;
+    color: #1890ff;
+    /* Blue title text */
+}
+
+.data-card .ant-card-body {
+    font-weight: bold;
+}

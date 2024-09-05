@@ -7,9 +7,11 @@ import {
 } from "@ant-design/icons";
 import React, { useState } from "react";
 // import { MenuProps } from "antd";
-import { Layout, Menu, theme } from "antd";
+import { Image, Layout, Menu, theme } from "antd";
 import { NavLink, Outlet } from "react-router-dom";
 import BreadCrumbs from "./components/BreadCrumbs";
+
+import logo from "../assets/images/AgroNinja.png";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -98,7 +100,6 @@ const AppLayout = () => {
       >
         <div
           style={{
-            height: 32,
             margin: 16,
             background: "rgba(255, 255, 255, 0.2)",
             color: "white",
@@ -107,7 +108,7 @@ const AppLayout = () => {
             justifyContent: "center",
           }}
         >
-          AGRO-NINJA
+          <Image src={logo} width={85} height={85} />
         </div>
         <Menu
           theme="dark"

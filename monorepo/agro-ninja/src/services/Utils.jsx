@@ -13,4 +13,4 @@ const Utils = {
   },
 };
 
-export default Utils.development;
+export default Utils.production;

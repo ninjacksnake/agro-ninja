@@ -4,6 +4,19 @@ const cors = require("cors");
 const port = 3004;
 const router = require("./routers/appRouter.js");
 const bodyParser = require("body-parser");
+const multer = require("multer");
+const path = require("path");
+const fs = require('fs');
+
+const storage = multer.diskStorage({
+  destination:(req, file, cb)=>{
+    const uploadPath = path.join(__dirname, 'uploads');
+    if(!fs.existsSync(uploadPath)){
+        fs.mkdir(uploadPath)
+    }
+    cb(null, uploadPath)
+  }
+})
 require("dotenv").config();
 
 

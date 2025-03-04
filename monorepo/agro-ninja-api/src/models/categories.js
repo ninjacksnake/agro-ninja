@@ -10,10 +10,7 @@ const Categorie = sequelize.define("categories", {
         type: DataTypes.STRING,
         alloNull: false,
     },
-    category: {
-      type: DataTypes.STRING,
-      alloNull: false,
-    },
+   
   });
 
 

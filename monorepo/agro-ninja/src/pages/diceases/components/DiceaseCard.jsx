@@ -1,13 +1,15 @@
 import { AuditOutlined, EditOutlined } from "@ant-design/icons";
-import { Card } from "antd";
+import { Card, Image, Upload } from "antd";
 import React from "react";
 
 import { IKContext, IKImage } from "imagekitio-react";
 import { useNavigate } from "react-router-dom";
-import Utils from "../../../services/Utils";
+import config from "../../../app.config.js"; 
 
 const { Meta } = Card;
-const urlEndpoint = Utils.urlEndpoint;
+const urlEndpoint = config.development.apiUrl;
+const uploadPath = config.development.uploadPath;
+const module = config.development.modules.diceases;
 
 const DiceaseCard = ({ dicease, showDrawer }) => {
   const navigate = useNavigate();
@@ -30,26 +32,10 @@ const DiceaseCard = ({ dicease, showDrawer }) => {
     <Card
       title={dicease?.name}
       cover={
-        <IKContext urlEndpoint={urlEndpoint}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              padding: "10px",
-              backgroundColor: "#f0f0f0",
-            }}
-          >
-            <IKImage
-              path={dicease.photo}
-              style={{
-                borderRadius: "5px",
-                width: "150px",
-                objectFit: "cover",
-                border: "solid 0.1px #d0cccc",
-              }}
-            />
-          </div>
-        </IKContext>
+        <Image 
+        src={`${urlEndpoint}${uploadPath}${module}/${dicease.photo}`} alt={dicease.name} 
+         style={{height: '120px',  width: '120px', objectFit: 'scale-down' , margin: '20px'}} 
+        />
       }
       actions={[
         <EditOutlined key="edit" onClick={() => goUpdate()} />,

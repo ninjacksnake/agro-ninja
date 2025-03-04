@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Form, Input, notification } from "antd";
+import { Button, Form, Input, notification, Select,Divider } from "antd";
 import { useNavigate } from "react-router-dom";
+import appConfig from "../../../app.config";
 import DiceaseService from "../../../services/Dicease.service";
-import ImageUploader1 from "../../components/ImageUploader1";
+import ImageUploaderFB from "../../components/ImageUploaderFB";
+import { PlusOutlined } from "@ant-design/icons";
+
 const noPhoto = require("../../../assets/images/diceases/no-photos.png"); // check the folder is for the module
+const module = appConfig.development.modules.diceases;
+
+
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -14,9 +20,16 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
+const selectOptions = [
+  { value: 1, label: <span>Plaga</span> },
+  { value: 2, label: <span>Bactería</span> }
+];
+
+
 const DiceaseForm = ({ isUpdate, dicease = null }) => {
   const [form] = Form.useForm();
-  const [photo, setPhoto] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [DiceaseTypeModal, setDiceaseTypeModal] = useState(false);
   const navigate = useNavigate();
 
   const openNotification = (title, body) => {
@@ -30,10 +43,15 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
     });
   };
 
+  const clearForm = () => {
+    form.resetFields();
+  };
+
+
   useEffect(() => {
     const getInfo = async () => {
       if (isUpdate) {
-        setPhoto(dicease.photo);
+        setFileName(dicease.photo);
       }
     };
     getInfo();
@@ -42,8 +60,8 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
   const onFinish = (values) => {
     if (isUpdate) {
       values.id = dicease.id;
-      if (values.photo !== photo) {
-        values.photo = photo;
+      if (values.photo !== fileName?.file?.name) {
+        values.photo = fileName?.file?.name;
       }
       return DiceaseService.diceases
         .update(values)
@@ -56,7 +74,8 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
           openNotification("Fail", "Failed updating your dicease  ");
         });
     } else {
-      values.photo = photo || noPhoto; // default no photo photo
+
+      values.photo = fileName?.file?.name; // default no photo photo
       return DiceaseService.diceases
         .create(values)
         .then((result) => {
@@ -70,13 +89,10 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
     }
   };
 
-  const onReset = () => {
-    form.resetFields();
-  };
-
-  const handleFileSelected = (photName) => {
-    setPhoto(photName);
-  };
+  const onCancel = () => {
+    console.log(isUpdate == true)
+    isUpdate == true ? navigate('/diceases/find') : clearForm();
+  }
 
   return (
     <Form
@@ -87,24 +103,36 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
       initialValues={
         isUpdate
           ? {
-              name: dicease?.name ?? "",
-              photo: dicease?.photo ?? "",
-              description: dicease?.description ?? "",
-              // products: dicease?.products ??"",
-            }
+            name: dicease?.name ?? "",
+            photo: dicease?.photo ?? "",
+            description: dicease?.description ?? "",
+            // products: dicease?.products ??"",
+          }
           : null
       }
     >
       <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
-        <ImageUploader1
-          onFileSelected={handleFileSelected}
-          initialPhoto={dicease?.photo || noPhoto}
-          folder="diceases"
+        <ImageUploaderFB
+          setFileName={setFileName}
+          module={module}
         />
-        <input type="text" name="photo" value={photo} />
+        <input type="text" name="photo" value={fileName?.file?.name} hidden />
       </Form.Item>
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
         <Input />
+      </Form.Item>
+      <Form.Item name="clasificacion" label="Clasificación" rules={[{ required: true }]}>
+        <Select options={selectOptions}
+          dropdownRender={(menu) => (
+                            <>
+                                {menu}
+                                <Divider style={{ margin: '4px 0' }} />
+                                <Button type="link" onClick={() => setDiceaseTypeModal(true)}>
+                                    <PlusOutlined /> Agregar clasificación
+                                </Button>
+                            </>
+                            )}
+        />
       </Form.Item>
       <Form.Item
         name="description"
@@ -116,11 +144,11 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
 
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit" style={{ marginRight: "8px" }}>
-          Submit
+          Guardar
         </Button>
 
-        <Button htmlType="button" onClick={onReset}>
-          Reset
+        <Button htmlType="button" onClick={onCancel}>
+          Cancelar
         </Button>
       </Form.Item>
     </Form>

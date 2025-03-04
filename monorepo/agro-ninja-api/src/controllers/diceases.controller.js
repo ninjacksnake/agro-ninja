@@ -1,12 +1,12 @@
 const { Op } = require("sequelize");
 const Product = require("../models/index").Product;
-const Dicease = require("../models/index").Dicease;
-
+const Disease = require("../models/index").Disease;
+const DiceaseTypes = require("../models/index").DiceaseTypes;
 
 const create = async (req, res, next) => {
   const DiceaseInfo = req.body;
   try {
-    const newDicease = await Dicease.create(DiceaseInfo);
+    const newDicease = await Disease.create(DiceaseInfo);
     return res.status(201).send(newDicease);
   } catch (err) {
     console.log(err)
@@ -19,19 +19,20 @@ const find = async (req, res, next) => {
     let result;
     const values = req.query;
     if (values.Id !== undefined) {
-      result = await Dicease.findAll({
+      result = await Disease.findAll({
         include:{model: Products},
+        include:{model: DiceaseTypes},
         where: { id: values.productId },
       });
     } else if (values.name !== undefined) {
-      result = await Dicease.findAll({
+      result = await Disease.findAll({
         include:{model: Products},
         where: { name: values.name },
       });
 
       res.status(200).send(result);
     } else {
-      result = await Dicease.findAll({include:{model: Product}});
+      result = await Disease.findAll({include:{model: Product}});
     }
     res.status(200).send(result);
   } catch (err) {
@@ -43,7 +44,7 @@ const find = async (req, res, next) => {
 const findById = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const dicease = await Dicease.findByPk(id, {
+    const dicease = await Disease.findByPk(id, {
       include: [{ model: Product }],
       where: { id: id },
     });
@@ -56,7 +57,7 @@ const findById = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const DiceaseInfo = req.body;
-    const dicease = await Dicease.findByPk( DiceaseInfo.id );
+    const dicease = await Disease.findByPk( DiceaseInfo.id );
     dicease.name = DiceaseInfo.name;  
     dicease.description =  DiceaseInfo.description;
     dicease.photo= DiceaseInfo.photo;

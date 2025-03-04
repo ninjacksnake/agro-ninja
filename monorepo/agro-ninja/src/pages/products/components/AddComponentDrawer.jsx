@@ -11,14 +11,14 @@ const AddComponentDrawer = ({ open, onClose, addCatOrComp }) => {
         width={720}
         onClose={onClose}
         open={open}
-        bodyStyle={{ paddingBottom: 80 }}
+        
         extra={
           <Space>
             <Button onClick={onClose}>Cancelar</Button>
           </Space>
         }
       >
-        <ChemicalForm addCatOrComp={addCatOrComp} onClose={onClose}/>
+        <ChemicalForm addCatOrComp={addCatOrComp} onClose={onClose} isFromDrawer={true}/>
       </Drawer>
     </>
   );

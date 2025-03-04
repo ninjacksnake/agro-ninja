@@ -1,7 +1,7 @@
 import { Breadcrumb } from "antd";
-import React from "react";
-import { useLocation } from "react-router-dom";
-
+import React  from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./TableComponent.css"
 
 const translator = (word) =>  {
 
@@ -9,11 +9,12 @@ const translator = (word) =>  {
    
   const  englishToSpanish ={
     Products: 'Productos',
-    diceases: 'Enfermedades',
+    Diceases: 'Enfermedades',
     Chemicals: 'Quimicos',
     Find: 'Buscar',
     Add: 'Agregar',
     Update: 'Modificar',
+    Crops: 'Cultivos',
     Remove: 'Eliminar',
     Details: 'Detalle',
   }
@@ -24,13 +25,15 @@ const translator = (word) =>  {
   return englishToSpanish[word]
 }
 const BreadCrumbss = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const crumbs = location.pathname
-    .split("/")
-    .filter((crumb) => crumb !== "")
-    .map((crumb) => {
-      return { title: translator(crumb.charAt(0).toUpperCase()+crumb.slice(1)) };
-    });
+  .split("/")
+  .filter((crumb) => crumb !== "")
+  .map((crumb) => {
+    return { title: translator(crumb.charAt(0).toUpperCase()+crumb.slice(1)) };
+  });
+
   return (
     <Breadcrumb style={{ margin: "16px 0" }} items={[...crumbs]}>
       {crumbs}

@@ -4,6 +4,7 @@ import {
   FileAddFilled,
   FilterOutlined,
   PieChartOutlined,
+  BgColorsOutlined,
 } from "@ant-design/icons";
 import React, { useState } from "react";
 // import { MenuProps } from "antd";
@@ -26,59 +27,76 @@ function getItem(label, key, icon, children, onTitleClick) {
 }
 
 const items = [
-  getItem("Productos", "1", <PieChartOutlined />, [
+  getItem("Productos", "1", <PieChartOutlined style={{marginRight: "0px"}} />, [
     getItem(
       "Buscar",
       "2",
-      <>
-        {" "}
-        <FilterOutlined /> <NavLink to="products/find" />
+      <> 
+        <FilterOutlined style={{marginRight: "5px"}} /> <NavLink to="products/find" />
       </>
     ),
     getItem(
       "Agregar",
       "3",
       <>
-        {" "}
-        <FileAddFilled /> <NavLink to="products/add" />
+        <FileAddFilled style={{marginRight: "5px"}} /> <NavLink to="products/add" />
       </>
     ),
     // getItem("Modificar", "4", <> <PieChartOutlined /> <NavLink to="products/update"/></>),
   ]),
-  getItem("Enfermedades", "5", <DesktopOutlined />, [
+  getItem("Enfermedades", "4", <DesktopOutlined />, [
     getItem(
       "Buscar",
-      "6",
+      "5",
       <>
         {" "}
-        <FilterOutlined /> <NavLink to="diceases/find" />
+        <FilterOutlined style={{marginRight: "5px"}} /> <NavLink to="diceases/find" />
       </>
     ),
     getItem(
       "Agregar",
-      "7",
+      "6",
       <>
         {" "}
-        <FileAddFilled /> <NavLink to="diceases/add" />
+        <FileAddFilled  style={{marginRight: "5px"}} /> <NavLink to="diceases/add" />
       </>
     ),
     // getItem("Modificar", "8", <> <PieChartOutlined /> <NavLink to="diceases/update"/></>),
   ]),
-  getItem("Quimicos", "9", <AimOutlined />, [
+  getItem("Quimicos", "7", <AimOutlined />, [
     getItem(
       "Buscar",
-      "10",
+      "8",
       <>
         {" "}
-        <FilterOutlined /> <NavLink to="Chemicals/find" />
+        <FilterOutlined  style={{marginRight: "5px"}}/> <NavLink to="Chemicals/find" />
       </>
     ),
     getItem(
       "Agregar",
+      "9",
+      <>
+        {" "}
+        <PieChartOutlined  style={{marginRight: "5px"}}/> <NavLink to="Chemicals/add" />
+      </>
+    ),
+    // getItem("Modificar", "12", <> <PieChartOutlined /> <NavLink to="Chemicals/update"/></>),
+  ]),
+  getItem("Cultivos", "10", <BgColorsOutlined />, [
+    getItem(
+      "Buscar",
       "11",
       <>
         {" "}
-        <PieChartOutlined /> <NavLink to="Chemicals/add" />
+        <FilterOutlined style={{marginRight: "5px"}}/> <NavLink to="Crops/find" />
+      </>
+    ),
+    getItem(
+      "Agregar",
+      "12",
+      <>
+        {" "}
+        <PieChartOutlined style={{marginRight: "5px"}}/> <NavLink to="Crops/add" />
       </>
     ),
     // getItem("Modificar", "12", <> <PieChartOutlined /> <NavLink to="Chemicals/update"/></>),
@@ -120,14 +138,13 @@ const AppLayout = () => {
       <Layout className="site-layout">
         <Header style={{ padding: 0, background: colorBgContainer }} />
         <Content style={{ margin: "0 16px" }}>
-          <BreadCrumbs />
+          <BreadCrumbs  />
           <div
             style={{
               padding: 24,
               minHeight: 360,
               background: colorBgContainer,
             }}
-            l
           >
             <Outlet />
           </div>

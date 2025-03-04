@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChemicalService from "../../../services/Chemical.service.jsx";
 import ImageUploader1 from "../../components/ImageUploader1";
+import ImageUploaderFB from "../../components/ImageUploaderFB.jsx";
+import appConfig from "../../../app.config.js";
 const noPhoto = require("../../../assets/images/no-photos.png");
+
+const module = appConfig.development.modules.chemicals;
 
 const layout = {
   labelCol: { span: 8 },
@@ -19,10 +23,12 @@ const ChemicalForm = ({
   chemical = null,
   addCatOrComp = null,
   onClose = null,
+  isFromDrawer = false,
 }) => {
   const [form] = Form.useForm();
-  const [photo, setPhoto] = useState(""); // State to store the image URL
+  const [fileName, setFilename] = useState(""); // State to store the image URL
   const navigate = useNavigate();
+
 
   const clearForm = () => {
     form.resetFields();
@@ -41,12 +47,12 @@ const ChemicalForm = ({
 
   useEffect(() => {
     if (isUpdate && chemical) {
-      setPhoto(chemical.photo);
+      setFilename(chemical.photo);
     }
   }, [isUpdate, chemical]);
 
   const onFinish = async (values) => {
-    values.photo = photo; // Add the image URL to the form values
+    values.photo = fileName.file.name; // Add the image URL to the form values
     try {
       if (isUpdate) {
         values.id = chemical.id;
@@ -57,7 +63,7 @@ const ChemicalForm = ({
         );
         navigate(`/chemicals/details/${chemical.id}`);
       } else {
-        values.photo = photo || noPhoto; // Use the uploaded photo or a default
+        values.photo = fileName.file.name || noPhoto; // Use the uploaded photo or a default
         const result = await ChemicalService.Chemicals.createChemical(values);
         openNotification(
           "Success",
@@ -68,7 +74,11 @@ const ChemicalForm = ({
           clearForm();
           onClose();
         }
-        navigate(`/chemicals/details/${result.id}`);
+        if (isFromDrawer == true) {
+          onClose();
+        } else {
+          navigate(`/chemicals/details/${result.id}`);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -81,12 +91,13 @@ const ChemicalForm = ({
     }
   };
 
-  const onReset = () => {
-    clearForm();
-  };
+  const onCancel = () => {
+    console.log(isUpdate == true)
+    isUpdate == true ? navigate('/chemicals/find') : clearForm();
+  }
 
   const handleFileSelected = (photoName) => {
-    setPhoto(photoName); // Set the uploaded photo URL
+    setFilename(photoName); // Set the uploaded photo URL
   };
 
   return (
@@ -98,20 +109,18 @@ const ChemicalForm = ({
       initialValues={
         isUpdate
           ? {
-              name: chemical?.name || "",
-              photo: chemical?.photo || "",
-              description: chemical?.description || "",
-            }
+            name: chemical?.name || "",
+            photo: chemical?.photo || "",
+            description: chemical?.description || "",
+          }
           : null
       }
     >
       <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
-        <ImageUploader1
-          onFileSelected={handleFileSelected}
-          initialPhoto={chemical?.photo || ""}
-          folder="chemicals"
-        />
-        <input type="text" name="photo" value={photo} hidden />
+        <ImageUploaderFB
+          setFileName={setFilename}
+          module={module} />
+        <input type="text" name="photo" value={fileName?.file?.name} hidden />
       </Form.Item>
 
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
@@ -130,8 +139,8 @@ const ChemicalForm = ({
         <Button type="primary" htmlType="submit" style={{ marginRight: "8px" }}>
           Guardar
         </Button>
-        <Button htmlType="button" onClick={onReset}>
-          Limpiar
+        <Button htmlType="button" onClick={onCancel}>
+          Cancelar
         </Button>
       </Form.Item>
     </Form>

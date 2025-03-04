@@ -1,5 +1,7 @@
 import { IKContext, IKImage, IKUpload } from "imagekitio-react";
 import React, { useState } from "react";
+import { Upload , Button, message, UploadProps} from "antd";
+import { UploadOutlined } from "@ant-design/icons"
 import Utils from "../../services/Utils";
 
 const ImageUploader = ({
@@ -11,10 +13,25 @@ const ImageUploader = ({
   const [image, setImage] = useState(initialPhoto || "");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
-
+  const [fileList, setFileList] = useState([]);
   const publicKey = Utils.publicKey;
   const authenticationEndpoint = Utils.authenticationEndpoint;
-  const urlEndpoint = Utils.urlEndpoint;
+  // const urlEndpoint = Utils.urlEndpoint;
+
+  //const handleChange = UploadProps['onChange'] = ({})
+
+  const handleUpload = async () => {
+    console.log('Clicked', 'filelist_length = '+fileList.length)
+    setUploading(true);
+    setError("");
+    
+    if (fileList.length === 0) {
+      message.error("Please select at least one photo!");
+      setUploading(false);
+      return;
+    }
+  };
+
 
   const authenticator = async () => {
     try {
@@ -50,8 +67,7 @@ const ImageUploader = ({
   };
 
   const handleUploadStart = () => {
-    setUploading(true);
-    setError("");
+   
   };
 
   return (
@@ -59,31 +75,23 @@ const ImageUploader = ({
       {uploading && <p className="loading-message">Uploading...</p>}
       {error && <p className="error-message">{error}</p>}
 
-      <IKContext
-        publicKey={publicKey}
-        urlEndpoint={urlEndpoint}
-        authenticator={authenticator}
-      >
-        {image && (
-          <IKImage
-            path={image}
-            width="45%"
-            style={{
-              borderRadius: "5px",
-              border: "solid 1px gray",
-              margin: "10px",
-            }}
-          />
-        )}
 
-        <IKUpload
-          fileName={`Chemical-${name}`}
-          onError={onError}
-          onSuccess={onSuccess}
-          folder={folder}
-          onUploadStart={handleUploadStart}
-        />
-      </IKContext>
+  <Upload
+        multiple
+        beforeUpload={(file) => {
+          setFileList((prev) => [...prev, file]);
+          return false; // Prevent automatic upload
+        }}
+      >
+        <Button icon={<UploadOutlined />}>Foto</Button>
+      </Upload>
+      <Button
+        type="primary"
+        onClick={handleUpload}
+        style={{ marginTop: 16 }}
+      >
+        Guardar Foto
+      </Button>
 
       <style jsx>{`
         .image-uploader {

@@ -1,12 +1,15 @@
 import { AuditOutlined, EditOutlined } from "@ant-design/icons";
-import { Card } from "antd";
+import { Card, Image, Tooltip } from "antd";
 import React from "react";
-
-import { IKContext, IKImage } from "imagekitio-react";
 import { useNavigate } from "react-router-dom";
+import appConfig from "../../../app.config";
+
+
 
 const { Meta } = Card;
-const urlEndpoint = "https://ik.imagekit.io/kr9btn6cw/agroninja/";
+const urlEndpoint = appConfig.development.apiUrl;
+const uploadPath = appConfig.development.uploadPath;
+const module = appConfig.development.modules.chemicals;
 
 const ChemicalCard = ({ chemical, showDrawer }) => {
   const navigate = useNavigate();
@@ -30,26 +33,10 @@ const ChemicalCard = ({ chemical, showDrawer }) => {
       <Card
         title={chemical?.name}
         cover={
-          <IKContext urlEndpoint={urlEndpoint}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                padding: "10px",
-                backgroundColor: "#f0f0f0",
-              }}
-            >
-              <IKImage
-                path={chemical.photo}
-                style={{
-                  borderRadius: "5px",
-                  width: "150px",
-                  objectFit: "cover",
-                  border: "solid 0.1px #d0cccc",
-                }}
-              />
-            </div>
-          </IKContext>
+          <Image
+            src={`${urlEndpoint}${uploadPath}${module}/${chemical.photo}`} alt={chemical.name}
+            style={{ height: '120px', width: '120px', objectFit: 'scale-down', margin: '20px' }}
+          />
         }
         style={{
           borderRadius: "5px",
@@ -57,11 +44,16 @@ const ChemicalCard = ({ chemical, showDrawer }) => {
           padding: "10px",
         }}
         actions={[
-          <EditOutlined key="edit" onClick={() => goUpdate()} />,
-          <AuditOutlined
-            key="ellipsis"
-            onClick={() => navigate(`/chemicals/details/${chemical.id}`)}
-          />,
+          <Tooltip title="Agregar Quimico" placement="bottom">
+
+            <EditOutlined key="edit" onClick={() => goUpdate()} />
+          </Tooltip>,
+          <Tooltip title="Agregar Quimico" placement="bottom">
+            <AuditOutlined
+              key="ellipsis"
+              onClick={() => navigate(`/chemicals/details/${chemical.id}`)}
+            />
+          </Tooltip>,
         ]}
       >
         <Meta title={chemical?.name} description={chemical?.description} />

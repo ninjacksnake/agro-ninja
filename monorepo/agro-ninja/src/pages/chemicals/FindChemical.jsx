@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import ChemicalService from "./../../services/Chemical.service";
-import { Input, Space, Button } from "antd";
+import { Input, Space, Button, Tooltip } from "antd";
 import ChemicalCardList from "./components/ChemicalCardList";
+import { NavLink } from "react-router-dom";
 
 const FindChemical = () => {
   const [chemicals, setChemicals] = useState([]);
@@ -34,6 +35,11 @@ const FindChemical = () => {
   return (
     <div>
       <Space.Compact style={{ width: "100%", marginBottom: "2rem" }}>
+        <Tooltip title="Agregar Quimico" placement="bottomRight">
+          <NavLink to={"/chemicals/add"} >
+            <Button type="primary" > + </Button>
+          </NavLink>
+        </Tooltip>
         <Input
           id="si"
           placeholder="Escriba aqui el quimico que desea buscar"

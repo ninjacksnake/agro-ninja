@@ -3,16 +3,20 @@ import React, { useEffect, useState } from "react";
 import { PlusCircleFilled } from "@ant-design/icons";
 import { Button, Form, Input, notification, Select } from "antd";
 import { useNavigate } from "react-router-dom";
-import categoryService from "../../../services/CategoriesService";
+import CategoryService from "../../../services/CategoriesService";
 import ChemicalService from "../../../services/Chemical.service";
 import DiceaseService from "../../../services/Dicease.service";
 import ProductService from "../../../services/Product.service";
-import ImageUploader1 from "../../components/ImageUploader1";
 import AddCategoryDrawer from "./AddCategoryDrawer";
 import AddComponentDrawer from "./AddComponentDrawer";
 import AddDiceaseDrawer from "./AddDiceaseDrawer";
+import ImageUploaderFB from "../../components/ImageUploaderFB";
+import appConfig from "../../../app.config";
+import CropService from "../../../services/Crop.service";
 
-const noPhoto = "../../../assets/images/no-photos.png";
+
+const noPhoto = "../assets/images/no-photos.png";
+
 const Option = Select.Option;
 
 const layout = {
@@ -25,19 +29,24 @@ const tailLayout = {
 };
 
 const ProductForm = ({ isUpdate, product = null }) => {
+  const defaultDirectory = "../assets/images/products/";
   const [form] = Form.useForm();
   const [components, setComponents] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [crops, setCrops] = useState([]);
   const [diceases, setDiceases] = useState([]);
-  const [photo, setPhoto] = useState([]);
+  const [fileName, setFileName] = useState(" ");
   const [openCCDrawer, setOpenCCDrawer] = useState(false); //CC = Create Category
   const [openCChemicalDrawer, setOpenCChemicalDrawer] = useState(false); //CCH = Create Chemical
   const [openDiceaseDrawer, setOpenDiceaseDrawer] = useState(false);
+  const [openCropsDrawer, setOpenCropsDrawer] = useState(false);
   const navigate = useNavigate();
 
+  // open drawer functions
   const openCatDrawer = () => {
     setOpenCCDrawer(true);
   };
+  // close drawer cat
   const onCloseCatDrawer = () => {
     setOpenCCDrawer(false);
   };
@@ -56,6 +65,14 @@ const ProductForm = ({ isUpdate, product = null }) => {
     setOpenDiceaseDrawer(false);
   };
 
+  const openCropDrawer = () => {
+    setOpenCropsDrawer(true);
+  };
+  const onCloseCropDrawer = () => {
+    setOpenCropsDrawer(false);
+  };
+
+  // notification functions
   const openNotification = (title, body, reason = "") => {
     notification.open({
       message: `${title}`,
@@ -67,6 +84,12 @@ const ProductForm = ({ isUpdate, product = null }) => {
     });
   };
 
+  const clearForm = () => {
+    form.resetFields();
+  };
+
+
+  // function to add to list
   const addToList = (listName, values) => {
     // console.log(selector, values);
     try {
@@ -76,40 +99,41 @@ const ProductForm = ({ isUpdate, product = null }) => {
         setComponents([...components, values]);
       } else if (listName === "dic") {
         setDiceases([...diceases, values]);
+      }else if (listName === "crop"){
+        setCrops([...crops, values])
       }
     } catch (error) {
       console.log(error);
     }
   };
-  // function toBase64(arr) {
-  //   arr = new Uint8Array(arr) //if it's an ArrayBuffer
-  //   return btoa(
-  //      arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
-  //   );
-  // }
+
+  // get info from db
   useEffect(() => {
+    console.log('Use effect ', product)
     const getInfo = async () => {
       const dbChemicals = await ChemicalService.Chemicals.findAll();
       setComponents((ch) => dbChemicals);
-      const dbCategories = await categoryService.Categories.FindAll();
+      const dbCategories = await CategoryService.Categories.FindAll();
       // console.log(categories);
       setCategories((ca) => dbCategories);
       const dbdiceases = await DiceaseService.diceases.findAll();
       setDiceases((d) => dbdiceases);
+      const dbCrops = await CropService.Crops.findAll();
+      setCrops(dbCrops);
       if (isUpdate) {
-        setPhoto(product?.photo);
+        // if is an update of a product set the photo to be shown 
       }
     };
     getInfo();
-  }, [product?.photo, isUpdate]);
 
+  }, [product?.photo, isUpdate, fileName]);
+
+  // function to finish the form
   const onFinish = (values) => {
     //console.log("onFinish", values);
     if (isUpdate) {
       values.id = product.id;
-      if (values.photo !== photo) {
-        values.photo = photo;
-      }
+      values.photo = fileName?.file?.name || "";
       return ProductService.Products.updateProduct(values)
         .then((result) => {
           openNotification("Success", "El Producto ha sido actualizado");
@@ -120,7 +144,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
           openNotification("Fail", "El Producto no ha sido actualizado");
         });
     } else {
-      values.photo = photo || noPhoto;
+      values.photo = fileName?.file?.name || "";
       return ProductService.Products.createProduct(values)
         .then((result) => {
           openNotification("Success", "El producto ha sido creado");
@@ -137,14 +161,15 @@ const ProductForm = ({ isUpdate, product = null }) => {
     }
   };
 
-  const onReset = () => {
-    form.resetFields();
-  };
+  // function to reset the form
+  const onCancel = () => {
+    console.log(isUpdate == true)
+    isUpdate == true ? navigate('/products/find') : clearForm();
+  }
 
-  const handleFileSelected = (photo) => {
-    setPhoto(photo);
-  };
+  const module = appConfig.development.modules.products
 
+  //component ui
   return (
     <>
       <Form
@@ -156,27 +181,26 @@ const ProductForm = ({ isUpdate, product = null }) => {
         initialValues={
           isUpdate
             ? {
-                name: product?.name ?? "",
-                photo: product?.photo ?? "",
-                description: product?.description ?? "",
-                imageLocation: product?.photo ?? "",
-                category: product?.category ?? "",
-                dossage: product?.dossage ?? 0,
-                chemicals:
-                  product?.chemicals.map((chemical) => chemical.name) ?? [],
-                diceases:
-                  product?.diceases.map((chemical) => chemical.name) ?? [],
-              }
+              name: product?.name ?? "",
+              photo: product?.photo ?? "",
+              description: product?.description ?? "",
+              imageLocation: product?.photo ?? "",
+              category: product?.category ?? "",
+              dossage: product?.dossage ?? 0,
+              chemicals:
+                product?.chemicals?.map((chemical) => chemical.name) ?? [],
+              diceases:
+                product?.diceases?.map((chemical) => chemical.name) ?? [],
+              crops: product?.crops?.map((crop) => crop.id) ?? []
+            }
             : null
         }
       >
-        <Form.Item name={"photo"} label="Foto" rules={[{ required: false }]}>
-          <ImageUploader1
-            onFileSelected={handleFileSelected}
-            folder="products"
-            initialPhoto={product?.photo || noPhoto}
-          />
-          <input type="text" name="photo" value={photo} hidden />
+        <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
+          <ImageUploaderFB setFileName={setFileName} module={module} />
+          <input type="text" name="photo" value={fileName?.file?.name} hidden />
+
+          {/*  Image uploader Component */}
         </Form.Item>
         <Form.Item
           name="name"
@@ -198,20 +222,20 @@ const ProductForm = ({ isUpdate, product = null }) => {
         </Form.Item>
 
         <Form.Item
-          name="category"
+          name="categoryId"
           label="Categoría"
           rules={[
             { required: false, message: "La categoría no puede estar vacío" },
           ]}
         >
           <Select
-            name="category"
             placeholder="Seleccione una categoría"
             allowClear
             size="middle"
           >
+            {console.log('Hya cat', categories)}
             {categories.map((category, index) => (
-              <Option value={category.name} key={index}>
+              <Option value={category.id} key={index}>
                 {" "}
                 {category.name}{" "}
               </Option>
@@ -224,7 +248,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
             shape="round"
             icon={<PlusCircleFilled />}
             onClick={openCatDrawer}
-            //style={{ marginLeft: 10, marginRight: 10, marginTop: 10 }}
+          //style={{ marginLeft: 10, marginRight: 10, marginTop: 10 }}
           />
         </Form.Item>
 
@@ -257,7 +281,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
             shape="round"
             icon={<PlusCircleFilled />}
             onClick={openChemDrawer}
-            //  style={{ marginLeft: 10, marginRight: 10, marginTop: 10 }}
+          //  style={{ marginLeft: 10, marginRight: 10, marginTop: 10 }}
           />
         </Form.Item>
         <Form.Item
@@ -272,7 +296,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
             mode="multiple"
             placeholder="Seleccionar una opción"
             allowClear
-            //  defaultValue={}
+          //  defaultValue={}
           >
             {diceases.map((dicease, index) => {
               return (
@@ -293,6 +317,32 @@ const ProductForm = ({ isUpdate, product = null }) => {
           />
         </Form.Item>
 
+        {/* Crops select  */}
+        <Form.Item
+          name="crops"
+          label="Cultivos"
+          rules={[
+            { required: true, message: "Los cultivos no pueden estar vacío" },
+          ]}
+        >
+          <Select
+            name="crops"
+            placeholder="Seleccionar un cultivo"
+            mode="multiple"
+            // defaultValue={product?.chemicals.map(chemical => chemical.name)}
+            allowClear
+          >
+            {crops.map((crop, index) => {
+              return (
+                <Option value={crop.id} key={index}>
+                  {crop.name}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+
+        {/* Dossage Input */}
         <Form.Item
           name="dossage"
           label="Dosificacion Recomendada"
@@ -318,7 +368,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
             Guardar
           </Button>
 
-          <Button htmlType="button" onClick={onReset}>
+          <Button htmlType="button" onClick={onCancel}>
             Cancelar
           </Button>
         </Form.Item>
@@ -333,11 +383,13 @@ const ProductForm = ({ isUpdate, product = null }) => {
         open={openCChemicalDrawer}
         onClose={onCloseChemDrawer}
         addCatOrComp={addToList}
+        openNotification={openNotification}
       />
       <AddDiceaseDrawer
         open={openDiceaseDrawer}
         onClose={onCloseDiceaseDrawer}
         addCatOrComp={addToList}
+        openNotification={openNotification}
       />
     </>
   );

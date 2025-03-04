@@ -1,14 +1,19 @@
-import { Alert, Card, Col, Divider, Empty, Row, Spin, Table } from "antd";
-import { IKContext, IKImage } from "imagekitio-react";
+import { Alert, Card, Col, Divider, Empty, Row, Spin, Table, Image } from "antd";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ChemicalService from "../../services/Chemical.service";
 import DiceaseService from "../../services/Dicease.service";
 import ProductService from "../../services/Product.service";
-import Utils from "../../services/Utils";
+import AppConfig from "../../app.config";
 import "./DetailPage.css";
 
-const urlEndpoint = Utils.urlEndpoint;
+import noPhoto from "../../assets/images/no-photos.png"
+import CropService from "../../services/Crop.service";
+
+
+
+const urlEndpoint = AppConfig.development.apiUrl;
+const uploadPath = AppConfig.development.uploadPath;
 
 const chemicalsColumns = [
   {
@@ -43,7 +48,8 @@ const DetailPage = () => {
   const location = useLocation();
   const module = location.pathname.split("/").slice(1)[0];
   const pId = location.pathname.split("/").slice(-1)[0];
-  //const urlEndpoint = "https://ik.imagekit.io/kr9btn6cw/agroninja/";
+  const apiUrl = AppConfig.development.apiUrl;
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,10 +59,14 @@ const DetailPage = () => {
         let data;
         if (module === "products") {
           data = await ProductService.Products.findById(pId);
+        //  console.log(data)
         } else if (module === "diceases") {
           data = await DiceaseService.diceases.findById(pId);
         } else if (module === "chemicals") {
           data = await ChemicalService.Chemicals.findById(pId);
+        } else if (module === "crops"){
+          data = await CropService.Crops.findById(pId);
+         //console.log(data)
         }
         setInformation(data);
       } catch (err) {
@@ -81,7 +91,7 @@ const DetailPage = () => {
   if (error) {
     return <Alert message="Error" description={error} type="error" showIcon />;
   }
-
+console.log(information)
   return (
     <div className="detail-page-container">
       <Divider orientation="left">
@@ -90,22 +100,11 @@ const DetailPage = () => {
       <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
         <Col className="gutter-row" span={8}>
           <div className="photo-box">
-            <IKContext urlEndpoint={urlEndpoint}>
-              <IKImage
-                path={information.photo}
-                width={250}
-                style={{
-                  borderRadius: "5px",
-                  border: "solid 1px gray",
-                  margin: "10px",
-                }}
-              />
-            </IKContext>
-            {/* <Image
-              src={information?.photo ? information?.photo : noPhoto}
+             <Image
+              src={information.photo?`${urlEndpoint}${uploadPath}/${module}/${information.photo}`: noPhoto}
               alt={`Foto de ${information?.name}`}
               width="250px"
-            /> */}
+            /> 
           </div>
         </Col>
         <Col className="gutter-row" span={16}>
@@ -115,8 +114,8 @@ const DetailPage = () => {
                 <p>Nombre: {information?.name ?? "N/A"}</p>
                 <p>Descripción: {information?.description ?? "N/A"}</p>
                 <p>
-                  {information?.category ? "Categoría :" : ""}{" "}
-                  {information?.category ?? "N/A"}
+                  {information?.category?.name ? "Categoría :" : ""}{" "}
+                  {information?.category?.name ?? "N/A"}
                 </p>
                 <p>
                   {information?.dossage ? "Dosificación :" : ""}{" "}

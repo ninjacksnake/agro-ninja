@@ -9,6 +9,7 @@ const getCategories = () => {
   const callApi = async () => {
     try {
       const category = await axios.get(`${apiUrl}${moduleNameUrl}`);
+      console.log("category ", category.data);
       return category.data;
     } catch (error) {
       console.log(error);
@@ -23,8 +24,7 @@ const createCategory = (category) => {
   const callApi = async (category) => {
     try {
       const newCategory = await axios.post(
-        `${apiUrl}${moduleNameUrl}
-      `,
+        `${apiUrl}${moduleNameUrl}`,
         category
       );
       return newCategory.data;
@@ -54,7 +54,7 @@ const updateCategory = (category) => {
   return callApi(category);
 };
 
-const categoryService = {
+const CategoryService = {
   Categories: {
     FindAll: getCategories,
     Create: createCategory,
@@ -62,4 +62,4 @@ const categoryService = {
   },
 };
 
-export default categoryService;
+export default CategoryService;

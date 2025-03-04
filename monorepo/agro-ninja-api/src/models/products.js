@@ -13,10 +13,10 @@ const Product = sequelize.define("products", {
   },
   photo: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   },
-  category: {
-    type: DataTypes.STRING,
+  categoryId: {
+    type: DataTypes.INTEGER,
     alloNull: false,
   },
   dossage: {

@@ -1,5 +1,5 @@
 import { Button, Col, Drawer, Form, Input, Row, Space } from "antd";
-import categoryService from "../../../services/CategoriesService";
+import CategoryService from "../../../services/CategoriesService";
 
 const AddCategoryDrawer = ({ open, onClose, openNotification , addCatOrComp}) => {
   const [form] = Form.useForm();
@@ -9,7 +9,7 @@ const AddCategoryDrawer = ({ open, onClose, openNotification , addCatOrComp}) =>
   const onFinish = (values) => {
     // console.log("hey entonfces ", values);
     try {
-       categoryService.Categories.Create(values)
+       CategoryService.Categories.Create(values)
         .then((result) => {
              //console.log(result)
             openNotification("Success", "El Registro ha sido actualizado");
@@ -33,7 +33,7 @@ const AddCategoryDrawer = ({ open, onClose, openNotification , addCatOrComp}) =>
         width={720}
         onClose={onClose}
         open={open}
-        bodyStyle={{ paddingBottom: 80 }}
+        styles={{ paddingBottom: 80 }}
         extra={
           <Space>
             <Button onClick={onReset}>Limpiar</Button>

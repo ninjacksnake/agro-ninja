@@ -3,15 +3,15 @@ import {
   EditOutlined,
   RadarChartOutlined,
 } from "@ant-design/icons";
-import { Card } from "antd";
-import { IKContext, IKImage } from "imagekitio-react";
+import { Card, Image, Tooltip } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-const urlEndpoint = "https://ik.imagekit.io/kr9btn6cw/agroninja/";
+const urlEndpoint = "http://localhost:3004/api/upload/products/";
 const { Meta } = Card;
 
 const ProductCard = ({ product, showDrawer }) => {
   const navigate = useNavigate();
+ 
   const goUpdate = async () => {
     if (product) {
       localStorage.clear();
@@ -28,52 +28,50 @@ const ProductCard = ({ product, showDrawer }) => {
     navigate(`/products/update/${product.id}`);
   };
 
-  // const decodeImage =  (photo)=>{
-  //     try {
-  //       const parsed =  JSON.parse(photo);
-  //       return parsed
-  //     } catch (error) {
-  //       console.log(error)
-
-  //     }
-  // };
 
   return (
     <>
       <Card
         title={product.name}
+
+
+
         cover={
-          <IKContext urlEndpoint={urlEndpoint}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                padding: "10px",
-                backgroundColor: "#f0f0f0",
-              }}
-            >
-              <IKImage
-                path={product.photo}
-                style={{
-                  borderRadius: "5px",
-                  width: "150px",
-                  objectFit: "cover",
-                  border: "solid 0.1px #d0cccc",
-                }}
-              />
-            </div>
-          </IKContext>
+
+          <Image
+            onClick={() => navigate(`/products/details/${product.id}`)}
+            preview={false}
+            src={`${urlEndpoint}${product.photo}`} alt={product.name}
+            style={{}}
+          />
+
         }
+
+
         actions={[
-          <RadarChartOutlined
-            key="setting"
-            onClick={() => showDrawer(product.name)}
-          />,
-          <EditOutlined key="edit" onClick={() => goUpdate()} />,
+          <Tooltip title="Ver componentes" placement="bottom">
+
+            <RadarChartOutlined
+              key="setting"
+              onClick={() => showDrawer(product.name)}
+            />
+          </Tooltip>
+          ,
+          <Tooltip title="Editar producto" placement="bottom" >
+
+            <EditOutlined key="edit" onClick={() => goUpdate()} />
+          </Tooltip>
+
+          /* ,
+          <Tooltip  title="Ver Detalles" placement="bottom">
+
           <AuditOutlined
             key="ellipsis"
             onClick={() => navigate(`/products/details/${product.id}`)}
-          />,
+            /> 
+            </Tooltip>
+            ,
+            */
         ]}
       >
         <Meta title={product.description} />

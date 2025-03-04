@@ -9,7 +9,7 @@ const getProducts = () => {
   const callApi = async () => {
     try {
       const products = await axios.get(`${apiUrl}/products`);
-      //  console.log(products.data);
+        console.log(products.data);
       return products.data;
     } catch (error) {
       console.log(error);
@@ -23,6 +23,7 @@ const getProductById = (id) => {
   const callApi = async () => {
     try {
       const products = await axios.get(`${apiUrl}/products/${id}`);
+      console.log(products.data);
       return products.data;
     } catch (error) {
       console.log(error);
@@ -33,7 +34,7 @@ const getProductById = (id) => {
 };
 
 const createProduct = (product) => {
-  // console.log("create products", product);
+ 
   const callApi = async (product) => {
     try {
       const products = await axios.post(`${apiUrl}/products`, product);
@@ -113,7 +114,7 @@ const getCategories = async () => {
 };
 
 const createCategory = (category) => {
-  // console.log("create Category", category);
+   console.log("create Category", category);
   const callApi = async (product) => {
     try {
       const newCategory = await axios.post(`${apiUrl}/categorie`, category);

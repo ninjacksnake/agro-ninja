@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 
 import Home from "../pages/Home";
 import AppLayout from "./../pages/Layout";
-import Diceases from "../pages/diceases/Diceases";
+import Diseases from "../pages/diceases/Diceases";
 import Chemicals from "../pages/chemicals/Chemicals";
 import Products from "../pages/products/Products.jsx";
 import CreateProduct from "../pages/products/CreateProduct";
@@ -15,6 +15,11 @@ import CreateChemical from "./../pages/chemicals/CreateChemical";
 import FindChemical from "./../pages/chemicals/FindChemical";
 import UpdateChemical from "./../pages/chemicals/UpdateChemical";
 import DetailPage from "../pages/DetailPage/DetailPage";
+import FindCrop from "../pages/crops/FindCrop.jsx"
+import Crops from "../pages/crops/Crops.jsx"
+import CreateCrop from "../pages/crops/CreateCrop.jsx"
+import UpdateCrop from "../pages/crops/UpdateCrop.jsx"
+
 
 const AppRoutes = () => {
   return (
@@ -31,7 +36,7 @@ const AppRoutes = () => {
         </Route>
 
         <Route path="diceases">
-          <Route index element={<diceases />} />
+          <Route index element={<Diseases />} />
           <Route path="add" element={<CreateDicease />} />
           <Route path="find" element={<FindDicease />} />
           <Route path="update/:id" element={<UpdateDicease />} />
@@ -45,6 +50,15 @@ const AppRoutes = () => {
           <Route path="update/:id" element={<UpdateChemical />} />
           <Route path="details/:id" element={<DetailPage />} />
         </Route>
+
+        <Route path="crops">
+          <Route index element={<Crops />} />
+          <Route path="add" element={<CreateCrop />} />
+          <Route path="find" element={<FindCrop />} />
+          <Route path="update/:id" element={<UpdateCrop />} />
+          <Route path="details/:id" element={<DetailPage />} />
+        </Route>
+
       </Route>
     </Routes>
   );

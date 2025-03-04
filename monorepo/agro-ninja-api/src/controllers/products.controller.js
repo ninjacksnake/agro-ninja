@@ -1,7 +1,9 @@
 const { Op } = require("sequelize");
-const Diceases = require("../models/index").Dicease;
+const  Crop  = require("../models/index").Crop;
+const Diseases = require("../models/index").Disease;
 const Product = require("../models/index").Product;
 const Chemical = require("../models/index").Chemical;
+const Categories = require("../models/index").Categories;
 
 const product = {
   name: "cloroPan",
@@ -12,16 +14,21 @@ const product = {
 
 const create = async (req, res, next) => {
   const product = req.body;
+   console.log("INSERTING ",product)
   try {
     const newProduct = await Product.create(product);
     const chemicals = await Chemical.findAll({
       where: { name: [...product.chemicals] },
     });
     await newProduct.addChemicals(chemicals);
-    const diceases = await Diceases.findAll({
+    const diceases = await Diseases.findAll({
       where: { name: [...product.diceases] },
     });
-    await newProduct.addDiceases(diceases);
+    await newProduct.addDiseases(diceases);
+    const crops = await Crop.findAll({
+      where: { id: [...product.crops] },
+    });
+    await newProduct.addCrops(crops);
     return res.status(201).send(newProduct);
   } catch (err) {
     console.log(err);
@@ -34,24 +41,32 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const productInfo = req.body;
+    console.log(productInfo);
     const product = await Product.findByPk(productInfo.id);
     product.name = productInfo.name;
+    product.categoryId = productInfo.categoryId;
     product.description = productInfo.description;
     product.photo = productInfo.photo;
     product.dossage = productInfo.dossage;
     product.category = productInfo.category;
+    
 
     const chemicals = await Chemical.findAll({
       where: { name: [...productInfo.chemicals] },
     });
-    const diceases = await Diceases.findAll({
+    const diseases = await Diseases.findAll({
       where: { name: [...productInfo.diceases] },
     });
+    const crops = await Crop.findAll({
+      where: { id: [...productInfo.crops] },
+    });
+    console.log(crops);
     await product.setChemicals(chemicals);
-    await product.setDiceases(diceases);
+    await product.setDiceases(diseases);
+    await product.setCrops(crops);
     await product.save();
     await Product.findByPk(productInfo.id, {
-      include: [{ model: Chemical }, { model: Diceases }],
+      include: [{ model: Chemical }, { model: Diseases }, { model: Categories }],
     });
     res.status(200).send(product);
   } catch (err) {
@@ -66,17 +81,17 @@ const find = async (req, res, next) => {
     const product = req.query;
     if (product.productId !== undefined) {
       result = await Product.findAll({
-        include: [{ model: Chemical }, { model: Diceases }],
+        include: [{ model: Chemical }, { model: Diseases }, { model: Categories }, { model: Crop }],
         where: { productId: product.productId },
       });
     } else if (product.productName !== undefined) {
       result = await Product.findAll({
-        include: [{ model: Chemical }, { model: Diceases }],
+        include: [{ model: Chemical }, { model: Diseases }, { model: Categories }, { model: Crop }],
         where: { productName: product.productName },
       });
     } else {
       result = await Product.findAll({
-        include: [{ model: Chemical }, { model: Diceases }],
+        include: [{ model: Chemical }, { model: Diseases }, { model: Categories },  { model: Crop }],
       });
       return res.status(200).send(result);
     }
@@ -90,7 +105,7 @@ const findById = async (req, res, next) => {
   try {
     const id = req.params.id;
     const result = await Product.findByPk(id, {
-      include: [{ model: Chemical }, { model: Diceases }],
+      include: [{ model: Chemical }, { model: Diseases }, { model: Categories }, { model: Crop }],
       where: { productId: product.productId },
     });
     return res.status(200).send(result);

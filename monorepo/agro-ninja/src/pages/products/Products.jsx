@@ -1,10 +1,12 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 const Products = () => {
+  const navigate =  useNavigate();
+  useEffect(() => { 
+    navigate("/products/find");
+  });
   return (
-    <div>
-      <ul>Productos</ul>
-    </div>
+  <h1>Loading... Products</h1>
   );
 };
 

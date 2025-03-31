@@ -1,21 +1,35 @@
-import React, { useState } from 'react'
-import { Button, Col, Drawer, Form, Input, Row, Space } from "antd";
-import DiceaseService from '../../../services/Dicease.service';
+import React, { useEffect, useState } from 'react'
+import { Button, Col, Drawer, Form, Input, Row, Select, Space } from "antd";
+import DiseaseService from '../../../services/Disease.service';
 import ImageUploaderFB from '../../components/ImageUploaderFB';
 import appConfig from '../../../app.config';
+import DiseaseTypeService from '../../../services/DiseaseType.service';
 
-
-const AddDiceaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => {
+const AddiseaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => {
   const [form] = Form.useForm();
   const [fileName, setFileName] = useState(" ");
-  const module = appConfig.development.modules.diceases;
+  const [diseaseTypes, setDiseaseTypes] = useState([]);
+  const module = appConfig.development.modules.diseases;
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await DiseaseTypeService.diseaseTypes.findAll();
+        setDiseaseTypes(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  },[])
+
   const onReset = () => {
     form.resetFields();
   };
   const onFinish = (values) => {
     values.photo = fileName.file.name;
     try {
-      DiceaseService.diceases.create(values)
+      DiseaseService.diseases.create(values)
         .then((result) => {
           // console.log(result)
           openNotification("Success", "El Registro ha sido actualizado");
@@ -36,7 +50,7 @@ const AddDiceaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => 
       <Drawer
         placement="left"
         title="Agregar nueva Enfermedad"
-        width={720}
+        width={500}
         onClose={onClose}
         open={open}
 
@@ -57,10 +71,10 @@ const AddDiceaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => 
               setFileName={setFileName}
               module={module}
             />
-            <input type="text" name="photo" value={fileName?.file?.name} />
+            <input type="text" name="photo" value={fileName?.file?.name} hidden />
           </Form.Item>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={20}>
               <Form.Item
                 name="name"
                 label="Nombre"
@@ -71,7 +85,7 @@ const AddDiceaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => 
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={20}>
               <Form.Item
                 name="description"
                 label="Descripción"
@@ -81,14 +95,16 @@ const AddDiceaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => 
               >
                 <Input placeholder="Por favor incluir la descripción aqui" />
               </Form.Item>
-            </Col>
-            <Col span={12}>
+           
               <Form.Item
-                name="dicease"
-                label="Tipo"
-                rules={[{ required: false, message: "Favor colocar el tipo" }]}
+                name="diseaseTypeId"
+                label="Clasificación"
+                rules={[{ required: false, message: "Favor colocar la clasificación" }]}
               >
-                <Input placeholder="Por favor escribir el tipo de la categoría aqui" />
+                <Select placeholder="Seleccione una opción" 
+                allowClear
+                options={diseaseTypes.map((type) => ({label: type.name, value: type.id}))}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -108,4 +124,4 @@ const AddDiceaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => 
 };
 
 
-export default AddDiceaseDrawer
+export default AddiseaseDrawer

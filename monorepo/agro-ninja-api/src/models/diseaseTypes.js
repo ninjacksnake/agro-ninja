@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../utils/services/db_services.js');
 
-const DiceaseType = sequelize.define("diceaseTypes", {
+const DiseaseType = sequelize.define("diseaseTypes", {
     name: {
       type: DataTypes.STRING,
       alloNull: false,
@@ -14,5 +14,5 @@ const DiceaseType = sequelize.define("diceaseTypes", {
   });
 
 
-module.exports = DiceaseType
+module.exports = DiseaseType
 ;

@@ -1,7 +1,8 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../utils/services/db_services.js');
 
-const Disease = sequelize.define("diceases", {
+
+const Disease = sequelize.define("diseases", {
     name: {
       type: DataTypes.STRING,
       alloNull: false,
@@ -15,10 +16,11 @@ const Disease = sequelize.define("diceases", {
         type: DataTypes.STRING,
         alloNull: false,
     },
-    type:{
-        type: DataTypes.STRING,
-        alloNull: false,
+    diseaseTypeId: {
+      type: DataTypes.INTEGER,
+      alloNull: false,
     }
+  
 
   });
 

@@ -60,6 +60,19 @@ const updateCrop = (crop) => {
 };
 
 
+const getCropTypes = () => {
+  const callApi = async () => {
+    try {
+      const crops = await axios.get(`${apiUrl}/croptypes`);
+      return crops.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+  return callApi();
+}
+
 const CropService = {
   Crops: {
     findAll: getCrops,

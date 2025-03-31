@@ -7,7 +7,7 @@ import ProductService from '../../../services/Product.service';
 import CategoryService from '../../../services/CategoriesService';
 import ChemicalService from '../../../services/Chemical.service.jsx';
 import CropService from '../../../services/Crop.service.jsx';
-import Diseaseservice from '../../../services/Dicease.service.jsx';
+import Diseaseservice from '../../../services/Disease.service.jsx';
 import { useNavigate } from 'react-router-dom';
 import appConfig from '../../../app.config.js';
 
@@ -40,7 +40,7 @@ const ProductForm2 = ({ isUpdate, product, productId }
             const dbCategories = await CategoryService.Categories.FindAll();
             // console.log('dbCategories', dbCategories);
             setCategories((ca) => dbCategories);
-            const dbdiseases = await Diseaseservice.diceases.findAll();
+            const dbdiseases = await Diseaseservice.diseases.findAll();
             setDiseases((d) => dbdiseases);
             const crops = await CropService.Crops.findAll();
             setCrops((c) => crops);
@@ -141,8 +141,8 @@ const ProductForm2 = ({ isUpdate, product, productId }
                             dossage: product?.dossage ?? 0,
                             chemicals:
                                 product?.chemicals?.map((chemical) => chemical.name) ?? [],
-                            diceases:
-                                product?.diceases?.map((chemical) => chemical.name) ?? [],
+                            diseases:
+                                product?.diseases?.map((disease) => disease.name) ?? [],
                             crops:
                                 product?.Crops?.map((crop) => crop.name) ?? [],
                         }
@@ -229,7 +229,7 @@ const ProductForm2 = ({ isUpdate, product, productId }
                 </Form.Item>
 
                 <Form.Item
-                    name="diceases"
+                    name="diseases"
                     label="Enfermedades"
                     rules={[{ required: true, message: 'Please select diseases!' }]}
                 >
@@ -255,7 +255,7 @@ const ProductForm2 = ({ isUpdate, product, productId }
                 <Form.Item
                     name="crops"
                     label="Cultivos"
-                    rules={[{ required: true, message: 'Por favor ingrese cultivos relacionados!' }]}
+                    rules={[{ required: false, message: 'Por favor ingrese cultivos relacionados!' }]}
                 >
                     <Select
                         mode="multiple"

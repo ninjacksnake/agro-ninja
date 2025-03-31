@@ -1,13 +1,24 @@
 const { Op } = require("sequelize");
 const Product = require("../models/index").Product;
 const Disease = require("../models/index").Disease;
-const DiceaseTypes = require("../models/index").DiceaseTypes;
+const diseaseType = require("../models/index").DiseaseType;
 
 const create = async (req, res, next) => {
-  const DiceaseInfo = req.body;
+  const diseaseInfo = req.body;
+  console.log(diseaseInfo);
   try {
-    const newDicease = await Disease.create(DiceaseInfo);
-    return res.status(201).send(newDicease);
+const newDisease = new Disease;
+newDisease.name = diseaseInfo.name;
+newDisease.description = diseaseInfo.description;
+newDisease.photo = diseaseInfo.photo;
+newDisease.diseaseTypeId = diseaseInfo.diseaseTypeId;
+
+    // const newdisease = await Disease.create(diseaseInfo);
+    // const diseaseType = await diseaseType.findByPk(diseaseInfo.diseaseTypeId);
+    // console.log(diseaseType);
+    // newdisease.diseaseType = diseaseType;
+     newDisease.save();
+     return res.status(201).send(newDisease);
   } catch (err) {
     console.log(err)
     return res.status(500).send(err.message);
@@ -20,19 +31,20 @@ const find = async (req, res, next) => {
     const values = req.query;
     if (values.Id !== undefined) {
       result = await Disease.findAll({
-        include:{model: Products},
-        include:{model: DiceaseTypes},
+        include:{model: Product},
+        include:{model: diseaseType},
         where: { id: values.productId },
       });
     } else if (values.name !== undefined) {
       result = await Disease.findAll({
         include:{model: Products},
+        include:{model: diseaseType},
         where: { name: values.name },
       });
 
       res.status(200).send(result);
     } else {
-      result = await Disease.findAll({include:{model: Product}});
+      result = await Disease.findAll({include:{model: Product}, include:{model: diseaseType}});
     }
     res.status(200).send(result);
   } catch (err) {
@@ -44,11 +56,11 @@ const find = async (req, res, next) => {
 const findById = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const dicease = await Disease.findByPk(id, {
-      include: [{ model: Product }],
+    const disease = await Disease.findByPk(id, {
+      include: [{ model: Product }, { model: diseaseType }],
       where: { id: id },
     });
-    return res.status(200).send(dicease);
+    return res.status(200).send(disease);
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -56,13 +68,16 @@ const findById = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const DiceaseInfo = req.body;
-    const dicease = await Disease.findByPk( DiceaseInfo.id );
-    dicease.name = DiceaseInfo.name;  
-    dicease.description =  DiceaseInfo.description;
-    dicease.photo= DiceaseInfo.photo;
-    dicease.save();
-    return res.status(200).send(dicease);
+    const diseaseInfo = req.body;
+    const diseaseTypeId = diseaseInfo.diseaseTypeId;
+
+    const disease = await Disease.findByPk( diseaseInfo.id );
+    disease.name = diseaseInfo.name;  
+    disease.description =  diseaseInfo.description;
+    disease.photo= diseaseInfo.photo;
+    disease.diseaseTypeId = diseaseTypeId;
+    disease.save();
+    return res.status(200).send(disease);
   } catch (err) {
     console.log(err)
     res.status(500).send(err.message);

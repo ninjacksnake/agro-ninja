@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import {  List, Drawer, Table } from "antd";
 import { NavLink } from "react-router-dom";
-import DiceaseCard from "./DiceaseCard";
+ import DiseaseCard from "./DiseaseCard";
 
 
-const DiceaseCardList = ({ diceases }) => {
+const DiseaseCardList = ({ diseases }) => {
   const [open, setOpen] = useState(false);
-  const [selecteddicease, setSelecteddicease] = useState(null);
+  const [selectedDisease, setSelectedDisease] = useState(null);
 
   const showDrawer = (name) => {
-    const chosendiceases = diceases.find(dicease => dicease.name === name)?? null ;
-    setSelecteddicease(p => chosendiceases);
+    const chosendiseases = diseases.find(disease => disease.name === name)?? null ;
+    setSelectedDisease(p => chosendiseases);
     setOpen(true);
   };
   const onClose = () => {
@@ -21,16 +21,16 @@ const DiceaseCardList = ({ diceases }) => {
     <>
       <List
         grid={{ gutter: 26, column: 4 }}
-        dataSource={diceases}
-        renderItem={(dicease, index) => (
+        dataSource={diseases}
+        renderItem={(disease, index) => (
          
           <List.Item>
-           <DiceaseCard dicease={dicease} showDrawer={showDrawer}/>
+           <DiseaseCard disease={disease} showDrawer={showDrawer}/>
           </List.Item>
         )}
       />
       <Drawer
-        title={selecteddicease?.name}
+        title={selectedDisease?.name}
         placement="right"
         onClose={onClose}
         open={open}
@@ -39,7 +39,7 @@ const DiceaseCardList = ({ diceases }) => {
         <ol>
           <Table
           pagination={false}
-          dataSource={selecteddicease?.dicease}
+          dataSource={selectedDisease?.disease}
           columns={[{title: 'Name', dataIndex: 'name', key: 'id' , render: (text)=> <NavLink to={'/'}>{text}</NavLink>}]}
           >
           </Table>
@@ -49,4 +49,4 @@ const DiceaseCardList = ({ diceases }) => {
   );
 };
 
-export default DiceaseCardList;
+export default DiseaseCardList;

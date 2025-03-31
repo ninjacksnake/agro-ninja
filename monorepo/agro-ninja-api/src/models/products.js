@@ -15,10 +15,6 @@ const Product = sequelize.define("products", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  categoryId: {
-    type: DataTypes.INTEGER,
-    alloNull: false,
-  },
   dossage: {
     type: DataTypes.STRING,
     allowNull: false,

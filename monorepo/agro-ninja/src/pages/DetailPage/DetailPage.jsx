@@ -2,7 +2,7 @@ import { Alert, Card, Col, Divider, Empty, Row, Spin, Table, Image } from "antd"
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ChemicalService from "../../services/Chemical.service";
-import DiceaseService from "../../services/Dicease.service";
+import DiseaseService from "../../services/Disease.service";
 import ProductService from "../../services/Product.service";
 import AppConfig from "../../app.config";
 import "./DetailPage.css";
@@ -41,6 +41,16 @@ const diceasesColumns = [
   },
 ];
 
+function getPhoto( urlEndpoint, uploadPath, module, photo){
+  console.log(urlEndpoint, uploadPath, module, photo )
+  if (photo){
+    return `${urlEndpoint}${uploadPath}/${module}/${photo}`;
+  }else{
+    return noPhoto;
+  }
+
+} 
+
 const DetailPage = () => {
   const [information, setInformation] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +58,7 @@ const DetailPage = () => {
   const location = useLocation();
   const module = location.pathname.split("/").slice(1)[0];
   const pId = location.pathname.split("/").slice(-1)[0];
-  const apiUrl = AppConfig.development.apiUrl;
+  // const apiUrl = AppConfig.development.apiUrl;
   
 
   useEffect(() => {
@@ -60,8 +70,8 @@ const DetailPage = () => {
         if (module === "products") {
           data = await ProductService.Products.findById(pId);
         //  console.log(data)
-        } else if (module === "diceases") {
-          data = await DiceaseService.diceases.findById(pId);
+        } else if (module === "diseases") {
+          data = await DiseaseService.diseases.findById(pId);
         } else if (module === "chemicals") {
           data = await ChemicalService.Chemicals.findById(pId);
         } else if (module === "crops"){
@@ -91,7 +101,7 @@ const DetailPage = () => {
   if (error) {
     return <Alert message="Error" description={error} type="error" showIcon />;
   }
-console.log(information)
+//console.log('Info',information)
   return (
     <div className="detail-page-container">
       <Divider orientation="left">
@@ -101,7 +111,7 @@ console.log(information)
         <Col className="gutter-row" span={8}>
           <div className="photo-box">
              <Image
-              src={information.photo?`${urlEndpoint}${uploadPath}/${module}/${information.photo}`: noPhoto}
+              src={getPhoto(urlEndpoint, uploadPath, module, information?.photo)}
               alt={`Foto de ${information?.name}`}
               width="250px"
             /> 
@@ -158,7 +168,7 @@ console.log(information)
           <Col className="gutter-row" span={12}>
             <div className="tableContainer">
               <h2>
-                {module === "diceases"
+                {module === "diseases"
                   ? "Productos relacionados"
                   : module === "products"
                   ? "Enfermedades Relacionadas"
@@ -166,7 +176,7 @@ console.log(information)
               </h2>
               <Table
                 dataSource={
-                  module === "diceases"
+                  module === "diseases"
                     ? information?.products || []
                     : module === "products"
                     ? information.diceases || []

@@ -9,31 +9,31 @@ import config from "../../../app.config.js";
 const { Meta } = Card;
 const urlEndpoint = config.development.apiUrl;
 const uploadPath = config.development.uploadPath;
-const module = config.development.modules.diceases;
+const module = config.development.modules.diseases;
 
-const DiceaseCard = ({ dicease, showDrawer }) => {
+const DiseaseCard = ({ disease, showDrawer }) => {
   const navigate = useNavigate();
   const goUpdate = async () => {
-    if (dicease) {
+    if (disease) {
       localStorage.clear();
       localStorage.setItem(
-        "SelectedDiceaseToUpdate",
-        await JSON.stringify(dicease)
+        "SelecteddiseaseToUpdate",
+        await JSON.stringify(disease)
       );
     } else {
-      return alert("Please select a dicease to update");
+      return alert("Please select a disease to update");
     }
     setTimeout(() => {
-      localStorage.removeItem("SelectedDiceaseToUpdate");
+      localStorage.removeItem("SelecteddiseaseToUpdate");
     }, 300000);
-    navigate(`/diceases/update/${dicease.id}`);
+    navigate(`/diseases/update/${disease.id}`);
   };
   return (
     <Card
-      title={dicease?.name}
+      title={disease?.name}
       cover={
         <Image 
-        src={`${urlEndpoint}${uploadPath}${module}/${dicease.photo}`} alt={dicease.name} 
+        src={`${urlEndpoint}${uploadPath}${module}/${disease.photo}`} alt={disease.name} 
          style={{height: '120px',  width: '120px', objectFit: 'scale-down' , margin: '20px'}} 
         />
       }
@@ -41,13 +41,13 @@ const DiceaseCard = ({ dicease, showDrawer }) => {
         <EditOutlined key="edit" onClick={() => goUpdate()} />,
         <AuditOutlined
           key="ellipsis"
-          onClick={() => navigate(`/diceases/details/${dicease?.id}`, dicease)}
+          onClick={() => navigate(`/diseases/details/${disease?.id}`, disease)}
         />,
       ]}
     >
-      <Meta title={dicease.name} description={dicease?.description} />
+      <Meta title={disease.name} description={disease?.description} />
     </Card>
   );
 };
 
-export default DiceaseCard;
+export default DiseaseCard;

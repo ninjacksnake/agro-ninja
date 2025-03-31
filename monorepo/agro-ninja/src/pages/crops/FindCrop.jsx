@@ -22,7 +22,6 @@ const FindCrop = () => {
                 const result = await CropService.Crops.findAll();
                 setCrops((r) => result);
                 setFiltredCrops((r) => result);
-                console.log(filterCrops)
             } catch (error) {
                 console.log(error)
             }
@@ -73,7 +72,7 @@ const getCropId = (name) => {
                 </Button>
             </Space.Compact>
             {/* <CropCardList crops={filtredCrops} /> */}
-            {console.log("filtredCrops ", filtredCrops)};
+            {console.log("filtredCrops ", filtredCrops)}
             <TableComponent data={filtredCrops ?? []} columns=
                 {[
                     {

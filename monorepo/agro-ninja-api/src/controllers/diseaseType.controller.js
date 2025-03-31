@@ -1,13 +1,13 @@
 const { Op } = require("sequelize");
-const Product = require("../models/index").Product;
-const Dicease = require("../models/index").Dicease;
-const DiceaseTypes = require("../models/index").DiceaseTypes;
+const  Crop  = require("../models/index").Crop;
+
+const DiceaseType = require("../models/index").DiseaseType;
 
 const create = async (req, res, next) => {
-  const DiceaseTypeInfo = req.body;
+  const DiseaseTypeInfo = req.body;
   try {
-    const newDicease = await Dicease.create(DiceaseTypeInfo);
-    return res.status(201).send(newDiceaseType);
+    const newDiceaseType = await DiceaseType.create(DiseaseTypeInfo);
+  return res.status(200).send(newDiceaseType);
   } catch (err) {
     console.log(err)
     return res.status(500).send(err.message);
@@ -19,20 +19,19 @@ const find = async (req, res, next) => {
     let result;
     const values = req.query;
     if (values.Id !== undefined) {
-      result = await Dicease.findAll({
-        include:{model: DiceaseTypes},
+      result = await DiceaseType.findAll({
         where: { id: values.productId },
       });
     } else if (values.name !== undefined) {
-      result = await DiceaseTypes.findAll({
-        include:{model: Products},
+      result = await DiceaseType.findAll({
         where: { name: values.name },
       });
-
+      
       res.status(200).send(result);
     } else {
-      result = await DiceaseTypes.findAll({include:{model: Product}});
+      result = await DiceaseType.findAll();
     }
+
     res.status(200).send(result);
   } catch (err) {
     console.log(err);
@@ -43,8 +42,8 @@ const find = async (req, res, next) => {
 const findById = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const diceaseType = await DiceaseTypes.findByPk(id, {
-      include: [{ model: diceaseType }],
+    const diceaseType = await DiceaseType.findByPk(id, {
+      include: [{ model: Crop }],
       where: { id: id },
     });
     return res.status(200).send(diceaseType);
@@ -56,9 +55,12 @@ const findById = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const DiseaseTypeInfo = req.body;
-    const diceaseType = await DiceaseType.findByPk( DiseaseTypeInfo.id );
+    const diceaseType = await DiceaseType( DiseaseTypeInfo.id );
     diceaseType.name = DiseaseTypeInfo.name;  
     diceaseType.description =  DiseaseTypeInfo.description;
+    if (DiseaseTypeInfo.crops !== undefined) {
+     diceaseType.setCrops([...DiseaseTypeInfo.crops]);
+    }
     diceaseType.save();
     return res.status(200).send(diceaseType);
   } catch (err) {

@@ -21,7 +21,7 @@ const columns = [
   }, {
     title: 'Category',
     key: 'category',
-    dataIndex: 'category',
+    dataIndex: ['category', 'name']  
   },
 ];
 

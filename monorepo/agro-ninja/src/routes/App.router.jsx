@@ -2,15 +2,15 @@ import { Route, Routes } from "react-router-dom";
 
 import Home from "../pages/Home";
 import AppLayout from "./../pages/Layout";
-import Diseases from "../pages/diceases/Diceases";
+import Diseases from "../pages/diseases/Diseases";
 import Chemicals from "../pages/chemicals/Chemicals";
 import Products from "../pages/products/Products.jsx";
 import CreateProduct from "../pages/products/CreateProduct";
 import FindProducts from "../pages/products/FindProducts";
 import UpdateProducts from "../pages/products/UpdateProducts";
-import CreateDicease from "../pages/diceases/CreateDicease";
-import FindDicease from "../pages/diceases/FindDicease";
-import UpdateDicease from "../pages/diceases/UpdateDicease";
+import CreateDisease from "../pages/diseases/CreateDisease";
+import FindDisease from "../pages/diseases/FindDisease";
+import UpdateDisease from "../pages/diseases/UpdateDisease";
 import CreateChemical from "./../pages/chemicals/CreateChemical";
 import FindChemical from "./../pages/chemicals/FindChemical";
 import UpdateChemical from "./../pages/chemicals/UpdateChemical";
@@ -35,11 +35,11 @@ const AppRoutes = () => {
           <Route path="details/:id" element={<DetailPage />} />
         </Route>
 
-        <Route path="diceases">
+        <Route path="diseases">
           <Route index element={<Diseases />} />
-          <Route path="add" element={<CreateDicease />} />
-          <Route path="find" element={<FindDicease />} />
-          <Route path="update/:id" element={<UpdateDicease />} />
+          <Route path="add" element={<CreateDisease />} />
+          <Route path="find" element={<FindDisease />} />
+          <Route path="update/:id" element={<UpdateDisease />} />
           <Route path="details/:id" element={<DetailPage />} />`
         </Route>
 

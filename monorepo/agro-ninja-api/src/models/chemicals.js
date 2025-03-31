@@ -15,7 +15,7 @@ const Chemical = sequelize.define("chemicals", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  chemicalType: {
+  chemicalTypeId: {
     type: DataTypes.STRING,
     alloNull: false,
   },

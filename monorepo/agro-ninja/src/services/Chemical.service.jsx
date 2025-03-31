@@ -1,5 +1,6 @@
-import axios from "axios";
 import Utils from "./Utils";
+import axios from "axios";
+
 
 const apiUrl = Utils.apiURl;
 
@@ -65,12 +66,83 @@ const updateChemical = (chemical) => {
   return callApi(chemical);
 };
 
+//
+//
+//Chemical Types
+//
+//
+
+const getChemicalTypes = () => {
+  const callApi = async () => {
+    try {
+      const ChemicalTypes = await axios.get(`${apiUrl}/chemicaltypes
+      `);
+      return ChemicalTypes.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+  return callApi();
+}
+const getChemicalTypeById = (id) => {
+  const callApi = async () => {
+    try {
+      const chemicalType = await axios.get(`${apiUrl}/chemicaltypes/${id}`);
+      return chemicalType.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+  return callApi();
+}
+
+
+const createChemicalType = (chemicalType) => {
+  const callApi = async (chemicalType) => {
+    try {
+      const newChemicalType = await axios.post(
+        `${apiUrl}/chemicaltypes
+    `,
+        chemicalType
+      )
+      return newChemicalType.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  callApi(chemicalType);
+}
+
+const updateChemicalType = (chemicalType) => {
+  const callApi = async (chemicalType) => {
+    try {
+      const newChemicalType = await axios.put(
+        `${apiUrl}/chemicaltypes`,
+        chemicalType)
+      return newChemicalType.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  callApi(chemicalType);
+}
+
 const ChemicalService = {
   Chemicals: {
     findAll: getChemicals,
     findById: getChemicalById,
     createChemical,
     updateChemical,
+  },
+  ChemicalTypes: {
+    findAll: getChemicalTypes,
+    findById: getChemicalTypeById,
+    createChemicalType,
+    updateChemicalType,
   },
 };
 

@@ -1,4 +1,4 @@
-import { Button, Form, Input, notification } from "antd";
+import { Button, Form, Input, Select, notification } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChemicalService from "../../../services/Chemical.service.jsx";
@@ -27,8 +27,12 @@ const ChemicalForm = ({
 }) => {
   const [form] = Form.useForm();
   const [fileName, setFilename] = useState(""); // State to store the image URL
-  const navigate = useNavigate();
+  const [chemicalTypes, setChemicalTypes] = useState([]);
 
+  const navigate = useNavigate();
+console.log(chemical)
+  // Function to handle the form submission
+  // Function to handle the form submission
 
   const clearForm = () => {
     form.resetFields();
@@ -49,10 +53,16 @@ const ChemicalForm = ({
     if (isUpdate && chemical) {
       setFilename(chemical.photo);
     }
+    const getInfo = async () => {
+      const result = await ChemicalService.ChemicalTypes.findAll();
+      console.log(result); // Add this line to log the result to the console
+      setChemicalTypes(result);
+    };
+    getInfo();
   }, [isUpdate, chemical]);
 
   const onFinish = async (values) => {
-    values.photo = fileName.file.name; // Add the image URL to the form values
+    values.photo = fileName?.file?.name; // Add the image URL to the form values
     try {
       if (isUpdate) {
         values.id = chemical.id;
@@ -112,6 +122,7 @@ const ChemicalForm = ({
             name: chemical?.name || "",
             photo: chemical?.photo || "",
             description: chemical?.description || "",
+            chemicalTypeId: chemical?.chemicalType?.id || "",
           }
           : null
       }
@@ -126,6 +137,15 @@ const ChemicalForm = ({
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
+
+      <Form.Item name= "chemicalTypeId" label="Tipo" rules={[{ required: true }]}>
+        <Select
+        allowClear
+        placeholder="Seleccione un tipo de quimico"
+        options={chemicalTypes.map((chemicalType) => ({label:chemicalType.name, value:chemicalType.id}))}
+        
+        />
+        </Form.Item>
 
       <Form.Item
         name="description"

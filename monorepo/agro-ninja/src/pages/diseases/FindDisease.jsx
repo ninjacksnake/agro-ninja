@@ -1,8 +1,8 @@
 
 import React, { useEffect, useState } from "react";
-import diseasesService from "./../../services/Dicease.service";
+import diseasesService from "../../services/Disease.service";
 import { Input, Space, Button, message } from "antd";
-import DiceaseCardList from './components/DiceaseCardList';
+import diseaseCardList from './components/DiseaseCardList';
 import TableComponent from "../components/TableComponent";
 import DrawerComponent from "../components/DrawerComponent";
 import { NavLink } from "react-router-dom";
@@ -21,24 +21,24 @@ const columns = [
   {
     title: 'Clasificación',
     key: 'classification',
-    dataIndex: 'classification',
+    dataIndex: ['diseaseType','name'],
   }
 ];
 
 
 
-const FindDicease = () => {
+const Finddisease = () => {
   const [diseases, setDiseases] = useState([]);
 
   const [filtredDiseases, setFiltredDiseases] = useState([]);
   const [open, setOpen] = useState(false);
-  const [selectedDicease, setSelectedDicease] = useState(null);
+  const [selecteddisease, setSelecteddisease] = useState(null);
 
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const result = await diseasesService.diceases.findAll();
+        const result = await diseasesService.diseases.findAll();
         console.log(result)
         setDiseases((r) => result);
         setFiltredDiseases((r) => result);
@@ -53,25 +53,25 @@ const FindDicease = () => {
 
  const getProductId = (name) => {
   console.log(name)
-    return selectedDicease.products.find((product) => product.name === name).id;
+    return selecteddisease.products.find((product) => product.name === name).id;
  };
 
-  const filterDiceases = (e) => {
+  const filterdiseases = (e) => {
     if (e.target.value === undefined || e.target.value === "") {
       e.target.value = document.getElementById("si").value;
     }
-    const filteredDiceases = diseases.filter((diseases) =>
+    const filtereddiseases = diseases.filter((diseases) =>
       diseases.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
 
-    setFiltredDiseases(x => filteredDiceases);
+    setFiltredDiseases(x => filtereddiseases);
   };
 
   const showDrawer = (name) => {
 
     const chosenDisease =
       filtredDiseases.find((disease) => disease.name === name) ?? null;
-    setSelectedDicease((p) => chosenDisease);
+    setSelecteddisease((p) => chosenDisease);
     setOpen(true);
   };
   const onClose = () => {
@@ -84,19 +84,19 @@ const FindDicease = () => {
         <Input
           id="si"
           placeholder="Escriba aqui el nombre de la enfermedad que desea buscar"
-          onKeyUp={filterDiceases}
+          onKeyUp={filterdiseases}
         />
-        <Button type="primary" onClick={filterDiceases}>
+        <Button type="primary" onClick={filterdiseases}>
           Buscar
         </Button>
       </Space.Compact>
-      {/* <DiceaseCardList diseasess={filtredDiceases} /> */}
-      <TableComponent data={filtredDiseases} columns={columns} module={'diceases'} showDrawer={showDrawer} />
+      {/* <diseaseCardList diseasess={filtreddiseases} /> */}
+      <TableComponent data={filtredDiseases} columns={columns} module={'diseases'} showDrawer={showDrawer} />
       <DrawerComponent
         caption={'Productos relacionados'}
         open={open}
         onClose={onClose}
-        title={selectedDicease?.name}
+        title={selecteddisease?.name}
         columns={  [
           {
           title: 'Nombre',
@@ -105,12 +105,17 @@ const FindDicease = () => {
           render: (text) => <NavLink to={`/products/details/${getProductId(text)}`}>{text}</NavLink> 
         },
         {
+          title: 'clasificación',
+          key: 'classification',
+          dataIndex: ['diseaseTypes', 'name'],
+        },
+        {
           title: 'Descripción',
           key: 'description',
           dataIndex: 'description',
         }, 
       ]}
-        data={selectedDicease?.products}
+        data={selecteddisease?.products}
         
        
       />
@@ -118,4 +123,4 @@ const FindDicease = () => {
   );
 };
 
-export default FindDicease;
+export default Finddisease;

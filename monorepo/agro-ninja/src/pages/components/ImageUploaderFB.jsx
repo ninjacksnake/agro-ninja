@@ -4,7 +4,7 @@ import {Button, message, Upload, Space} from 'antd';
 import appConfig from '../../app.config';
 
 
-const ImageUploaderFB = ({setFileName, module =""}) => {
+const ImageUploaderFB = ({setFileName=null, module =""}) => {
   const uploadPath = appConfig.development.uploadPath;
   const [uploading, setUploading] = useState(false);
 
@@ -54,7 +54,7 @@ const ImageUploaderFB = ({setFileName, module =""}) => {
       type="file"
  
     >
-      <Button icon={<UploadOutlined />}>Upload Photo</Button>
+      <Button icon={<UploadOutlined />}>Seleccionar Imagen</Button>
     </Upload>
     
   </div>

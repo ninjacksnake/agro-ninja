@@ -10,7 +10,7 @@ const CropType = sequelize.define("cropTypes", {
     description:{
         type: DataTypes.STRING,
         alloNull: false,
-    }
+    },
   });
 
 

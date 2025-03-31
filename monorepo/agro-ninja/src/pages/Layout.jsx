@@ -50,7 +50,7 @@ const items = [
       "5",
       <>
         {" "}
-        <FilterOutlined style={{marginRight: "5px"}} /> <NavLink to="diceases/find" />
+        <FilterOutlined style={{marginRight: "5px"}} /> <NavLink to="diseases/find" />
       </>
     ),
     getItem(
@@ -58,10 +58,10 @@ const items = [
       "6",
       <>
         {" "}
-        <FileAddFilled  style={{marginRight: "5px"}} /> <NavLink to="diceases/add" />
+        <FileAddFilled  style={{marginRight: "5px"}} /> <NavLink to="diseases/add" />
       </>
     ),
-    // getItem("Modificar", "8", <> <PieChartOutlined /> <NavLink to="diceases/update"/></>),
+    // getItem("Modificar", "8", <> <PieChartOutlined /> <NavLink to="diseases/update"/></>),
   ]),
   getItem("Quimicos", "7", <AimOutlined />, [
     getItem(

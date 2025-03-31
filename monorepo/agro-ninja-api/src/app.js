@@ -45,7 +45,7 @@ app.post("/api/upload/products", uploadProducts.single("file"),
     })
 });
 
-app.post("/api/upload/diceases", uploadDiceases.single("file"),
+app.post("/api/upload/diseases", uploadDiceases.single("file"),
   (req, res) => {
    if (!req.file) {
      return res.status(400).send("No file Uploaded");
@@ -86,7 +86,7 @@ app.get("/api/upload/products/:file", (req, res)=>{
     res.status(400).send({message:"Photo not found"});
   }
 });
-app.get("/api/upload/diceases/:file", (req, res)=>{
+app.get("/api/upload/diseases/:file", (req, res)=>{
   const _module = req.body.module;
   const photoId = req.params.file;
   const filePath = path.join(__dirname, `uploads`, 'diceases', photoId);

@@ -3,14 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Input, notification, Select,Divider } from "antd";
 import { useNavigate } from "react-router-dom";
 import appConfig from "../../../app.config";
-import DiceaseService from "../../../services/Dicease.service";
+import diseaseService from "../../../services/Disease.service";
+import DiseaseTypeService from "../../../services/DiseaseType.service";
 import ImageUploaderFB from "../../components/ImageUploaderFB";
 import { PlusOutlined } from "@ant-design/icons";
 
-const noPhoto = require("../../../assets/images/diceases/no-photos.png"); // check the folder is for the module
-const module = appConfig.development.modules.diceases;
+const noPhoto = require("../../../assets/images/diseases/no-photos.png"); // check the folder is for the module
+const module = appConfig.development.modules.diseases;
 
-
+ 
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -26,10 +27,11 @@ const selectOptions = [
 ];
 
 
-const DiceaseForm = ({ isUpdate, dicease = null }) => {
+const DiseaseForm = ({ isUpdate, disease = null }) => {
   const [form] = Form.useForm();
   const [fileName, setFileName] = useState("");
-  const [DiceaseTypeModal, setDiceaseTypeModal] = useState(false);
+  const [diseaseTypeModal, setdiseaseTypeModal] = useState(false);
+  const [diseaseType, setdiseaseType] = useState([]);
   const navigate = useNavigate();
 
   const openNotification = (title, body) => {
@@ -51,47 +53,50 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
   useEffect(() => {
     const getInfo = async () => {
       if (isUpdate) {
-        setFileName(dicease.photo);
+        setFileName(disease.photo);
       }
+      const diseaseTypes = await DiseaseTypeService.diseaseTypes.findAll();
+      console.log(diseaseTypes);
+      setdiseaseType(diseaseTypes);
     };
     getInfo();
   }, []);
 
   const onFinish = (values) => {
     if (isUpdate) {
-      values.id = dicease.id;
+      values.id = disease.id;
       if (values.photo !== fileName?.file?.name) {
         values.photo = fileName?.file?.name;
       }
-      return DiceaseService.diceases
+      return diseaseService.diseases
         .update(values)
         .then((result) => {
-          openNotification("Success", "Your dicease has been updated");
-          navigate(`/diceases/details/${result.id}`);
+          openNotification("Success", "Your disease has been updated");
+          navigate(`/diseases/details/${result.id}`);
         })
         .catch((error) => {
           console.log(error);
-          openNotification("Fail", "Failed updating your dicease  ");
+          openNotification("Fail", "Failed updating your disease  ");
         });
     } else {
 
       values.photo = fileName?.file?.name; // default no photo photo
-      return DiceaseService.diceases
+      return diseaseService.diseases
         .create(values)
         .then((result) => {
           openNotification("Success", "Has creado una nueva enfermedad");
-          navigate(`/diceases/details/${result.id}`);
+          navigate(`/diseases/details/${result.id}`);
         })
         .catch((error) => {
           console.log(error);
-          openNotification("Fail", "Failed creating your dicease");
+          openNotification("Fail", "Failed creating your disease");
         });
     }
   };
 
   const onCancel = () => {
     console.log(isUpdate == true)
-    isUpdate == true ? navigate('/diceases/find') : clearForm();
+    isUpdate == true ? navigate('/diseases/find') : clearForm();
   }
 
   return (
@@ -103,10 +108,11 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
       initialValues={
         isUpdate
           ? {
-            name: dicease?.name ?? "",
-            photo: dicease?.photo ?? "",
-            description: dicease?.description ?? "",
-            // products: dicease?.products ??"",
+            name: disease?.name ?? "",
+            photo: disease?.photo ?? "",
+            description: disease?.description ?? "",
+            diseaseTypeId: disease?.diseaseTypeId ?? "",
+            // products: disease?.products ??"",
           }
           : null
       }
@@ -121,13 +127,16 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="clasificacion" label="Clasificación" rules={[{ required: true }]}>
-        <Select options={selectOptions}
+      <Form.Item name="diseaseTypeId" label="Clasificación" rules={[{ required: true }]}>
+        <Select options={diseaseType.map((item) => ({ value: item.id, label: item.name }))}
+          placeholder="Seleccione una clasificación"
+          allowClear
+          showSearch
           dropdownRender={(menu) => (
                             <>
                                 {menu}
                                 <Divider style={{ margin: '4px 0' }} />
-                                <Button type="link" onClick={() => setDiceaseTypeModal(true)}>
+                                <Button type="link" onClick={() => setdiseaseTypeModal(true)}>
                                     <PlusOutlined /> Agregar clasificación
                                 </Button>
                             </>
@@ -155,4 +164,4 @@ const DiceaseForm = ({ isUpdate, dicease = null }) => {
   );
 };
 
-export default DiceaseForm;
+export default DiseaseForm;

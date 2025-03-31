@@ -5,7 +5,7 @@ const appConfig = {
         modules: {
             products: '/products',
             chemicals: '/chemicals',
-            diceases: '/diceases',
+            diseases: '/diseases',
             categories: '/categories',
             crops: '/crops'
         }

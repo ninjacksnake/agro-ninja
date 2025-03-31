@@ -1,0 +1,16 @@
+const { DataTypes } = require("sequelize");
+const sequelize = require("../utils/services/db_services.js");
+
+const ChemicalTypes = sequelize.define("chemicalTypes", {
+  name: {
+    type: DataTypes.STRING,
+    unique: true,
+    alloNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+    alloNull: false,
+  },
+});
+
+module.exports = ChemicalTypes;

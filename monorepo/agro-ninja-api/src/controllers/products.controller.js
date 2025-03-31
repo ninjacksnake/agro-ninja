@@ -3,7 +3,7 @@ const  Crop  = require("../models/index").Crop;
 const Diseases = require("../models/index").Disease;
 const Product = require("../models/index").Product;
 const Chemical = require("../models/index").Chemical;
-const Categories = require("../models/index").Categories;
+const Categories = require("../models/index").Categories ;
 
 const product = {
   name: "cloroPan",
@@ -17,6 +17,8 @@ const create = async (req, res, next) => {
    console.log("INSERTING ",product)
   try {
     const newProduct = await Product.create(product);
+    const category = await Categories.findByPk(product.categoryId);
+    await newProduct.setCategory(category);
     const chemicals = await Chemical.findAll({
       where: { name: [...product.chemicals] },
     });
@@ -25,6 +27,9 @@ const create = async (req, res, next) => {
       where: { name: [...product.diceases] },
     });
     await newProduct.addDiseases(diceases);
+    if (product.crops === undefined) {
+      product.crops = [];
+    }
     const crops = await Crop.findAll({
       where: { id: [...product.crops] },
     });
@@ -54,15 +59,21 @@ const update = async (req, res, next) => {
     const chemicals = await Chemical.findAll({
       where: { name: [...productInfo.chemicals] },
     });
+    if(productInfo.diseases === undefined ){
+      productInfo.crops = [];
+    }
     const diseases = await Diseases.findAll({
-      where: { name: [...productInfo.diceases] },
+      where: { name: [...productInfo.diseases] },
     });
+    if(productInfo.CROPS === undefined ){
+      productInfo.crops = [];
+    }
     const crops = await Crop.findAll({
       where: { id: [...productInfo.crops] },
     });
     console.log(crops);
     await product.setChemicals(chemicals);
-    await product.setDiceases(diseases);
+    await product.setDiseases(diseases);
     await product.setCrops(crops);
     await product.save();
     await Product.findByPk(productInfo.id, {

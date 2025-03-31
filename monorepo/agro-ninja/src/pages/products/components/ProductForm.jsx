@@ -5,7 +5,7 @@ import { Button, Form, Input, notification, Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import CategoryService from "../../../services/CategoriesService";
 import ChemicalService from "../../../services/Chemical.service";
-import DiceaseService from "../../../services/Dicease.service";
+import DiseaseService from "../../../services/Disease.service";
 import ProductService from "../../../services/Product.service";
 import AddCategoryDrawer from "./AddCategoryDrawer";
 import AddComponentDrawer from "./AddComponentDrawer";
@@ -116,7 +116,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
       const dbCategories = await CategoryService.Categories.FindAll();
       // console.log(categories);
       setCategories((ca) => dbCategories);
-      const dbdiceases = await DiceaseService.diceases.findAll();
+      const dbdiceases = await DiseaseService.diseases.findAll();
       setDiceases((d) => dbdiceases);
       const dbCrops = await CropService.Crops.findAll();
       setCrops(dbCrops);
@@ -235,7 +235,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
           >
             {console.log('Hya cat', categories)}
             {categories.map((category, index) => (
-              <Option value={category.id} key={index}>
+              <Option value={category.id} key={category.id}>
                 {" "}
                 {category.name}{" "}
               </Option>
@@ -268,7 +268,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
           >
             {components.map((chemical, index) => {
               return (
-                <Option value={chemical.name} key={index}>
+                <Option value={chemical.name} key={chemical.id}>
                   {chemical.name}
                 </Option>
               );
@@ -300,7 +300,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
           >
             {diceases.map((dicease, index) => {
               return (
-                <Option value={dicease.name} key={index}>
+                <Option value={dicease.name} key={dicease.id}>
                   {dicease.name}
                 </Option>
               );
@@ -322,7 +322,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
           name="crops"
           label="Cultivos"
           rules={[
-            { required: true, message: "Los cultivos no pueden estar vacío" },
+            { required: false, message: "Los cultivos no pueden estar vacío" },
           ]}
         >
           <Select
@@ -334,7 +334,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
           >
             {crops.map((crop, index) => {
               return (
-                <Option value={crop.id} key={index}>
+                <Option value={crop.id} key={crop.id}>
                   {crop.name}
                 </Option>
               );

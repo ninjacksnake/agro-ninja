@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-import CropCardList from "./components/CropCardList";
+// import CropCardList from "./components/CropCardList";
 import TableComponent from "../components/TableComponent";
 
 import CropService from "../../services/Crop.service";
 import { Input, Space, Button, Tooltip } from "antd";
 import { NavLink } from "react-router-dom";
 import DrawerComponent from "../components/DrawerComponent";
-
 
 
 const FindCrop = () => {
@@ -50,10 +49,12 @@ const FindCrop = () => {
     const onClose = () => {
         setOpen(false);
     };
-const getCropId = (name) => {
-    const crop = crops.find((crop) => crop.name === name);
-    return crop.id;
-}
+
+    const getCropId = (name) => {
+        const crop = crops.find((crop) => crop.name === name);
+        return crop.id;
+    }
+
     return (
         <div>
             <Space.Compact style={{ width: "100%", marginBottom: "2rem" }}>
@@ -90,11 +91,11 @@ const getCropId = (name) => {
                 module="crops"
                 showDrawer={showDrawer}
             />
-            <DrawerComponent
+            {/* <DrawerComponent
                 open={open}
                 onClose={onClose}
                 title={selectedCrop?.name}
-                caption={"Componentes Quimicos"}
+                caption={"Productos Relacionados"}
                 columns={[
                     {
                         title: "Name",
@@ -105,7 +106,7 @@ const getCropId = (name) => {
                 ]}
                 data={selectedCrop?.chemicals}
 
-            />
+            /> */}
         </div>
     );
 }

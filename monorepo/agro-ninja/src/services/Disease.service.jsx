@@ -2,13 +2,12 @@ import axios from "axios";
 import Utils from "./Utils";
 
 const apiUrl = Utils.apiURl;
-console.log(apiUrl);
+//console.log(apiUrl);
 
 const getDiseases = () => {
   const callApi = async () => {
     try {
-      const disease = await axios.get(`${apiUrl}/diseases
-      `);
+      const disease = await axios.get(`${apiUrl}/diseases`);
       //  console.log(disease.data);
       return disease.data;
     } catch (error) {

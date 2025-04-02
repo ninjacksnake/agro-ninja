@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, memo } from "react";
 
 import { Button, Form, Input, notification, Select, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import appConfig from "../../../app.config";
 import CropService from "../../../services/Crop.service.jsx";
 import CropTypeService from "../../../services/CropType.service.jsx";
 import ProductService from "../../../services/Product.service.jsx";
+import DiseaseService from "../../../services/Disease.service.jsx";
 import ImageUploaderFB from "../../components/ImageUploaderFB";
 
 //const noPhoto = require("../../../assets/images/crops/no-photos.png"); // check the folder is for the module
@@ -21,11 +22,14 @@ const tailLayout = {
     wrapperCol: { offset: 8, span: 16 },
 };
 
-const CropForm = ({ isUpdate, crop = null }) => {
+const CropForm = ({ isUpdate, crop=[],  id = null }) => {
+
     const [form] = Form.useForm();
+    const [cropToUpdate, setCropToUpdate] = useState([]);
     const [fileName, setFileName] = useState("");
     const [products, setProducts] = useState([]);
     const [cropTypes, setCropTypes] = useState([]);
+    const [diseases, setDiseases] = useState([]);   
     const [cropTypeModalVisible, setCropTypeModalVisible] = useState(false);
     const navigate = useNavigate();
 
@@ -38,6 +42,12 @@ const CropForm = ({ isUpdate, crop = null }) => {
         value: product.id,
         label: product.name,
     })), [products]);
+
+    const memoizedDiseases = useMemo(() => diseases.map((disease, index) => ({
+        value: disease.id,
+        label: disease.name,
+    })), [diseases]);
+
 
     const openNotification = (title, body) => {
         notification.open({
@@ -57,28 +67,32 @@ const CropForm = ({ isUpdate, crop = null }) => {
 
     useEffect(() => {
         const getInfo = async () => {
-            if (isUpdate) {
-                setFileName(crop.photo);
+            if (isUpdate) {              
+                setCropToUpdate(crop);
+                setFileName(crop?.photo);
             }
             const productsDb = await ProductService.Products.findAll();
             setProducts(productsDb);
-            const cropTypesDb = await CropTypeService.Crops.findAll();
+            const cropTypesDb = await CropTypeService.CropType.findAll();
             setCropTypes(cropTypesDb);
+            const diseasesDb = await DiseaseService.diseases.findAll();
+            console.log(diseases)
+            setDiseases(diseasesDb);
         };
         getInfo();
-        console.log(products)
+        // console.log(products)
     }, []);
-    
+
     const onFinish = (values) => {
         if (isUpdate) {
-            values.id = crop.id;
+            values.id = cropToUpdate.id;
             if (values.photo !== fileName?.file?.name) {
                 values.photo = fileName?.file?.name;
             }
             return CropService.Crops
                 .updateCrop(values)
                 .then((result) => {
-                    console.log(result)
+                    //     console.log(result)
                     openNotification("Success", "Your crop has been updated");
                     navigate(`/crops/details/${result.id}`);
                 })
@@ -92,7 +106,7 @@ const CropForm = ({ isUpdate, crop = null }) => {
             return CropService.Crops
                 .createCrop(values)
                 .then((result) => {
-                    console.log(result)
+                    // console.log(result)
                     openNotification("Success", "Has creado un cultivo");
                     navigate(`/crops/details/${result.id}`);
                 })
@@ -105,7 +119,7 @@ const CropForm = ({ isUpdate, crop = null }) => {
 
 
     const handleAddCropType = (values) => {
-        CropService.Crops
+        CropTypeService.CropType
             .createCropType(values)
             .then((result) => {
                 openNotification("Success", "Has creado un tipo de cultivo");
@@ -113,7 +127,7 @@ const CropForm = ({ isUpdate, crop = null }) => {
             })
     };
     const onCancel = () => {
-        console.log(isUpdate === true)
+        // console.log(isUpdate === true)
         isUpdate === true ? navigate('/crops/find') : clearForm();
     }
 
@@ -127,10 +141,11 @@ const CropForm = ({ isUpdate, crop = null }) => {
                 initialValues={
                     isUpdate
                         ? {
-                            name: crop?.name ?? "",
+                            name: crop.name,
                             photo: crop?.photo ?? "",
                             description: crop?.description ?? "",
-                            products: crop?.products ?? "",
+                            products: crop?.products?.map((product) => (product.id)),
+                            diseases: crop?.diseases?.map((disease) => (disease.id)),
                             type: crop?.type ?? "",
                         }
                         : null
@@ -146,7 +161,14 @@ const CropForm = ({ isUpdate, crop = null }) => {
                     <Input />
                 </Form.Item>
                 <Form.Item name="type" label="Clasificación" rules={[{ required: true }]}>
-                    <Select options={memoizedCropTypes} />
+                    <Select options= {memoizedCropTypes} />
+
+                </Form.Item>
+                <Form.Item name="diseases" label="Enfermedades Relacionadas" rules={[{ required: false }]}>
+                    <Select
+                        options={memoizedDiseases}
+                        mode="multiple"
+                    />
                 </Form.Item>
 
                 <Form.Item name="products" label="Productos Relacionados" rules={[{ required: false }]}>

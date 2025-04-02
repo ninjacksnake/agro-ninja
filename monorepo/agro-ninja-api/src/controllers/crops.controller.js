@@ -43,9 +43,10 @@ const find = async (req, res, next) => {
     } else if (crop.cropName !== undefined) {
       result = await Crops.findAll({
         where: { cropName: crop.cropName },
+        include: [{ model: Product }, { model: Disease }],
       });
     } else {
-      result = await Crops.findAll({});
+      result = await Crops.findAll({include: [{ model: Product }, { model: Disease }],});
       return res.status(200).send(result);
     }
   } catch (err) {
@@ -56,8 +57,20 @@ const find = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const cropData = req.body;
-    console.log(cropData)
-    const updatedCrop = await Crops.update(cropData, { where: { id: cropData.id } });
+    const crop = await Crops.findByPk(cropData.id);
+    if (cropData.products!== undefined) {
+      const products = await Product.findAll({
+        where: { id: [...cropData.products] },
+      });
+      await crop.setProducts(products);
+    }
+    if (cropData.diseases!== undefined) {
+      const diseases = await Disease.findAll({
+        where: { id: [...cropData.diseases] } });    
+      await crop.setDiseases(diseases);
+      };
+    
+   // const updatedCrop = await Crops.update(cropData, { where: { id: cropData.id } });
     // console.log("updated", updatedCrop)
 
     res.status(200).send({ id: cropData.id }); //

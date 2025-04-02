@@ -60,11 +60,11 @@ const getCropTypes = () => {
 }
 
 const CropTypeService = {
-  Crops: {
+  CropType: {
     findAll: getCropTypes,
     findById: getCropTypeById,
-    createCrop: createCropType,
-    updateCrop: updateCropType,
+    createCropType,
+    updateCropType,
   },
 
 };

@@ -28,7 +28,7 @@ const chemicalsColumns = [
   },
 ];
 
-const diceasesColumns = [
+const diseasesColumns = [
   {
     title: "Nombre",
     dataIndex: "name",
@@ -42,7 +42,7 @@ const diceasesColumns = [
 ];
 
 function getPhoto( urlEndpoint, uploadPath, module, photo){
-  console.log(urlEndpoint, uploadPath, module, photo )
+  // console.log(urlEndpoint, uploadPath, module, photo )
   if (photo){
     return `${urlEndpoint}${uploadPath}/${module}/${photo}`;
   }else{
@@ -72,6 +72,7 @@ const DetailPage = () => {
         //  console.log(data)
         } else if (module === "diseases") {
           data = await DiseaseService.diseases.findById(pId);
+          console.log(data)
         } else if (module === "chemicals") {
           data = await ChemicalService.Chemicals.findById(pId);
         } else if (module === "crops"){
@@ -179,10 +180,10 @@ const DetailPage = () => {
                   module === "diseases"
                     ? information?.products || []
                     : module === "products"
-                    ? information.diceases || []
+                    ? information.diseases || []
                     : []
                 }
-                columns={diceasesColumns}
+                columns={diseasesColumns}
                 pagination={{ position: ["bottomCenter"] }}
                 locale={{
                   emptyText: <Empty description="No Data Available" />,

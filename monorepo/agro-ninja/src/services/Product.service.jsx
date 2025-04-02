@@ -9,7 +9,7 @@ const getProducts = () => {
   const callApi = async () => {
     try {
       const products = await axios.get(`${apiUrl}/products`);
-        console.log(products.data);
+     //   console.log(products.data);
       return products.data;
     } catch (error) {
       console.log(error);
@@ -23,7 +23,7 @@ const getProductById = (id) => {
   const callApi = async () => {
     try {
       const products = await axios.get(`${apiUrl}/products/${id}`);
-      console.log(products.data);
+      //console.log(products.data);
       return products.data;
     } catch (error) {
       console.log(error);

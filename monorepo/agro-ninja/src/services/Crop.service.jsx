@@ -23,7 +23,8 @@ const getCropById = (id) => {
   const callApi = async () => {
     try {
       const crops = await axios.get(`${apiUrl}/crops/${id}`);
-      return crops.data;
+      //console.log(crops.data[0]); // Agrega este log para verificar los datos de la respuesta en la consola del navegador
+      return crops.data[0];
     } catch (error) {
       console.log(error);
       throw error;

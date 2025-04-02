@@ -211,7 +211,7 @@ const diseaseClassification = [
 //  Categories.bulkCreate(categoriesData);
 //  CropTypes.bulkCreate(cropTypesData);
 //  DiseaseType.bulkCreate(diseaseClassification);
-// ChemicalTypes.bulkCreate(chemicalTypesData);
+//  ChemicalTypes.bulkCreate(chemicalTypesData);
 
 
 

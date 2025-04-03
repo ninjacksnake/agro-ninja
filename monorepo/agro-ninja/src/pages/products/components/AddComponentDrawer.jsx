@@ -8,15 +8,12 @@ const AddComponentDrawer = ({ open, onClose, addCatOrComp }) => {
       <Drawer
         placement="left"
         title="Agregar nuevo componente quimico"
-        width={720}
+        width={520}
+        
         onClose={onClose}
         open={open}
-        
-        extra={
-          <Space>
-            <Button onClick={onClose}>Cancelar</Button>
-          </Space>
-        }
+
+       
       >
         <ChemicalForm addCatOrComp={addCatOrComp} onClose={onClose} isFromDrawer={true}/>
       </Drawer>

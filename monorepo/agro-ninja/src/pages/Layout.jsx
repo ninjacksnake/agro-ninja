@@ -126,7 +126,7 @@ const AppLayout = () => {
             justifyContent: "center",
           }}
         >
-          <Image src={logo} width={85} height={85} />
+          <Image src={logo} width={85} height={85} preview={false} />
         </div>
         <Menu
           theme="dark"

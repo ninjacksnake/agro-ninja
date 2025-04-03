@@ -30,7 +30,7 @@ const AddCategoryDrawer = ({ open, onClose, openNotification , addCatOrComp}) =>
       <Drawer
         placement="left"
         title="Agregar nueva Categoría"
-        width={720}
+        width={420}
         onClose={onClose}
         open={open}
         styles={{ paddingBottom: 80 }}
@@ -47,7 +47,7 @@ const AddCategoryDrawer = ({ open, onClose, openNotification , addCatOrComp}) =>
           form={form}
         >
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={20}>
               <Form.Item
                 name="name"
                 label="Nombre"
@@ -58,7 +58,7 @@ const AddCategoryDrawer = ({ open, onClose, openNotification , addCatOrComp}) =>
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={20}>
               <Form.Item
                 name="description"
                 label="Descripción"
@@ -69,7 +69,9 @@ const AddCategoryDrawer = ({ open, onClose, openNotification , addCatOrComp}) =>
                 <Input placeholder="Por favor incluir la descripción aqui" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            </Row>
+            <Row gutter={16}>
+            <Col span={20}>
               <Form.Item
                 name="category"
                 label="Tipo"

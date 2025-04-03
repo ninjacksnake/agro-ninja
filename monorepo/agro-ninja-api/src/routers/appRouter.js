@@ -15,7 +15,7 @@ router.get("/", (req, res, next) => {
   res.status(200).send("server is alive");
 });
 
-// router.get("/sync", syncDb);
+ router.get("/sync", syncDb);
 
 router.post("/api/products", productsController.create);
 router.get("/api/products", productsController.find);

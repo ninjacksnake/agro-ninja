@@ -32,8 +32,8 @@ Chemical.belongsToMany(Product, { through: 'ProductChemicals' });
 Disease.belongsToMany(Product, { through: 'DiseaseProducts' });
 Product.belongsToMany(Disease, { through: 'DiseaseProducts' });
 
-Disease.belongsToMany(Crop, { through: 'DiseaseCrops' });
-Crop.belongsToMany(Disease, { through: 'DiseaseCrops' });
+// Disease.belongsToMany(Crop, { through: 'DiseaseCrops' });
+// Crop.belongsToMany(Disease, { through: 'DiseaseCrops' });
 
 Disease.belongsToMany(CropStage, { through: 'cropStageDisease' });
 CropStage.belongsToMany(Disease, { through: 'cropStageDisease' });

@@ -6,7 +6,7 @@ const Disease = require("../models/index").Disease;
 
 const create = async (req, res, next) => {
   const crop = req.body;
-  console.log(crop)
+  //console.log(crop)
   try {
     const newCrop = await Crops.create(crop);
     if (req.body.products !== undefined) {
@@ -15,7 +15,7 @@ const create = async (req, res, next) => {
       });
       await newCrop.addProducts(products);
     }
- 
+
     if (req.body.diseases !== undefined) {
       const diseases = await Disease.findAll({
         where: { id: [...crop.diseases] },
@@ -46,7 +46,7 @@ const find = async (req, res, next) => {
         include: [{ model: Product }, { model: Disease }],
       });
     } else {
-      result = await Crops.findAll({include: [{ model: Product }, { model: Disease }],});
+      result = await Crops.findAll({ include: [{ model: Product }, { model: Disease }], });
       return res.status(200).send(result);
     }
   } catch (err) {
@@ -58,20 +58,24 @@ const update = async (req, res, next) => {
   try {
     const cropData = req.body;
     const crop = await Crops.findByPk(cropData.id);
-    if (cropData.products!== undefined) {
+    await crop.update(cropData);
+
+    if (cropData.products !== undefined) {
       const products = await Product.findAll({
         where: { id: [...cropData.products] },
       });
       await crop.setProducts(products);
     }
-    if (cropData.diseases!== undefined) {
+
+    if (cropData.diseases !== undefined) {
+      // console.log("diseases CABRON", cropData.diseases)
       const diseases = await Disease.findAll({
-        where: { id: [...cropData.diseases] } });    
+        where: { id: [...cropData.diseases] },
+      });
+      console.log("diseases Cabron", diseases)
       await crop.setDiseases(diseases);
-      };
-    
-   // const updatedCrop = await Crops.update(cropData, { where: { id: cropData.id } });
-    // console.log("updated", updatedCrop)
+    };
+    console.log("Updated crop", crop);
 
     res.status(200).send({ id: cropData.id }); //
   } catch (error) {

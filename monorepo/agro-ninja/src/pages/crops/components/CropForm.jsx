@@ -76,7 +76,6 @@ const CropForm = ({ isUpdate, crop=[],  id = null }) => {
             const cropTypesDb = await CropTypeService.CropType.findAll();
             setCropTypes(cropTypesDb);
             const diseasesDb = await DiseaseService.diseases.findAll();
-            console.log(diseases)
             setDiseases(diseasesDb);
         };
         getInfo();

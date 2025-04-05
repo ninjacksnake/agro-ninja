@@ -8,7 +8,8 @@ const ChemicalTypes = require('./chemicalTypes');
 const Crop = require('./crops');
 const CropTypes = require('./cropTypes');
 const CropStage = require('./cropStages');
-
+require('dotenv').config();
+const initDb = process.env.INITDB;
 
 const sync = () => sequelize.sync({force: true});
 
@@ -207,11 +208,14 @@ const diseaseClassification = [
     },
   ]
 
+if (initDb==="true") {
+  console.log('Inicializando la base de datos...', initDb);
+  Categories.bulkCreate(categoriesData);
+  CropTypes.bulkCreate(cropTypesData);
+  DiseaseType.bulkCreate(diseaseClassification);
+  ChemicalTypes.bulkCreate(chemicalTypesData);
+}
 
-//  `Categories.bulkCreate(categoriesData);
-//  CropTypes.bulkCreate(cropTypesData);
-//  DiseaseType.bulkCreate(diseaseClassification);
-//  ChemicalTypes.bulkCreate(chemicalTypesData);`
 
 
 

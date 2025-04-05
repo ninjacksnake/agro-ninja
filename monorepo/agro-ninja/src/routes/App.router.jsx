@@ -19,6 +19,8 @@ import FindCrop from "../pages/crops/FindCrop.jsx"
 import Crops from "../pages/crops/Crops.jsx"
 import CreateCrop from "../pages/crops/CreateCrop.jsx"
 import UpdateCrop from "../pages/crops/UpdateCrop.jsx"
+import Login from "../pages/Auth/Login.jsx";
+import Register from "../pages/Auth/Register.jsx";
 
 
 const AppRoutes = () => {
@@ -26,6 +28,8 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<AppLayout />}>
         <Route index element={<Home />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
 
         <Route path="products">
           <Route index element={<Products />} />

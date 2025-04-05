@@ -37,9 +37,9 @@ const Login = () => {
             <Col xs={22} sm={16} md={12} lg={8} xl={6}>
                 <Card bordered={false} style={{ boxShadow: '0 1px 2px -2px rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09)' }}>
                     <div style={{ textAlign: 'center', marginBottom: 32 }}>
-                        <Title level={2}>Welcome Back</Title>
+                        <Title level={2}>Bienvenido </Title>
                         <Typography.Text type="secondary">
-                            Please sign in to continue
+                            Por favor ingresa tus credenciales para iniciar sesión.
                         </Typography.Text>
                     </div>
 

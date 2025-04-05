@@ -1,6 +1,6 @@
 const express = require("express");
 const productsController = require("../controllers/products.controller");
-const { syncDb } = require("../controllers/app.controller");
+
 const chemicalsController = require("../controllers/chemicals.controller");
 const diseasesController = require("../controllers/diseases.controller");
 const categoriesController = require("../controllers/categories.controller");
@@ -8,6 +8,7 @@ const cropsController = require("../controllers/crops.controller.js");
 const cropTypesController = require("../controllers/cropTypes.controller.js");
 const diseaseTypeController = require("../controllers/diseaseType.controller.js");
 const chemicalTypeController  = require("../controllers/chemicalType.controller.js");
+const authMiddleware = require("../utils/middlewares/authMiddleware.js");
 
 const router = express.Router();
 
@@ -15,9 +16,9 @@ router.get("/", (req, res, next) => {
   res.status(200).send("server is alive");
 });
 
- router.get("/sync", syncDb);
+// router.get("/sync", syncDb);
 
-router.post("/api/products", productsController.create);
+router.post("/api/products", authMiddleware, productsController.create);
 router.get("/api/products", productsController.find);
 router.get("/api/products/:id", productsController.findById);
 router.put("/api/products", productsController.update);

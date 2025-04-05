@@ -5,7 +5,10 @@ const port = 3004;
 const router = require("./routers/appRouter.js");
 const bodyParser = require("body-parser");
 const getUploadMiddleware = require("./utils/services/uploader.middleware.js");
-
+const { syncDb } = require("./controllers/app.controller");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { User } = require("./models/index.js");
 
 const uploadProducts = getUploadMiddleware("products");
 const uploadChemicals = getUploadMiddleware("chemicals");
@@ -15,7 +18,7 @@ const uploadCrops = getUploadMiddleware("crops");
 const path = require("path");
 const fs = require('fs');
 require("dotenv").config();
-
+const executeDbSync = process.env.DBSYNC;
 
 
 //middlware
@@ -24,14 +27,34 @@ app.use(cors());
 app.use(router);
 app.use(express.json());
 
+// route to log in and return a token
+app.post("/api/login", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({
+    where: { email, password },
+  });
+  const validPassword = await bcrypt.compare(password, user.password);
+  if (!validPassword) {
+    return res.status(401).json({ message: "Credenciales incorrectas." });
+  }
+  const token = jwt.sign({
+    userId: user.id,
+    firstname: user.firstname,
+    lastname: user.lastname, 
+    email: user.email,
+    role: user.role
+
+  }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
 
-app.get("/auth", (req, res) => {
-  res.send(authenticationParameters);
+  res.status(200).json({
+    message: "Login successful",
+    token: token,
+  });
 });
 
-app.post("/api/upload/products", uploadProducts.single("file"),  
-   (req, res) => {
+app.post("/api/upload/products", uploadProducts.single("file"),
+  (req, res) => {
     if (!req.file) {
       return res.status(400).send("No file Uploaded");
     };
@@ -41,86 +64,12 @@ app.post("/api/upload/products", uploadProducts.single("file"),
     } = req.file;
     res.status(200).json({
       message: "Files uploaded successfully",
-       file: fileDetails,
+      file: fileDetails,
     })
-});
+  });
 
 app.post("/api/upload/diseases", uploadDiceases.single("file"),
   (req, res) => {
-   if (!req.file) {
-     return res.status(400).send("No file Uploaded");
-   };
-   const fileDetails = {
-     name: req.file.originalname,
-     size: req.file.size,
-   } = req.file;
-   res.status(200).json({
-     message: "Files uploaded successfully",
-      file: fileDetails,
-   })
-});
-
-app.post("/api/upload/chemicals", uploadChemicals.single("file"),
-  (req, res) => {
-   if (!req.file) {
-     return res.status(400).send("No file Uploaded");
-   };
-   const fileDetails = {
-     name: req.file.originalname,
-     size: req.file.size,
-   } = req.file;
-   res.status(200).json({
-     message: "Files uploaded successfully",
-      file: fileDetails,
-   })
-});
-
-
-app.get("/api/upload/products/:file", (req, res)=>{
-  const _module = req.body.module;
-  const photoId = req.params.file;
-  const filePath = path.join(__dirname, `uploads`, 'products', photoId);
-  if(fs.existsSync(filePath)){
-    res.sendFile(filePath);
-  }else{
-    res.status(400).send({message:"Photo not found"});
-  }
-});
-app.get("/api/upload/diseases/:file", (req, res)=>{
-  const _module = req.body.module;
-  const photoId = req.params.file;
-  const filePath = path.join(__dirname, `uploads`, 'diceases', photoId);
-  if(fs.existsSync(filePath)){
-    res.sendFile(filePath);
-  }else{
-    res.status(400).send({message:"Photo not found"});
-  }
-});
-
-app.get("/api/upload/chemicals/:file", (req, res)=>{
-
-  const photoId = req.params.file;
-  const filePath = path.join(__dirname, `uploads`,'chemicals', photoId);
-  if(fs.existsSync(filePath)){
-    res.sendFile(filePath);
-  }else{
-    res.status(400).send({message:"Photo not found"});
-  }
-});
-
-app.get("/api/upload/crops/:file", (req, res)=>{
-  const photoId = req.params.file;
-  const filePath = path.join(__dirname, `uploads`,'crops', photoId);
-  if(fs.existsSync(filePath)){
-    res.sendFile(filePath);
-  }else{
-    res.status(400).send({message:"Photo not found"});
-  }
-});
-
-
-app.post("/api/upload/crops", uploadCrops.single("file"),  
-   (req, res) => {
     if (!req.file) {
       return res.status(400).send("No file Uploaded");
     };
@@ -130,13 +79,91 @@ app.post("/api/upload/crops", uploadCrops.single("file"),
     } = req.file;
     res.status(200).json({
       message: "Files uploaded successfully",
-       file: fileDetails,
+      file: fileDetails,
     })
+  });
+
+app.post("/api/upload/chemicals", uploadChemicals.single("file"),
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).send("No file Uploaded");
+    };
+    const fileDetails = {
+      name: req.file.originalname,
+      size: req.file.size,
+    } = req.file;
+    res.status(200).json({
+      message: "Files uploaded successfully",
+      file: fileDetails,
+    })
+  });
+
+app.get("/api/upload/products/:file", (req, res) => {
+  const _module = req.body.module;
+  const photoId = req.params.file;
+  const filePath = path.join(__dirname, `uploads`, 'products', photoId);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(400).send({ message: "Photo not found" });
+  }
 });
+app.get("/api/upload/diseases/:file", (req, res) => {
+  const _module = req.body.module;
+  const photoId = req.params.file;
+  const filePath = path.join(__dirname, `uploads`, 'diceases', photoId);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(400).send({ message: "Photo not found" });
+  }
+});
+
+app.get("/api/upload/chemicals/:file", (req, res) => {
+
+  const photoId = req.params.file;
+  const filePath = path.join(__dirname, `uploads`, 'chemicals', photoId);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(400).send({ message: "Photo not found" });
+  }
+});
+
+app.get("/api/upload/crops/:file", (req, res) => {
+  const photoId = req.params.file;
+  const filePath = path.join(__dirname, `uploads`, 'crops', photoId);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(400).send({ message: "Photo not found" });
+  }
+});
+
+app.post("/api/upload/crops", uploadCrops.single("file"),
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).send("No file Uploaded");
+    };
+    const fileDetails = {
+      name: req.file.originalname,
+      size: req.file.size,
+    } = req.file;
+    res.status(200).json({
+      message: "Files uploaded successfully",
+      file: fileDetails,
+    })
+  });
 
 const server = require("http").createServer(app);
 
-server.listen(port, () => console.log("Server listening port", port));
+server.listen(port, () => {
+  if (executeDbSync === "true") {
+    syncDb();
+    console.log("Database synchronized");
+  }
+  console.log("Server listening port", port)
+});
 
 server.on("error", (err) => {
   console.log("Server error", err);

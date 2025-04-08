@@ -14,6 +14,7 @@
   "author": "Michael Fermin",
   "license": "ISC",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.6.1",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -24,6 +25,7 @@
     "nodemon": "^3.1.4",
     "pg": "^8.12.0",
     "pg-hstore": "^2.3.4",
+    "react-redux": "^9.2.0",
     "sequelize": "^6.31.1",
     "sqlite3": "^5.1.7"
   }

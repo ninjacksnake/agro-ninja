@@ -4,12 +4,11 @@ const cors = require("cors");
 const port = 3004;
 const router = require("./routers/appRouter.js");
 const bodyParser = require("body-parser");
-const getUploadMiddleware = require("./utils/services/uploader.middleware.js");
+const getUploadMiddleware = require("./utils/middlewares/uploader.middleware.js");
 const { syncDb } = require("./controllers/app.controller");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const { User } = require("./models/index.js");
-
+const tokenFactory = require('./utils/authHelper/tokenFactory.js');
 const uploadProducts = getUploadMiddleware("products");
 const uploadChemicals = getUploadMiddleware("chemicals");
 const uploadDiceases = getUploadMiddleware("diceases");
@@ -37,22 +36,40 @@ app.post("/api/login", async (req, res) => {
   if (!validPassword) {
     return res.status(401).json({ message: "Credenciales incorrectas." });
   }
-  const token = jwt.sign({
-    userId: user.id,
-    firstname: user.firstname,
-    lastname: user.lastname, 
-    email: user.email,
-    role: user.role
+  const token = tokenFactory.generateToken(user);
+  const refreshToken = tokenFactory.generateRefreshToken(user);
+  // save the refresh token to a db 
 
-  }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-
-  res.status(200).json({
+  res.status(200).cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+    path: 'api/refresh-token',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  }).json({
     message: "Login successful",
     token: token,
   });
 });
 
+app.post("/api/refresh-token", (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.status(401);
+  try {
+    const freshToken = tokenFactory.tokenRefresher(refreshToken);
+    res.json({
+   //   message: "login successful",
+      AccessToken: freshToken,
+    })
+  } catch (error) {
+    res.send(403);
+  }
+})
+
+app.post('/api/logout',(req, res)=>{
+  res.clearCookie('refreshToken', {path:"/api/refresh-token"});
+  res.sendStatus(204);
+})
 app.post("/api/upload/products", uploadProducts.single("file"),
   (req, res) => {
     if (!req.file) {

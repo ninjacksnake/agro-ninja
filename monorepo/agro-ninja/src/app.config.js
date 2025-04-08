@@ -1,6 +1,7 @@
+
 const appConfig = {
     development:{
-        apiUrl: 'http://localhost:3004/api',
+        apiUrl: process.env.REACT_APP_API_BASE_URL_DEVELOPMENT,
         uploadPath: '/upload',
         modules: {
             products: '/products',
@@ -13,7 +14,7 @@ const appConfig = {
     },
 
     production:{
-        apiUrl: 'https://agro-ninja.herokuapp.com/api',
+        apiUrl: process.env.REACT_APP_API_BASE_URL_PRODUCTION,
     }
 
 

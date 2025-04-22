@@ -7,23 +7,10 @@ import { Input, Space, Button, Tooltip, Drawer, Table } from "antd";
 import { NavLink } from "react-router-dom";
 import TableComponent from "../components/TableComponent";
 import DrawerComponent from "../components/DrawerComponent";
+import axios from "axios";
+import ProductsTable from "./components/ProductsTable";
 
 
-const columns = [
-  {
-    title: 'Name',
-    key: 'name',
-    dataIndex: 'name',
-  }, {
-    title: 'Description',
-    key: 'description',
-    dataIndex: 'description',
-  }, {
-    title: 'Category',
-    key: 'category',
-    dataIndex: ['category', 'name']  
-  },
-];
 
 const FindProducts = () => {
   const [products, setProducts] = useState([]);
@@ -32,29 +19,25 @@ const FindProducts = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const result = await ProductService.Products.findAll();
-        setProducts((r) => result);
-        setFiltredProducts((r) => result);
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getData();
-
+    ProductService.findAll().then((data) => {
+      setProducts( data );
+      setFiltredProducts(data);
+    }).catch((error) => {
+       console.log(error);
+       // manejar el error 
+    });
   }, []);
 
   const filterProducts = (e) => {
     if (e.target.value === undefined || e.target.value === "") {
       e.target.value = document.getElementById("si").value;
     }
-
+    
     const filteredProducts = products.filter((product) =>
       product.name.toLowerCase().includes(e.target.value.toLowerCase())
-    );
-    setFiltredProducts(filteredProducts);
-  };
+  );
+  setFiltredProducts(filteredProducts);
+};
 
   const showDrawer = (name) => {
     const chosenProduct =
@@ -74,9 +57,9 @@ const FindProducts = () => {
   // };
 
   const getChemicalId = (name) => {
-  
-  return selectedProduct.chemicals.find((chemical) => chemical.name === name)?.id;
-    
+
+    return selectedProduct.chemicals.find((chemical) => chemical.name === name)?.id;
+
   }
 
   return (
@@ -96,25 +79,32 @@ const FindProducts = () => {
           Buscar
         </Button>
       </Space.Compact>
-      {/* <ProductCardList products={filtredProducts} /> */}
-      <TableComponent data={filtredProducts} columns={columns} module={'products'} showDrawer={showDrawer} />
-      <DrawerComponent 
-      open={open} 
-      onClose={onClose} 
-      title={selectedProduct?.name} 
-      caption={"Componentes Quimicos"}
-      columns={[
-        {
-          title: "Name",
-          dataIndex: "name",
-          key: "id",
-          render: (text) => <NavLink to={`/chemicals/details/${getChemicalId(text)}`}>{text}</NavLink>,
-        },
-      ]} 
-      data={selectedProduct?.chemicals}
-       
-      />
+      {/* {filtredProducts.length > 0 ? <TableComponent data={products} columns={columns} module={'products'} showDrawer={showDrawer} /> : ""} */}
      
+     
+     
+     <ProductsTable  data={filtredProducts}  />
+    
+    
+    
+    
+      <DrawerComponent
+        open={open}
+        onClose={onClose}
+        title={selectedProduct?.name}
+        caption={"Componentes Quimicos"}
+        columns={[
+          {
+            title: "Name",
+            dataIndex: "name",
+            key: "id",
+            render: (text) => <NavLink to={`/chemicals/details/${getChemicalId(text)}`}>{text}</NavLink>,
+          },
+        ]}
+        data={selectedProduct?.chemicals}
+
+      />
+
     </div>
   );
 };

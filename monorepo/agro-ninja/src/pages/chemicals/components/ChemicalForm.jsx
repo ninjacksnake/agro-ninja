@@ -7,7 +7,7 @@ import ImageUploaderFB from "../../components/ImageUploaderFB.jsx";
 import appConfig from "../../../app.config.js";
 const noPhoto = require("../../../assets/images/no-photos.png");
 
-const module = appConfig.development.modules.chemicals;
+const module = appConfig.modules.chemicals;
 
 const layout = {
   labelCol: { span: 8 },
@@ -54,7 +54,7 @@ console.log(chemical)
       setFilename(chemical.photo);
     }
     const getInfo = async () => {
-      const result = await ChemicalService.ChemicalTypes.findAll();
+      const result = await ChemicalService.findAll();
       console.log(result); // Add this line to log the result to the console
       setChemicalTypes(result);
     };
@@ -66,7 +66,7 @@ console.log(chemical)
     try {
       if (isUpdate) {
         values.id = chemical.id;
-        await ChemicalService.Chemicals.updateChemical(values);
+        await ChemicalService.updateChemical(values);
         openNotification(
           "Success",
           "Has actualizado el quimico sastifactoriamente"
@@ -74,7 +74,7 @@ console.log(chemical)
         navigate(`/chemicals/details/${chemical.id}`);
       } else {
         values.photo = fileName.file.name || noPhoto; // Use the uploaded photo or a default
-        const result = await ChemicalService.Chemicals.createChemical(values);
+        const result = await ChemicalService.createChemical(values);
         openNotification(
           "Success",
           "El quimico ha sido creado sastifactoriamente"

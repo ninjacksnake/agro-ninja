@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Card, Row, Col, Typography, notification, Steps, Space, Divider } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const { Title, Text } = Typography;
 const { Step } = Steps;
@@ -15,7 +16,27 @@ const Register = () => {
     const onFinish = async (values) => {
         setLoading(true);
         try {
-            // Add registration logic here
+            await form.validateFields([
+                'email',
+                'password',
+                'confirm',
+                'firstName',
+                'lastName',
+                'phoneNumber'
+            ]);
+            
+            // Get all form values
+            const formData = form.getFieldsValue();
+            console.log('Form Data:', formData);
+            // Remove the confirm password field before sending
+            const { confirm, ...registrationData } = formData;
+
+            const response = await axios.post(process.env.REACT_APP_API_BASE_URL_DEVELOPMENT+'register', registrationData);
+            console.log(response.data);
+            if (response.data.status === 'success') {
+                console.log('Registration successful!');
+               
+            }
             console.log('Registration values:', values);
             notification.success({
                 message: 'Success',
@@ -78,7 +99,7 @@ const Register = () => {
                         layout="vertical"
                         size="large"
                     >
-                        {currentStep === 0 && (
+                        
                             <>
                                 <Form.Item
                                     name="email"
@@ -126,11 +147,7 @@ const Register = () => {
                                         placeholder="Confirm Password"
                                     />
                                 </Form.Item>
-                            </>
-                        )}
-
-                        {currentStep === 1 && (
-                            <>
+                                                    
                                 <Form.Item
                                     name="firstName"
                                     rules={[{ required: true, message: 'Please input your first name!' }]}
@@ -152,7 +169,7 @@ const Register = () => {
                                 </Form.Item>
 
                                 <Form.Item
-                                    name="phone"
+                                    name="phoneNumber"
                                     rules={[{ required: true, message: 'Please input your phone number!' }]}
                                 >
                                     <Input
@@ -161,24 +178,13 @@ const Register = () => {
                                     />
                                 </Form.Item>
                             </>
-                        )}
+                        
 
                         <Form.Item>
-                            <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                                {currentStep === 1 && (
-                                    <Button type="default" onClick={prevStep}>
-                                        Previous
-                                    </Button>
-                                )}
-                                {currentStep === 0 ? (
-                                    <Button type="primary" block onClick={nextStep}>
-                                        Next
-                                    </Button>
-                                ) : (
-                                    <Button type="primary" htmlType="submit" loading={loading} block>
+                            <Space style={{ width: '100%', justifyContent: 'center' }}>                                
+                                    <Button  type="primary" htmlType="submit" loading={loading} block>
                                         Register
                                     </Button>
-                                )}
                             </Space>
                         </Form.Item>
                     </Form>
@@ -187,9 +193,9 @@ const Register = () => {
                     
                     <Row justify="center">
                         <Text type="secondary">
-                            Already have an account?{' '}
+                           Ya tienes una cuenta?{' '}
                             <Button type="link" onClick={() => navigate('/login')}>
-                                Sign in
+                                Iniciar Sesión
                             </Button>
                         </Text>
                     </Row>

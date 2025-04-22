@@ -9,7 +9,7 @@ import ImageUploaderFB from "../../components/ImageUploaderFB";
 import { PlusOutlined } from "@ant-design/icons";
 
 const noPhoto = require("../../../assets/images/diseases/no-photos.png"); // check the folder is for the module
-const module = appConfig.development.modules.diseases;
+const module = appConfig.modules.diseases;
 
  
 const layout = {
@@ -55,7 +55,7 @@ const DiseaseForm = ({ isUpdate, disease = null }) => {
       if (isUpdate) {
         setFileName(disease.photo);
       }
-      const diseaseTypes = await DiseaseTypeService.diseaseTypes.findAll();
+      const diseaseTypes = await DiseaseTypeService.findAll();
       console.log(diseaseTypes);
       setdiseaseType(diseaseTypes);
     };

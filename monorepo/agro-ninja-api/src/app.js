@@ -12,6 +12,7 @@ const tokenFactory = require('./utils/authHelper/tokenFactory.js');
 const uploadProducts = getUploadMiddleware("products");
 const uploadChemicals = getUploadMiddleware("chemicals");
 const uploadDiceases = getUploadMiddleware("diceases");
+
 const uploadCrops = getUploadMiddleware("crops");
 
 const path = require("path");
@@ -19,27 +20,30 @@ const fs = require('fs');
 require("dotenv").config();
 const executeDbSync = process.env.DBSYNC;
 
-
 //middlware
-app.use(bodyParser.json({ limit: "10mb" }));
-app.use(cors());
-app.use(router);
 app.use(express.json());
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+console.log(process.env.CLIENT_URL)
+app.use(router);
 
 // route to log in and return a token
 app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({
-    where: { email, password },
+    where: { email },
   });
+  if (!user) {
+    return res.status(401).json({ message: "Credenciales incorrectas." });
+  }
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
     return res.status(401).json({ message: "Credenciales incorrectas." });
   }
-  const token = tokenFactory.generateToken(user);
+  const accessToken = tokenFactory.generateToken(user);
   const refreshToken = tokenFactory.generateRefreshToken(user);
+user.password = undefined;
   // save the refresh token to a db 
-
   res.status(200).cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: true,
@@ -47,22 +51,37 @@ app.post("/api/login", async (req, res) => {
     path: 'api/refresh-token',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   }).json({
-    message: "Login successful",
-    token: token,
+    user,
+     accessToken,
   });
 });
 
+// route to refresh a token
 app.post("/api/refresh-token", (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) return res.status(401);
+  const refreshToken = req?.cookies?.refreshToken;
+  if (!refreshToken) return res.status(401).send("Unauthorized");
   try {
     const freshToken = tokenFactory.tokenRefresher(refreshToken);
     res.json({
-   //   message: "login successful",
+   // message: "login successful",
       AccessToken: freshToken,
     })
   } catch (error) {
     res.send(403);
+  }
+});
+
+// route to verify a token
+app.post("/api/verify-token", (req, res) => {
+  const isValid = tokenFactory.verifyToken(req.body.token);
+  if (isValid) {
+    res.status(200).json({
+      message: "Token approved",
+    })
+  } else {
+    res.status(401).json({
+      message: "Unauthorized",
+    })
   }
 })
 
@@ -73,7 +92,7 @@ app.post('/api/logout',(req, res)=>{
 app.post("/api/upload/products", uploadProducts.single("file"),
   (req, res) => {
     if (!req.file) {
-      return res.status(400).send("No file Uploaded");
+      return res.status(400).send("File is Missing");
     };
     const fileDetails = {
       name: req.file.originalname,
@@ -172,6 +191,9 @@ app.post("/api/upload/crops", uploadCrops.single("file"),
     })
   });
 
+app.get("/api/hi", (req, res) => {
+  res.send("Hello World!");
+})
 const server = require("http").createServer(app);
 
 server.listen(port, () => {

@@ -9,6 +9,7 @@ const cropTypesController = require("../controllers/cropTypes.controller.js");
 const diseaseTypeController = require("../controllers/diseaseType.controller.js");
 const chemicalTypeController  = require("../controllers/chemicalType.controller.js");
 const authMiddleware = require("../utils/middlewares/authMiddleware.js");
+const UserController = require("../controllers/user.controller.js");
 
 const router = express.Router();
 
@@ -16,12 +17,10 @@ router.get("/", (req, res, next) => {
   res.status(200).send("server is alive");
 });
 
-// router.get("/sync", syncDb);
-
 router.post("/api/products", authMiddleware, productsController.create);
-router.get("/api/products", productsController.find);
-router.get("/api/products/:id", productsController.findById);
-router.put("/api/products", productsController.update);
+router.get("/api/products", authMiddleware, productsController.find);
+router.get("/api/products/:id", authMiddleware, productsController.findById);
+router.put("/api/products", authMiddleware, productsController.update);
 
 router.post("/api/diseases", diseasesController.create);
 router.get("/api/diseases", diseasesController.find);
@@ -56,6 +55,10 @@ router.get("/api/cropType", cropTypesController.find);
 router.post("/api/cropType", cropTypesController.create);
 router.put("/api/cropType", cropTypesController.update);
 router.get("/api/cropType/:id", cropTypesController.findById);
+
+
+router.post("/api/register", UserController.create);
+
 
 
 

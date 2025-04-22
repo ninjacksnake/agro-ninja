@@ -1,13 +1,14 @@
-import axios from "axios";
-import Utils from "./Utils";
+import appConfig from "../app.config";
+import api from "./api";
 
-const apiUrl = Utils.apiURl;
-//console.log(apiUrl);
+
+
+
 
 const getDiseases = () => {
   const callApi = async () => {
     try {
-      const disease = await axios.get(`${apiUrl}/diseases`);
+      const disease = await api.get(`/diseases`);
       //  console.log(disease.data);
       return disease.data;
     } catch (error) {
@@ -20,7 +21,7 @@ const getDiseases = () => {
 const getDiseaseById = (id) => {
   const callApi = async () => {
     try {
-      const disease = await axios.get(`${apiUrl}/diseases/${id}`);
+      const disease = await api.get(`/categories/diseases/${id}`);
       return disease.data;
     } catch (error) {
       console.log(error);
@@ -33,8 +34,8 @@ const getDiseaseById = (id) => {
 const createDisease = (disease) => {
   const callApi = async (disease) => {
     try {
-      const newDisease = await axios.post(
-        `${apiUrl}/diseases
+      const newDisease = await api.post(
+        `/categories/diseases
       `,
         disease
       );
@@ -51,8 +52,8 @@ const updateDisease = (disease) => {
   const callApi = async (disease) => {
     //  console.log("update disease ")
     try {
-      const updatedDisease = await axios.put(
-        `${apiUrl}/diseases
+      const updatedDisease = await api.put(
+        `/categories/diseases
       `,
         disease
       );
@@ -66,12 +67,12 @@ const updateDisease = (disease) => {
 };
 
 const DiseaseService = {
-  diseases: {
+  
     findAll: getDiseases,
     findById: getDiseaseById,
     create: createDisease,
     update: updateDisease,
-  },
+
 };
 
 export default DiseaseService;

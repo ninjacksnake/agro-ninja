@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Table, Button, Segmented, Drawer, Tooltip, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -6,8 +6,9 @@ import { Link, useNavigate } from 'react-router-dom';
 const TableComponent = ({ data, columns, module, showDrawer }) => {
   const [records, setRecords] = useState([]);
   const [cols, setCols] = useState([]);
-
+  const [dataSource, setDataSource] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     if (data === undefined || data === null || data.length === 0) {
       setRecords([]);
@@ -23,67 +24,74 @@ const TableComponent = ({ data, columns, module, showDrawer }) => {
       navigate('/');
     }
 
-  }, [data]);
+    setDataSource(records);
+    // setDataSource(x =>
+    //   records.map((item) => ({
+    //     ...item,
+    //     key: item.id,
+    //   })));
+  }, [data, columns, module]);
 
+ 
   const goUpdate = async (id) => {
-   // console.log("From table component: ", records, module);
-    localStorage.clear();
-    localStorage.setItem(
-      `Selected${module}ToUpdate`,
-      JSON.stringify(data.find((record) => record.id === id))
-    );
+      // console.log("From table component: ", records, module);
+      localStorage.clear();
+      localStorage.setItem(
+        `Selected${module}ToUpdate`,
+        JSON.stringify(data.find((record) => record.id === id))
+      );
 
-    setTimeout(() => {
-      localStorage.removeItem(`Selected${module}ToUpdate`);
-    }, 300000);
-    navigate(`/${module}/update/${id}`);
-  };
+      setTimeout(() => {
+        localStorage.removeItem(`Selected${module}ToUpdate`);
+      }, 300000);
+      navigate(`/${module}/update/${id}`);
+    };
 
+    const enhancedColumns = useMemo(() => [
+      ...(cols || []),
+      {
+        title: 'Acciones',
+        key: 'actions',
+        render: (text, record) => (
+          <span>
+            {module === 'products' && <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Componentes</Button>}
+            {module === 'diceases' && <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Productos</Button>}
+            {/* {module === 'chemicals' &&  <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Componentes</Button>}   */}
+            {/* {module === 'crops' && <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Productos</Button>} */}
 
-  const dataSource = records.map((item) => ({
-    ...item,
-    key: item.id,
-  }));
+            <Tooltip title="Editar" placement="bottom" >
+              <Button type="text" style={{ "color": "blue" }} onClick={() => goUpdate(record.id)} >Editar</Button>
+            </Tooltip>
+            <Tooltip title="Detalles" placement="bottom" >
+              <Button type="text" style={{ "color": "blue" }} onClick={() => navigate(`/${module}/details/${record.id}`)}>Detalles</Button>
+            </Tooltip>
 
-  const enhancedColumns = [
-    ...cols,
-    {
-      title: 'Acciones',
-      key: 'actions',
-      render: (text, record) => (
-        <span>
-          {module === 'products' && <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Componentes</Button>}
-          {module === 'diceases' && <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Productos</Button>}
-          {/* {module === 'chemicals' &&  <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Componentes</Button>}   */}
-          {/* {module === 'crops' && <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Productos</Button>} */}
-
-          <Tooltip title="Editar" placement="bottom" >
-            <Button type="text" style={{ "color": "blue" }} onClick={() => goUpdate(record.id)} >Editar</Button>
-          </Tooltip>
-          <Tooltip title="Detalles" placement="bottom" >
-            <Button type="text" style={{ "color": "blue" }} onClick={() => navigate(`/${module}/details/${record.id}`)}>Detalles</Button>
-          </Tooltip>
-
-          {/* <Link to={`/${module}/update/${record.id}`}>
+            {/* <Link to={`/${module}/update/${record.id}`}>
                         <Button type="link">Editar</Button>
                     </Link>
                     <Link to={`/${module}/details/${record.id}`}>
                         <Button type="link"> Detalles</Button>
                     </Link> */}
-        </span>
-      ),
-    },
-  ];
+          </span>
+        ),
+      },
+    ], [columns, module]);
 
-  return <div>
-    <Table
-      className='table-striped-rows'
-      dataSource={dataSource}
-      columns={enhancedColumns}
+    return <div>
+      <Table
+        className='table-striped-rows'
+        dataSource={dataSource}
+        columns={enhancedColumns}
+        loading={!dataSource.length}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+         
+        }}
 
-    />
+      />
 
-  </div>
-};
+    </div>
+  };
 
-export default TableComponent;
+  export default TableComponent;

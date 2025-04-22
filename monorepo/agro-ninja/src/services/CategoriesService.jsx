@@ -1,65 +1,36 @@
-import axios from "axios";
-import Utils from "./Utils";
+import api from "./api";
 
-const apiUrl = Utils.apiURl;
-
-const moduleNameUrl = "/categories";
-
-const getCategories = () => {
-  const callApi = async () => {
-    try {
-      const category = await axios.get(`${apiUrl}${moduleNameUrl}`);
-      console.log("category ", category.data);
-      return category.data;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-  return callApi();
+const getCategories = async () => {
+  try {
+    const response = await api.get(`/categories`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
-const createCategory = (category) => {
-  // console.log("create category ", category);
-  const callApi = async (category) => {
-    try {
-      const newCategory = await axios.post(
-        `${apiUrl}${moduleNameUrl}`,
-        category
-      );
-      return newCategory.data;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-  return callApi(category);
+const createCategory = async (category) => {
+  try {
+    const newCategory = await api.post(`/categories`, category);
+    return newCategory.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
-const updateCategory = (category) => {
-  const callApi = async (category) => {
-    //  console.log("update category ")
-    try {
-      const newCategory = await axios.put(
-        `${apiUrl}${moduleNameUrl}
-      `,
-        category
-      );
-      return newCategory.data;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-  return callApi(category);
+const updateCategory = async (category) => {
+  try {
+    const response = await api.put(`/categories`, category);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const CategoryService = {
-  Categories: {
-    FindAll: getCategories,
-    Create: createCategory,
-    Update: updateCategory,
-  },
+  FindAll: getCategories,
+  Create: createCategory,
+  Update: updateCategory,
 };
 
 export default CategoryService;

@@ -2,14 +2,13 @@ import { AuditOutlined, EditOutlined } from "@ant-design/icons";
 import { Card, Image, Upload } from "antd";
 import React from "react";
 
-import { IKContext, IKImage } from "imagekitio-react";
 import { useNavigate } from "react-router-dom";
 import config from "../../../app.config.js"; 
 
 const { Meta } = Card;
-const urlEndpoint = config.development.apiUrl;
-const uploadPath = config.development.uploadPath;
-const module = config.development.modules.diseases;
+const urlEndpoint = config.apiUrl;
+const uploadPath = config.uploadPath;
+const module = config.modules.diseases;
 
 const DiseaseCard = ({ disease, showDrawer }) => {
   const navigate = useNavigate();

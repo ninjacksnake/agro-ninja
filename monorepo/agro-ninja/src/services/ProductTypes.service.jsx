@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "./api";
 import Utils from "./Utils";
 
 //const apiUrl = Utils.production.apiURl;
@@ -7,7 +7,7 @@ const apiUrl = Utils.apiURl;
 const getProductTypes = () => {
   const callApi = async () => {
     try {
-      const productType = await axios.get(`${apiUrl}/productType`);
+      const productType = await api.get(`${apiUrl}/productType`);
         console.log(productType.data);
       return productType.data;
     } catch (error) {
@@ -21,7 +21,7 @@ const getProductTypes = () => {
 const getProductTypeById = (id) => {
   const callApi = async () => {
     try {
-      const productType = await axios.get(`${apiUrl}/productType/${id}`);
+      const productType = await api.get(`${apiUrl}/productType/${id}`);
       console.log(productType.data);
       return productType.data;
     } catch (error) {
@@ -35,7 +35,7 @@ const getProductTypeById = (id) => {
 const createProductType = (productType) => {
   const callApi = async (productType) => {
     try {
-      const productType = await axios.post(`${apiUrl}/productType`, productType);
+      const productType = await api.post(`${apiUrl}/productType`, productType);
       return productType.data;
     } catch (error) {
       console.log(error);
@@ -48,7 +48,7 @@ const createProductType = (productType) => {
 const updateProductType = (productType) => {
   const callApi = async (productType) => {
     try {
-      const productType = await axios.put(`${apiUrl}/productType`, productType);
+      const productType = await api.put(`${apiUrl}/productType`, productType);
       return productType.data;
     } catch (error) {
       console.log(error);
@@ -62,12 +62,12 @@ const updateProductType = (productType) => {
 
 
 const ProductService = {
-  productType: {
+ 
     findAll: getProductTypes,
     findById: getProductTypeById,
     createProductType,
     updateProductType,
-  },
+
 
 };
 

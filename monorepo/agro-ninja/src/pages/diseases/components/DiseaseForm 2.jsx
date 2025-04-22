@@ -8,7 +8,7 @@ import ImageUploaderFB from "../../components/ImageUploaderFB";
 
 
 const noPhoto = require("../../../assets/images/diseases/no-photos.png"); // check the folder is for the module
-const module = appConfig.development.modules.diseases;
+const module = appConfig.modules.diseases;
 
 
 const layout = {
@@ -48,7 +48,7 @@ const DiseaseForm2 = ({ isUpdate, diseases = null }) => {
       if (isUpdate) {
         setFileName(diseases?.photo);
       }
-      const diseaseTypes = await DiseaseTypeService.diseaseTypes.findAll();
+      const diseaseTypes = await DiseaseTypeService.findAll();
       setDiseaseTypes(diseaseTypes);
      // console.log(diseaseTypes);
     };

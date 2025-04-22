@@ -12,6 +12,7 @@ const generateToken = (user) => {
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRATION }
     );
+   // console.log('token is generated token', token)
     return token;
 }
 
@@ -27,11 +28,14 @@ const generateRefreshToken = (user) => {
         process.env.JWT_REFRESH_SECRET,
         { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
     );
+    //console.log('refresh token is ', refreshToken)
+
     return refreshToken;
 }
 
 const tokenRefresher = (refreshToken) => {
     try {
+       // console.log('token refresher token is ', refreshToken)
         const token = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
         const freshToken = generateToken(token);
         return freshToken;
@@ -41,8 +45,18 @@ const tokenRefresher = (refreshToken) => {
     }
 }
 
+const verifyToken = (token) => {
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        return decoded;
+    } catch (error) {
+        return null;
+    }
+}
+
 module.exports = {
     generateToken: generateToken,
     generateRefreshToken: generateRefreshToken,
     tokenRefresher: tokenRefresher,
+    verifyToken: verifyToken,
 }

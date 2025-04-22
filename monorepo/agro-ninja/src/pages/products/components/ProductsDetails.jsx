@@ -1,10 +1,10 @@
 import { Alert, Card, Col, Divider, Empty, Row, Spin, Table, Image } from "antd";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import ChemicalService from "../../services/Chemical.service";
-import DiseaseService from "../../services/Disease.service";
+// import ChemicalService from "../../services/Chemical.service";
+// import DiseaseService from "../../services/Disease.service";
 import ProductService from "../../services/Product.service";
-import AppConfig from "../../app.config";
+import AppConfig from "../../../app.config";
 import "./DetailPage.css";
 
 import noPhoto from "../../assets/images/no-photos.png"

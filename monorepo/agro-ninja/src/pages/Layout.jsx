@@ -77,7 +77,7 @@ const items = [
       "9",
       <>
         {" "}
-        <PieChartOutlined  style={{marginRight: "5px"}}/> <NavLink to="Chemicals/add" />
+        <FileAddFilled  style={{marginRight: "5px"}}/> <NavLink to="Chemicals/add" />
       </>
     ),
     // getItem("Modificar", "12", <> <PieChartOutlined /> <NavLink to="Chemicals/update"/></>),
@@ -96,7 +96,7 @@ const items = [
       "12",
       <>
         {" "}
-        <PieChartOutlined style={{marginRight: "5px"}}/> <NavLink to="Crops/add" />
+        <FileAddFilled style={{marginRight: "5px"}}/> <NavLink to="Crops/add" />
       </>
     ),
     // getItem("Modificar", "12", <> <PieChartOutlined /> <NavLink to="Chemicals/update"/></>),

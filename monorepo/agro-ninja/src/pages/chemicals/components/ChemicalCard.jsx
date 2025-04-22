@@ -7,9 +7,9 @@ import appConfig from "../../../app.config";
 
 
 const { Meta } = Card;
-const urlEndpoint = appConfig.development.apiUrl;
-const uploadPath = appConfig.development.uploadPath;
-const module = appConfig.development.modules.chemicals;
+const urlEndpoint = appConfig.apiUrl;
+const uploadPath = appConfig.uploadPath;
+const module = appConfig.modules.chemicals;
 
 const ChemicalCard = ({ chemical, showDrawer }) => {
   const navigate = useNavigate();

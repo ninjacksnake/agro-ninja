@@ -10,7 +10,7 @@ import DiseaseService from "../../../services/Disease.service.jsx";
 import ImageUploaderFB from "../../components/ImageUploaderFB";
 
 //const noPhoto = require("../../../assets/images/crops/no-photos.png"); // check the folder is for the module
-const module = appConfig.development.modules.crops;
+const module = appConfig.modules.crops;
 
 
 const layout = {
@@ -71,11 +71,11 @@ const CropForm = ({ isUpdate, crop=[],  id = null }) => {
                 setCropToUpdate(crop);
                 setFileName(crop?.photo);
             }
-            const productsDb = await ProductService.Products.findAll();
+            const productsDb = await ProductService.findAll();
             setProducts(productsDb);
-            const cropTypesDb = await CropTypeService.CropType.findAll();
+            const cropTypesDb = await CropTypeService.findAll();
             setCropTypes(cropTypesDb);
-            const diseasesDb = await DiseaseService.diseases.findAll();
+            const diseasesDb = await DiseaseService.findAll();
             setDiseases(diseasesDb);
         };
         getInfo();

@@ -19,7 +19,7 @@ const sequelize = new Sequelize(database, dbusername, dbpassword, {
       rejectUnauthorized: false, // Accept self-signed certs
     },
   },
-  logging: console.log,
+  logging:  console.log,
 });
 
 module.exports = sequelize;

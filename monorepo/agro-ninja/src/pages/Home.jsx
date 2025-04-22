@@ -2,13 +2,19 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DataCards from "./components/HomeCards";
 import "./Home.css"; // Import the CSS file
+import {useSelector} from "react-redux";
+import appConfig from "../app.config";
+
 
 const ParentComponent = () => {
   const [data, setData] = useState({ chemicals: 0, products: 0, diseases: 0 });
+  const user = useSelector((state) => state.auth.user);
+  console.log(user); // Log the use
 
   useEffect(() => {
     axios
-      .get("/api/data-endpoint")
+      .get(appConfig.apiUrl + "/home"
+      )
       .then((response) => {
         setData({
           chemicals: response.data.chemicals,

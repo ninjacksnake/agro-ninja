@@ -1,8 +1,9 @@
-import { IKContext, IKImage, IKUpload } from "imagekitio-react";
+
 import React, { useState } from "react";
 import { Upload , Button, message, UploadProps} from "antd";
 import { UploadOutlined } from "@ant-design/icons"
-import Utils from "../../services/Utils";
+import appConfig from "../../app.config";
+
 
 const ImageUploader = ({
   onFileSelected,
@@ -14,8 +15,7 @@ const ImageUploader = ({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [fileList, setFileList] = useState([]);
-  const publicKey = Utils.publicKey;
-  const authenticationEndpoint = Utils.authenticationEndpoint;
+  const authenticationEndpoint = appConfig.authenticationEndpoint;
   // const urlEndpoint = Utils.urlEndpoint;
 
   //const handleChange = UploadProps['onChange'] = ({})

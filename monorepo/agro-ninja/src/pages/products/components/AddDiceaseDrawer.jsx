@@ -9,7 +9,7 @@ const AddiseaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => {
   const [form] = Form.useForm();
   const [fileName, setFileName] = useState(" ");
   const [diseaseTypes, setDiseaseTypes] = useState([]);
-  const module = appConfig.development.modules.diseases;
+  const module = appConfig.modules.diseases;
 
   useEffect(() => {
     const getData = async () => {

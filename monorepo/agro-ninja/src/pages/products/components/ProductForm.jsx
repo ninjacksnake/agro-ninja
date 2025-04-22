@@ -111,14 +111,14 @@ const ProductForm = ({ isUpdate, product = null }) => {
   useEffect(() => {
     console.log('Use effect ', product)
     const getInfo = async () => {
-      const dbChemicals = await ChemicalService.Chemicals.findAll();
+      const dbChemicals = await ChemicalService.findAll();
       setComponents((ch) => dbChemicals);
-      const dbCategories = await CategoryService.Categories.FindAll();
+      const dbCategories = await CategoryService.FindAll();
       // console.log(categories);
       setCategories((ca) => dbCategories);
-      const dbdiceases = await DiseaseService.diseases.findAll();
+      const dbdiceases = await DiseaseService.findAll();
       setDiceases((d) => dbdiceases);
-      const dbCrops = await CropService.Crops.findAll();
+      const dbCrops = await CropService.findAll();
       setCrops(dbCrops);
       if (isUpdate) {
         // if is an update of a product set the photo to be shown 
@@ -134,7 +134,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
     if (isUpdate) {
       values.id = product.id;
       values.photo = fileName?.file?.name || "";
-      return ProductService.Products.updateProduct(values)
+      return ProductService.updateProduct(values)
         .then((result) => {
           openNotification("Success", "El Producto ha sido actualizado");
           navigate(`/products/details/${values.id}`, { state: result });
@@ -145,7 +145,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
         });
     } else {
       values.photo = fileName?.file?.name || "";
-      return ProductService.Products.createProduct(values)
+      return ProductService.createProduct(values)
         .then((result) => {
           openNotification("Success", "El producto ha sido creado");
           navigate(`/products/details/${result.id}`, { state: result });
@@ -167,7 +167,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
     isUpdate == true ? navigate('/products/find') : clearForm();
   }
 
-  const module = appConfig.development.modules.products
+  const module = appConfig.modules.products
 
   //component ui
   return (
@@ -233,7 +233,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
             allowClear
             size="middle"
           >
-            {console.log('Hya cat', categories)}
+            {/* {console.log('Hya cat', categories)} */}
             {categories.map((category, index) => (
               <Option value={category.id} key={category.id}>
                 {" "}

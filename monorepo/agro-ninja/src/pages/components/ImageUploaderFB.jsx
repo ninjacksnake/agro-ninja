@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import {UploadOutlined} from '@ant-design/icons';
 import {Button, message, Upload, Space} from 'antd';
 import appConfig from '../../app.config';
+import api from '../../services/api';
+import axios from 'axios';
 
 
 const ImageUploaderFB = ({setFileName=null, module =""}) => {
-  const uploadPath = appConfig.development.uploadPath;
+  const uploadPath = appConfig.uploadPath;
+
   const [uploading, setUploading] = useState(false);
 
  const handleUpload =  async (options) => { 
@@ -19,15 +22,10 @@ const ImageUploaderFB = ({setFileName=null, module =""}) => {
   setUploading(true);
 
   try {
-    const response = await fetch(`${appConfig.development.apiUrl+uploadPath+module}`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setFileName(data.file.path); // Save the uploaded image path   
-         
+    const response = await api.post(`${uploadPath}${module}`,  formData , {headers: {'Content-Type': 'multipart/form-data'}});
+    if (response.statusText === 'OK') {
+      const data = response.data;
+      setFileName(data.file.path); // Save the uploaded image path    
       message.success('Imagen Almacenada!');
       onSuccess('Imagen almacenada');
     } else {

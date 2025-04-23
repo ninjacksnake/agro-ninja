@@ -20,8 +20,14 @@ const FindProducts = () => {
 
   useEffect(() => {
     ProductService.findAll().then((data) => {
-      setProducts( data );
-      setFiltredProducts(data);
+      const enhancedData = data.map((product) => {
+        return {
+          ...product,
+          key: product.id,
+        };
+      });
+      setProducts( enhancedData );
+      setFiltredProducts(enhancedData);
     }).catch((error) => {
        console.log(error);
        // manejar el error 

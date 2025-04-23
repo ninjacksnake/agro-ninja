@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Modal, Button, Form, Input, Select, Upload, message, notification } from 'antd';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
@@ -14,7 +14,7 @@ import appConfig from '../../../app.config.js';
 const { TextArea } = Input;
 const { Option } = Select;
 
-const ProductForm2 = ({ isUpdate, product, productId }
+const ProductForm2 = ({ isUpdate, product }
 
 ) => {
     const [form] = Form.useForm();
@@ -27,34 +27,31 @@ const ProductForm2 = ({ isUpdate, product, productId }
     const [diseaseModalVisible, setDiseaseModalVisible] = useState(false);
     const [fileName, setFileName] = useState(null);
     const navigate = useNavigate();
-    const module = appConfig.development.modules.products
 
 
 
-    useState(() => {
-        console.log('ProductForm2', product);
+
+    useEffect(() => {
+
         setFileName({ file: { name: product?.photo } });
         const getInfo = async () => {
-            const dbChemicals = await ChemicalService.Chemicals.findAll();
+            const dbChemicals = await ChemicalService.findAll();
             setComponents((ch) => dbChemicals);
-            const dbCategories = await CategoryService.Categories.FindAll();
+            const dbCategories = await CategoryService.FindAll();
             // console.log('dbCategories', dbCategories);
             setCategories((ca) => dbCategories);
-            const dbdiseases = await Diseaseservice.diseases.findAll();
+            const dbdiseases = await Diseaseservice.findAll();
             setDiseases((d) => dbdiseases);
-            const crops = await CropService.Crops.findAll();
+            const crops = await CropService.findAll();
             setCrops((c) => crops);
-            console.log('crops', crops);
+            //  console.log('crops', crops);
         };
         getInfo();
 
     }, [isUpdate])
 
 
-    // const handleFinish = (values) => {
-    //     console.log('Form values:', values);
-    //     message.success('Product saved successfully!');
-    // };
+
     const openNotification = (title, body, reason = "") => {
         notification.open({
             message: `${title}`,
@@ -72,7 +69,7 @@ const ProductForm2 = ({ isUpdate, product, productId }
         if (isUpdate) {
             values.id = product.id;
             values.photo = fileName?.file?.name || "";
-            return ProductService.Products.updateProduct(values)
+            return ProductService.updateProduct(values)
                 .then((result) => {
                     openNotification("Success", "El Producto ha sido actualizado");
                     navigate(`/products/details/${values.id}`, { state: result });
@@ -83,7 +80,7 @@ const ProductForm2 = ({ isUpdate, product, productId }
                 });
         } else {
             values.photo = fileName?.file?.name || "";
-            return ProductService.Products.createProduct(values)
+            return ProductService.createProduct(values)
                 .then((result) => {
                     openNotification("Success", "El producto ha sido creado");
                     navigate(`/products/details/${result.id}`, { state: result });
@@ -118,15 +115,23 @@ const ProductForm2 = ({ isUpdate, product, productId }
         setDiseases([...diseases, values.disease]);
         setDiseaseModalVisible(false);
     };
-
+    // adding a new image object for the image uploader
+    var existingImagePath = {
+        name: product?.photo,
+        url: appConfig.apiUrl + "/upload/products/" + product?.photo,
+        thumbUrl: appConfig.apiUrl + "/upload/products/" + product?.photo,
+        uid: product?.photo,
+        status: 'done',
+    }
+   // appConfig.apiUrl + "/upload/" + product?.photo;
     return (
-        <div style={{ padding: 20, border: '1px solidrgb(78, 78, 78)', borderRadius: 5, boxShadow: '0 0 5px rgba(1, 2, 1, 0.57)', width: '50%', }}>
+        <div style={{ padding: 10, border: '1px solidrgb(78, 78, 78)', borderRadius: 5, boxShadow: '0 0 5px rgba(1, 2, 1, 0.57)', width: '50%', }}>
             <Form
                 form={form}
                 layout="horizontal"
-                labelCol={{ span: 8 }}
+                labelCol={{ span: 4 }}
 
-                wrapperCol={{ span: 16 }}
+                wrapperCol={{ span: 20 }}
                 size='medium'
                 onFinish={onFinish}
                 onFinishFailed={handleFinishFailed}
@@ -149,12 +154,10 @@ const ProductForm2 = ({ isUpdate, product, productId }
                         : null
                 }
             >
-                <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
-                    <ImageUploaderFB setFileName={setFileName} module={module} />
+                <ImageUploaderFB setFileName={setFileName} module={"products"} existingImagePath={existingImagePath} />
+                <Form.Item name="photo" label="" rules={[{ required: false }]}>
                     <input type="text" name="photo" value={fileName?.file?.name} hidden />
-
                 </Form.Item>
-
                 <Form.Item
                     name="name"
                     label="Name"

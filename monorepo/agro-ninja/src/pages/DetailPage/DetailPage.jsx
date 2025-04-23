@@ -42,7 +42,7 @@ const diseasesColumns = [
 ];
 
 function getPhoto( urlEndpoint, uploadPath, module, photo){
-  // console.log(urlEndpoint, uploadPath, module, photo )
+   console.log(urlEndpoint, uploadPath, module, photo )
   if (photo){
     return `${urlEndpoint}${uploadPath}/${module}/${photo}`;
   }else{
@@ -60,23 +60,24 @@ const DetailPage = () => {
   const pId = location.pathname.split("/").slice(-1)[0];
   // const apiUrl = AppConfig.development.apiUrl;
   
-
   useEffect(() => {
+    console.log("Module", module);
+    console.log("pId", pId);
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
         let data;
         if (module === "products") {
-          data = await ProductService.Products.findById(pId);
+          data = await ProductService.findById(pId);
         //  console.log(data)
         } else if (module === "diseases") {
-          data = await DiseaseService.diseases.findById(pId);
+          data = await DiseaseService.findById(pId);
           console.log(data)
         } else if (module === "chemicals") {
-          data = await ChemicalService.Chemicals.findById(pId);
+          data = await ChemicalService.findById(pId);
         } else if (module === "crops"){
-          data = await CropService.Crops.findById(pId);
+          data = await CropService.findById(pId);
          //console.log(data)
         }
         setInformation(data);
@@ -86,7 +87,6 @@ const DetailPage = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [module, pId]);
 

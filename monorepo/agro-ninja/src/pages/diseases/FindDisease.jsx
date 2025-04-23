@@ -1,12 +1,10 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
+import { Input, Space, Button, message, notification } from "antd";
 import diseasesService from "../../services/Disease.service";
-import { Input, Space, Button, message } from "antd";
-import diseaseCardList from './components/DiseaseCardList';
 import TableComponent from "../components/TableComponent";
 import DrawerComponent from "../components/DrawerComponent";
 import { NavLink } from "react-router-dom";
-
 
 const columns = [
   {
@@ -25,85 +23,90 @@ const columns = [
   }
 ];
 
-
-
-const Finddisease = () => {
+const FindDisease = () => {
   const [diseases, setDiseases] = useState([]);
-
-  const [filtredDiseases, setFiltredDiseases] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [selecteddisease, setSelecteddisease] = useState(null);
-
+  const [selectedDisease, setSelectedDisease] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const result = await diseasesService.diseases.findAll();
-        console.log(result)
-        setDiseases((r) => result);
-        setFiltredDiseases((r) => result);
+        setLoading(true);
+        const result = await diseasesService.findAll();
+        setDiseases(result);
       } catch (error) {
-        /// console.log(error);
-        message.error('Error al cargar las enfermedades');
+        notification.error({
+          message: 'Error',
+          description: 'Failed to load diseases'
+        });
+      } finally {
+        setLoading(false);
       }
     };
     getData();
-
   }, []);
 
- const getProductId = (name) => {
-  console.log(name)
-    return selecteddisease.products.find((product) => product.name === name).id;
- };
-
-  const filterdiseases = (e) => {
-    if (e.target.value === undefined || e.target.value === "") {
-      e.target.value = document.getElementById("si").value;
-    }
-    const filtereddiseases = diseases.filter((diseases) =>
-      diseases.name.toLowerCase().includes(e.target.value.toLowerCase())
+  const filteredDiseases = useMemo(() => {
+    if (!diseases.length) return [];
+    return diseases.filter((disease) =>
+      disease.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+  }, [diseases, searchTerm]);
 
-    setFiltredDiseases(x => filtereddiseases);
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value || '');
   };
 
   const showDrawer = (name) => {
-
-    const chosenDisease =
-      filtredDiseases.find((disease) => disease.name === name) ?? null;
-    setSelecteddisease((p) => chosenDisease);
+    const chosenDisease = diseases.find((disease) => disease.name === name) ?? null;
+    setSelectedDisease(chosenDisease);
     setOpen(true);
   };
-  const onClose = () => {
-    setOpen(false);
+
+  const getProductId = (name) => {
+    if (!selectedDisease?.products) return null;
+    const product = selectedDisease.products.find((p) => p.name === name);
+    return product?.id;
   };
 
   return (
     <div>
       <Space.Compact style={{ width: "100%", marginBottom: "2rem" }}>
         <Input
-          id="si"
-          placeholder="Escriba aqui el nombre de la enfermedad que desea buscar"
-          onKeyUp={filterdiseases}
+          placeholder="Search disease by name"
+          onChange={handleSearch}
+          value={searchTerm}
         />
-        <Button type="primary" onClick={filterdiseases}>
-          Buscar
+        <Button type="primary">
+          Search
         </Button>
       </Space.Compact>
-      {/* <diseaseCardList diseasess={filtreddiseases} /> */}
-      <TableComponent data={filtredDiseases} columns={columns} module={'diseases'} showDrawer={showDrawer} />
+
+      <TableComponent 
+        data={filteredDiseases} 
+        columns={columns} 
+        module={'diseases'} 
+        showDrawer={showDrawer}
+        loading={loading}
+      />
+
       <DrawerComponent
-        caption={'Productos relacionados'}
+        caption={'Related Products'}
         open={open}
-        onClose={onClose}
-        title={selecteddisease?.name}
-        columns={  [
+        onClose={() => setOpen(false)}
+        title={selectedDisease?.name}
+        columns={[
           {
-          title: 'Nombre',
-          key: 'name',
-          dataIndex: 'name',
-          render: (text) => <NavLink to={`/products/details/${getProductId(text)}`}>{text}</NavLink> 
-        },
+            title: 'Name',
+            key: 'name',
+            dataIndex: 'name',
+            render: (text) => {
+              const id = getProductId(text);
+              return id ? <NavLink to={`/products/details/${id}`}>{text}</NavLink> : text;
+            }
+          },
         {
           title: 'clasificación',
           key: 'classification',
@@ -115,12 +118,10 @@ const Finddisease = () => {
           dataIndex: 'description',
         }, 
       ]}
-        data={selecteddisease?.products}
-        
-       
+        data={selectedDisease?.products}
       />
     </div>
   );
 };
 
-export default Finddisease;
+export default FindDisease;

@@ -6,7 +6,7 @@ const ProductsTable = ({ data }) => {
     const columns = [
         {
             title: 'Name',
-            key: 'name',
+            key: `name`,
             dataIndex: 'name',
         }, {
             title: 'Description',
@@ -23,11 +23,11 @@ const ProductsTable = ({ data }) => {
             render: (text, record) => (
 
                     <Space >
-                        <Button type="primary" size="small">
+                        <Button type="primary" size="small" >
                             <Link to={`/products/update/${record.id}`}>Editar</Link>
                         </Button>
-                        <Button type="primary" danger size="small">
-                            <Link to={`/products/details/${record.id}`}>Ver</Link>
+                        <Button type="primary" green size="small" >
+                            <Link to={`/products/details/${record.id}`}>Detalles</Link>
                         </Button>
                     </Space>
             )

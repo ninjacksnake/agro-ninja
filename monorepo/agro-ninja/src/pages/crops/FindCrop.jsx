@@ -18,7 +18,7 @@ const FindCrop = () => {
     useEffect(() => {
         const getData = async () => {
             try {
-                const result = await CropService.Crops.findAll();
+                const result = await CropService.findAll();
                 setCrops((r) => result);
                 setFiltredCrops((r) => result);
             } catch (error) {
@@ -86,7 +86,6 @@ const FindCrop = () => {
                         dataIndex: "description",
                         key: "description",
                     },
-
                 ]}
                 module="crops"
                 showDrawer={showDrawer}

@@ -8,9 +8,11 @@ import CropTypeService from "../../../services/CropType.service.jsx";
 import ProductService from "../../../services/Product.service.jsx";
 import DiseaseService from "../../../services/Disease.service.jsx";
 import ImageUploaderFB from "../../components/ImageUploaderFB";
+import api from "../../../services/api.jsx";
 
 //const noPhoto = require("../../../assets/images/crops/no-photos.png"); // check the folder is for the module
-const module = appConfig.modules.crops;
+const module = '/crops'
+const apiUrl = appConfig.apiUrl;
 
 
 const layout = {
@@ -88,7 +90,7 @@ const CropForm = ({ isUpdate, crop=[],  id = null }) => {
             if (values.photo !== fileName?.file?.name) {
                 values.photo = fileName?.file?.name;
             }
-            return CropService.Crops
+            return CropService
                 .updateCrop(values)
                 .then((result) => {
                     //     console.log(result)
@@ -102,7 +104,7 @@ const CropForm = ({ isUpdate, crop=[],  id = null }) => {
         } else {
 
             values.photo = fileName?.file?.name; // default no photo photo
-            return CropService.Crops
+            return CropService
                 .createCrop(values)
                 .then((result) => {
                     // console.log(result)
@@ -154,6 +156,7 @@ const CropForm = ({ isUpdate, crop=[],  id = null }) => {
                     <ImageUploaderFB
                         setFileName={setFileName}
                         module={module}
+                        existingImagePath={apiUrl +'/update/'+module+crop?.photo?? ""}
                     />
                 </Form.Item>
                 <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
@@ -216,7 +219,7 @@ const CropForm = ({ isUpdate, crop=[],  id = null }) => {
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit">
-                            Add
+                            Agregar
                         </Button>
                     </Form.Item>
                 </Form>

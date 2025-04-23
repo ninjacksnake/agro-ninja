@@ -3,6 +3,7 @@ import api from "./api";
 const getProducts = async () => {
     try {
       const response = await api.get(`/products`);
+      console.log(response.data)
       return response.data; 
     } catch (error) {
       throw error;
@@ -40,7 +41,7 @@ const createProduct = (product) => {
 const updateProduct = (product) => {
   const callApi = async (product) => {
     try {
-      const response = await api.put(` /products`, product);
+      const response = await api.put(`/products`, product);
       return response.data;
     } catch (error) {   
       throw error;

@@ -11,7 +11,7 @@ const AppPrivateRoute = ({ children, roles = [] }) => {
         const isTokenValid = async () => {
             try {
                 const result = await Api.post("/verify-token", {token: accessToken});
-                console.log(result);
+               // console.log(result);
                 if(result.status !== 200) {
                     return <Navigate to={'/login'}/>;
                 }

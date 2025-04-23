@@ -1,83 +1,101 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Table, Button, Segmented, Drawer, Tooltip, message } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
-
+import { Table, Button, Tooltip, message, Space } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const TableComponent = ({ data, columns, module, showDrawer }) => {
-  const [records, setRecords] = useState([]);
-  const [cols, setCols] = useState([]);
   const [dataSource, setDataSource] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (data === undefined || data === null || data.length === 0) {
-      setRecords([]);
-    }
-    setRecords(data);
-    if (columns === undefined || columns === null || columns.length === 0) {
-      setCols([]);
-    }
-    setCols(columns);
-    if (module === undefined || module === null || module === '') {
-      message.error("Module is empty");
-      console.log("module is empty");
-      navigate('/');
+    if (!data?.length || !columns?.length || !module) {
+      if (!module) {
+        message.error("Module is empty");
+        navigate('/');
+      }
+      setDataSource([]);
+      return;
     }
 
-    setDataSource(records);
-    // setDataSource(x =>
-    //   records.map((item) => ({
-    //     ...item,
-    //     key: item.id,
-    //   })));
-  }, [data, columns, module]);
+    setDataSource(data.map((item) => ({
+      ...item,
+      key: item.id,
+    })));
+  }, [data, columns, module, navigate]);
 
- 
   const goUpdate = async (id) => {
-      // console.log("From table component: ", records, module);
-      localStorage.clear();
-      localStorage.setItem(
-        `Selected${module}ToUpdate`,
-        JSON.stringify(data.find((record) => record.id === id))
-      );
+    localStorage.setItem(
+      `Selected${module}ToUpdate`,
+      JSON.stringify(data.find((record) => record.id === id))
+    );
 
-      setTimeout(() => {
-        localStorage.removeItem(`Selected${module}ToUpdate`);
-      }, 300000);
-      navigate(`/${module}/update/${id}`);
-    };
+    setTimeout(() => {
+      localStorage.removeItem(`Selected${module}ToUpdate`);
+    }, 300000);
+    navigate(`/${module}/update/${id}`);
+  };
 
-    const enhancedColumns = useMemo(() => [
-      ...(cols || []),
-      {
-        title: 'Acciones',
-        key: 'actions',
-        render: (text, record) => (
-          <span>
-            {module === 'products' && <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Componentes</Button>}
-            {module === 'diceases' && <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Productos</Button>}
-            {/* {module === 'chemicals' &&  <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Componentes</Button>}   */}
-            {/* {module === 'crops' && <Button type='text' style={{ "color": "blue" }} onClick={() => showDrawer(record.name)}>Productos</Button>} */}
+  const enhancedColumns = useMemo(() => [
+    ...(columns || []),
+    {
+      title: 'Acciones',
+      key: 'actions',
+      render: (text, record) => (
+        <span>
+          <Space size="small">
+            {module === 'products' && (
+              <Button
+                color='default'
+                variant='outlined'
+                style={{ color: "blue" }}
+                onClick={() => showDrawer(record.name)}
+              >
+                Componentes
+              </Button>
+            )}
+            {module === 'diseases' && (
+              <Button
+                type='primary'
+                
+                style={{ color: "black", backgroundColor: "lightblue"  }}
+                variant='outlined'
+                size='small'
+                onClick={() => showDrawer(record.name)}
+              >
+                Productos
+              </Button>
+            )}
 
-            <Tooltip title="Editar" placement="bottom" >
-              <Button type="text" style={{ "color": "blue" }} onClick={() => goUpdate(record.id)} >Editar</Button>
+            <Tooltip title="Editar" placement="bottom">
+              <Button
+              type='primary'
+                style={{ color: "black", backgroundColor: "#7bc297" }}
+                variant='outlined'
+                size='small'
+                onClick={() => goUpdate(record.id)}
+              >
+                Editar
+              </Button>
             </Tooltip>
-            <Tooltip title="Detalles" placement="bottom" >
-              <Button type="text" style={{ "color": "blue" }} onClick={() => navigate(`/${module}/details/${record.id}`)}>Detalles</Button>
+            <Tooltip title="Detalles" placement="bottom">
+              <Button
+              type='primary'
+                color='default'
+                style={{ color: "white",  }}
+                variant='outlined'
+                size='small'
+                onClick={() => navigate(`/${module}/details/${record.id}`)}
+              >
+                Detalles
+              </Button>
             </Tooltip>
+          </Space>
+        </span>
+      ),
+    },
+  ], [columns, module, showDrawer, goUpdate, navigate]);
 
-            {/* <Link to={`/${module}/update/${record.id}`}>
-                        <Button type="link">Editar</Button>
-                    </Link>
-                    <Link to={`/${module}/details/${record.id}`}>
-                        <Button type="link"> Detalles</Button>
-                    </Link> */}
-          </span>
-        ),
-      },
-    ], [columns, module]);
-
-    return <div>
+  return (
+    <div>
       <Table
         className='table-striped-rows'
         dataSource={dataSource}
@@ -86,12 +104,11 @@ const TableComponent = ({ data, columns, module, showDrawer }) => {
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: true,
-         
+          pageSizeOptions: ['10', '20', '30']
         }}
-
       />
-
     </div>
-  };
+  );
+};
 
-  export default TableComponent;
+export default TableComponent;

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import ProductForm2 from "./components/ProductForm2";
 
 const UpdateProducts = () => {
-  const id = useParams();
+  
  // console.log('from update', id)
   const product = JSON.parse(localStorage.getItem("SelectedproductsToUpdate"));
   //console.log("From update products: ", product);
@@ -13,7 +13,7 @@ const UpdateProducts = () => {
       <h1>Modificar Producto</h1>
       <br />
       {/* <ProductForm isUpdate={true} product={product} id={id} />  */}
-      <ProductForm2 isUpdate={true} product={product} productId={id}  />
+      <ProductForm2 isUpdate={true} product={product}   />
     </>
   );
 };

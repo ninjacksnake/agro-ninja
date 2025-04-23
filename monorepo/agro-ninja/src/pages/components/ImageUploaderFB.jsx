@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import {UploadOutlined} from '@ant-design/icons';
-import {Button, message, Upload, Space} from 'antd';
+import {Button, message, Upload, Space, Row} from 'antd';
 import appConfig from '../../app.config';
 import api from '../../services/api';
 import axios from 'axios';
 
 
-const ImageUploaderFB = ({setFileName=null, module =""}) => {
+const ImageUploaderFB = ({setFileName=null, module ="", existingImagePath=null}) => {
   const uploadPath = appConfig.uploadPath;
 
+
+  // Estado para controlar si se está subiendo un archivo
   const [uploading, setUploading] = useState(false);
 
  const handleUpload =  async (options) => { 
@@ -22,7 +24,7 @@ const ImageUploaderFB = ({setFileName=null, module =""}) => {
   setUploading(true);
 
   try {
-    const response = await api.post(`${uploadPath}${module}`,  formData , {headers: {'Content-Type': 'multipart/form-data'}});
+    const response = await api.post(`${uploadPath}/${module}`,  formData , {headers: {'Content-Type': 'multipart/form-data'}});
     if (response.statusText === 'OK') {
       const data = response.data;
       setFileName(data.file.path); // Save the uploaded image path    
@@ -42,17 +44,21 @@ const ImageUploaderFB = ({setFileName=null, module =""}) => {
 
   return (
     
-  <div>
+  <div style={{display:'flex', flexDirection:"row", justifyContent:"center"}}>
  
     <Upload
+defaultFileList={[existingImagePath]}
       customRequest={handleUpload}
-      listType="picture"
+      listType="picture-circle"
+      multiple={false}
+      
       maxCount={1}
       onChange={setFileName}
       type="file"
+     
  
     >
-      <Button icon={<UploadOutlined />}>Seleccionar Imagen</Button>
+      <Button type='text' style={{textAlign:"match-parent"}} icon={<UploadOutlined />}>  </Button>
     </Upload>
     
   </div>

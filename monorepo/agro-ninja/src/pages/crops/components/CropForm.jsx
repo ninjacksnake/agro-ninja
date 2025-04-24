@@ -11,9 +11,8 @@ import ImageUploaderFB from "../../components/ImageUploaderFB";
 import api from "../../../services/api.jsx";
 
 //const noPhoto = require("../../../assets/images/crops/no-photos.png"); // check the folder is for the module
-const module = '/crops'
+const module = 'crops'
 const apiUrl = appConfig.apiUrl;
-
 
 const layout = {
     labelCol: { span: 8 },
@@ -24,14 +23,14 @@ const tailLayout = {
     wrapperCol: { offset: 8, span: 16 },
 };
 
-const CropForm = ({ isUpdate, crop=[],  id = null }) => {
+const CropForm = ({ isUpdate, crop = [], id = null }) => {
 
     const [form] = Form.useForm();
     const [cropToUpdate, setCropToUpdate] = useState([]);
     const [fileName, setFileName] = useState("");
     const [products, setProducts] = useState([]);
     const [cropTypes, setCropTypes] = useState([]);
-    const [diseases, setDiseases] = useState([]);   
+    const [diseases, setDiseases] = useState([]);
     const [cropTypeModalVisible, setCropTypeModalVisible] = useState(false);
     const navigate = useNavigate();
 
@@ -69,7 +68,7 @@ const CropForm = ({ isUpdate, crop=[],  id = null }) => {
 
     useEffect(() => {
         const getInfo = async () => {
-            if (isUpdate) {              
+            if (isUpdate) {
                 setCropToUpdate(crop);
                 setFileName(crop?.photo);
             }
@@ -156,14 +155,21 @@ const CropForm = ({ isUpdate, crop=[],  id = null }) => {
                     <ImageUploaderFB
                         setFileName={setFileName}
                         module={module}
-                        existingImagePath={apiUrl +'/update/'+module+crop?.photo?? ""}
+                        existingImagePath={
+                            {
+                                url: apiUrl + '/upload/' + module + "/" + crop?.photo ?? "",
+                                uid: 1,
+                                name: crop?.photo?? "",
+                                status: 'done',
+                            }
+                        }
                     />
                 </Form.Item>
                 <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
                     <Input />
                 </Form.Item>
                 <Form.Item name="type" label="Clasificación" rules={[{ required: true }]}>
-                    <Select options= {memoizedCropTypes} />
+                    <Select options={memoizedCropTypes} />
 
                 </Form.Item>
                 <Form.Item name="diseases" label="Enfermedades Relacionadas" rules={[{ required: false }]}>
@@ -224,7 +230,6 @@ const CropForm = ({ isUpdate, crop=[],  id = null }) => {
                     </Form.Item>
                 </Form>
             </Modal>
-
 
         </div>
     );

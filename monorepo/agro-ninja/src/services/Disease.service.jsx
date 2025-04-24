@@ -21,7 +21,7 @@ const getDiseases = () => {
 const getDiseaseById = (id) => {
   const callApi = async () => {
     try {
-      const disease = await api.get(`/categories/diseases/${id}`);
+      const disease = await api.get(`/diseases/${id}`);
       return disease.data;
     } catch (error) {
       console.log(error);

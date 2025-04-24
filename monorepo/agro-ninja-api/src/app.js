@@ -23,8 +23,8 @@ const executeDbSync = process.env.DBSYNC;
 //middlware
 app.use(express.json());
 app.use(bodyParser.json({ limit: "10mb" }));
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
-console.log(process.env.CLIENT_URL)
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })); // here we set the cors origin to the client url
+// console.log(process.env.CLIENT_URL) // here we set the 
 app.use(router);
 
 // route to log in and return a token
@@ -135,7 +135,7 @@ app.post("/api/upload/chemicals", uploadChemicals.single("file"),
   });
 
 app.get("/api/upload/products/:file", (req, res) => {
-  const _module = req.body.module;
+
   const photoId = req.params.file;
   const filePath = path.join(__dirname, `uploads`, 'products', photoId);
   if (fs.existsSync(filePath)) {
@@ -144,6 +144,17 @@ app.get("/api/upload/products/:file", (req, res) => {
     res.status(400).send({ message: "Photo not found" });
   }
 });
+
+app.get("/api/upload/no-photo", (req, res) => {
+   const filePath = path.join(__dirname, `uploads`, 'no-photo.png');
+   console.log('WOWOWOWOWO ', filePath);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(400).send({ message: "Photo not found" });
+  }
+});
+
 app.get("/api/upload/diseases/:file", (req, res) => {
   const _module = req.body.module;
   const photoId = req.params.file;

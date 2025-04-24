@@ -55,6 +55,14 @@ const DiseaseForm2 = ({ isUpdate, diseases = null }) => {
     getInfo();
   }, [isUpdate]);
 
+  var existingImagePath = {
+    name: diseases?.photo,
+    url: appConfig.apiUrl + "/upload/diseases/" + diseases?.photo,
+    thumbUrl: appConfig.apiUrl + "/upload/diseases/" + diseases?.photo,
+    uid: diseases?.photo,
+    status: 'done',
+};
+
   const onFinish = (values) => {
     if (isUpdate) {
       values.id = diseases.id;
@@ -109,11 +117,13 @@ const DiseaseForm2 = ({ isUpdate, diseases = null }) => {
           : null
       }
     >
-      <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
         <ImageUploaderFB
           setFileName={setFileName}
           module={module}
+          existingImagePath={existingImagePath}
+          
         />
+      <Form.Item name="photo" label="" rules={[{ required: false }]}>
         <input type="text" name="photo" value={fileName?.file?.name} hidden />
       </Form.Item>
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>

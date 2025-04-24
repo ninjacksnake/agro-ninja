@@ -27,6 +27,7 @@ const ProductForm2 = ({ isUpdate, product }
     const [diseaseModalVisible, setDiseaseModalVisible] = useState(false);
     const [fileName, setFileName] = useState(null);
     const navigate = useNavigate();
+    const module = appConfig.modules.products;
 
 
 
@@ -154,7 +155,7 @@ const ProductForm2 = ({ isUpdate, product }
                         : null
                 }
             >
-                <ImageUploaderFB setFileName={setFileName} module={"products"} existingImagePath={existingImagePath} />
+                <ImageUploaderFB setFileName={setFileName} module={module} existingImagePath={existingImagePath} />
                 <Form.Item name="photo" label="" rules={[{ required: false }]}>
                     <input type="text" name="photo" value={fileName?.file?.name} hidden />
                 </Form.Item>

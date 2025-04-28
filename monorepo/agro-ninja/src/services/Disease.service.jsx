@@ -35,7 +35,7 @@ const createDisease = (disease) => {
   const callApi = async (disease) => {
     try {
       const newDisease = await api.post(
-        `/categories/diseases
+        `/diseases
       `,
         disease
       );

@@ -11,7 +11,7 @@ import ImageUploaderFB from "../../components/ImageUploaderFB";
 import api from "../../../services/api.jsx";
 
 //const noPhoto = require("../../../assets/images/crops/no-photos.png"); // check the folder is for the module
-const module = 'crops'
+const module = '/crops'
 const apiUrl = appConfig.apiUrl;
 
 const layout = {

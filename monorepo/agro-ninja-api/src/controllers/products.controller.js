@@ -46,7 +46,7 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const productInfo = req.body;
-    console.log(productInfo);
+    console.log("PRODUCT INFO WAIT ::::::",productInfo);
     const product = await Product.findByPk(productInfo.id);
     product.name = productInfo.name;
     product.categoryId = productInfo.categoryId;
@@ -65,7 +65,7 @@ const update = async (req, res, next) => {
     const diseases = await Diseases.findAll({
       where: { name: [...productInfo.diseases] },
     });
-    if(productInfo.CROPS === undefined ){
+    if(productInfo.crops === undefined ){
       productInfo.crops = [];
     }
     const crops = await Crop.findAll({
@@ -77,7 +77,7 @@ const update = async (req, res, next) => {
     await product.setCrops(crops);
     await product.save();
     await Product.findByPk(productInfo.id, {
-      include: [{ model: Chemical }, { model: Diseases }, { model: Categories }],
+      include: [{ model: Chemical }, { model: Diseases }, { model: Categories }, {model: Crop }],
     });
     res.status(200).send(product);
   } catch (err) {

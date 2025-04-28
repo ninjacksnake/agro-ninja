@@ -1,10 +1,9 @@
 import api from "./api";
 
-const getdiseaseTypes = () => {
+const findAll = () => {
   const callApi = async () => {
     try {
-      const diseaseTypes = await api.get(`/diseasetypes
-      `);
+      const diseaseTypes = await api.get(`/diseasetypes`);
       return diseaseTypes.data;
     } catch (error) {
       console.log(error);
@@ -13,7 +12,8 @@ const getdiseaseTypes = () => {
   };
   return callApi();
 };
-const getdiseaseTypeById = (id) => {
+
+const findById = (id) => {
   const callApi = async () => {
     try {
       const disease = await api.get(`/diseasetypes/${id}`);
@@ -26,7 +26,7 @@ const getdiseaseTypeById = (id) => {
   return callApi();
 };
 
-const creatediseaseType = (disease) => {
+const create = (disease) => {
   const callApi = async (disease) => {
     try {
       const newdisease = await api.post(
@@ -43,7 +43,7 @@ const creatediseaseType = (disease) => {
   return callApi(disease);
 };
 
-const updatediseaseType = (disease) => {
+const update = (disease) => {
   const callApi = async (disease) => {
     //  console.log("update disease ")
     try {
@@ -62,12 +62,10 @@ const updatediseaseType = (disease) => {
 };
 
 const DiseaseTypeService = {
- 
-    findAll: getdiseaseTypes,
-    findById: getdiseaseTypeById,
-    create: creatediseaseType,
-    update: updatediseaseType,
- 
+    findAll,
+    findById,
+    create,
+    update
 };
 
 export default DiseaseTypeService;

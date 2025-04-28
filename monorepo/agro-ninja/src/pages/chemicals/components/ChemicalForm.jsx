@@ -5,6 +5,8 @@ import ChemicalService from "../../../services/Chemical.service.jsx";
 import ImageUploader1 from "../../components/ImageUploader1";
 import ImageUploaderFB from "../../components/ImageUploaderFB.jsx";
 import appConfig from "../../../app.config.js";
+import  ChemicalTypesService from "../../../services/ChemicalTypes.service.jsx";
+import chemicalTypesService from "../../../services/ChemicalTypes.service.jsx";
 const noPhoto = require("../../../assets/images/no-photos.png");
 
 const module = appConfig.modules.chemicals;
@@ -20,17 +22,18 @@ const tailLayout = {
 
 const ChemicalForm = ({
   isUpdate,
-  chemical = null,
+  id = null,
   addCatOrComp = null,
   onClose = null,
   isFromDrawer = false,
 }) => {
   const [form] = Form.useForm();
-  const [fileName, setFilename] = useState(""); // State to store the image URL
+  const [fileName, setFilename] = useState("");
+  const [chemical, setChemical] = useState({}) // State to store the image URL;
   const [chemicalTypes, setChemicalTypes] = useState([]);
 
   const navigate = useNavigate();
-console.log(chemical)
+
   // Function to handle the form submission
   // Function to handle the form submission
 
@@ -49,18 +52,37 @@ console.log(chemical)
     });
   };
 
+  // Function to component load
   useEffect(() => {
-    if (isUpdate && chemical) {
-      setFilename(chemical.photo);
-    }
-    const getInfo = async () => {
-      const result = await ChemicalService.findAll();
-      console.log(result); // Add this line to log the result to the console
-      setChemicalTypes(result);
-    };
-    getInfo();
-  }, [isUpdate, chemical]);
+    if (isUpdate) {
+      ChemicalService.findById(id).then((result) => {
+        console.log(result);
+        setChemical(result);
+      }).catch((error) => {
+        console.log(error);
+      }).finally(() => {
+        setFilename(chemical.photo);
 
+      })
+    };
+
+    const fetchChemicalTypes = async () => {
+      try {
+        const result = await chemicalTypesService.getAll();
+        setChemicalTypes(result);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchChemicalTypes();
+  
+
+
+
+  }, [isUpdate]);
+
+
+  // Function to handle the form submission
   const onFinish = async (values) => {
     values.photo = fileName?.file?.name; // Add the image URL to the form values
     try {
@@ -106,9 +128,9 @@ console.log(chemical)
     isUpdate == true ? navigate('/chemicals/find') : clearForm();
   }
 
-  const handleFileSelected = (photoName) => {
-    setFilename(photoName); // Set the uploaded photo URL
-  };
+  // const handleFileSelected = (photoName) => {
+  //   setFilename(photoName); // Set the uploaded photo URL
+  // };
 
   return (
     <Form
@@ -138,14 +160,14 @@ console.log(chemical)
         <Input />
       </Form.Item>
 
-      <Form.Item name= "chemicalTypeId" label="Tipo" rules={[{ required: true }]}>
+      <Form.Item name="chemicalTypeId" label="Tipo" rules={[{ required: true }]}>
         <Select
-        allowClear
-        placeholder="Seleccione un tipo de quimico"
-        options={chemicalTypes.map((chemicalType) => ({label:chemicalType.name, value:chemicalType.id}))}
-        
+          allowClear
+          placeholder="Seleccione un tipo de quimico"
+          options={chemicalTypes.map((chemicalType) => ({ label: chemicalType.name, value: chemicalType.id }))}
+
         />
-        </Form.Item>
+      </Form.Item>
 
       <Form.Item
         name="description"

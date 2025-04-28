@@ -1,37 +1,50 @@
 import api from './api';
 
-import Utils from "./Utils";
-
-const API_URL = Utils.apiURl;
 class ChemicalTypesService {
-  getChemicalTypes() {
-    return api.get(`${API_URL}/chemical-types`);
-  }
+  getAll = async () => {
+    try {
+      const response = await api.get('/chemicaltypes');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
 
-  getChemicalTypeById(id) {
-    return api.get(`${API_URL}/chemical-types/${id}`);
-  }
+  getById = async (id) => {
+    try {
+      const response = await api.get(`/chemicaltypes/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
 
-  createChemicalType(data) {
-    return api.post(`${API_URL}/chemical-types`, data);
-  }
+  create = async (data) => {
+    try {
+      const response = await api.post('/chemicaltypes', data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
 
-  updateChemicalType(id, data) {
-    return api.put(`${API_URL}/chemical-types/${id}`, data);
-  }
+  update = async (id, data) => {
+    try {
+      const response = await api.put(`/chemicaltypes/${id}`, data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
 
-  deleteChemicalType(id) {
-    return api.delete(`${API_URL}/chemical-types/${id}`);
-  }
+  delete = async (id) => {
+    try {
+      const response = await api.delete(`/chemicaltypes/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
 }
-
-// const ChemicalTypesService = {
-    
-//       findAll: getChemicals,
-//       findById: getChemicalById,
-//       createChemical,
-//       updateChemical,
-
-//   };
 
 export default new ChemicalTypesService();

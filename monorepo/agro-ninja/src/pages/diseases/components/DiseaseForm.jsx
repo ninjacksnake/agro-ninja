@@ -27,9 +27,10 @@ const selectOptions = [
 ];
 
 
-const DiseaseForm = ({ isUpdate, disease = null }) => {
+const DiseaseForm = ({ isUpdate , id}) => {
   const [form] = Form.useForm();
   const [fileName, setFileName] = useState("");
+  const [disease, setDisease] = useState([]);
   const [diseaseTypeModal, setdiseaseTypeModal] = useState(false);
   const [diseaseType, setdiseaseType] = useState([]);
   const navigate = useNavigate();
@@ -52,36 +53,33 @@ const DiseaseForm = ({ isUpdate, disease = null }) => {
 
   useEffect(() => {
     const getInfo = async () => {
-      if (isUpdate) {
-        setFileName(disease.photo);
-      }
-      const diseaseTypes = await DiseaseTypeService.findAll();
-      console.log(diseaseTypes);
-      setdiseaseType(diseaseTypes);
+      const response  = await DiseaseTypeService.findAll();
+      console.log(response);
+      setdiseaseType(response);
     };
     getInfo();
   }, []);
 
   const onFinish = (values) => {
-    if (isUpdate) {
-      values.id = disease.id;
-      if (values.photo !== fileName?.file?.name) {
-        values.photo = fileName?.file?.name;
-      }
-      return diseaseService.diseases
-        .update(values)
-        .then((result) => {
-          openNotification("Success", "Your disease has been updated");
-          navigate(`/diseases/details/${result.id}`);
-        })
-        .catch((error) => {
-          console.log(error);
-          openNotification("Fail", "Failed updating your disease  ");
-        });
-    } else {
+    // if (isUpdate) {
+    //   values.id = disease.id;
+    //   if (values.photo !== fileName?.file?.name) {
+    //     values.photo = fileName?.file?.name;
+    //   }
+    //   return diseaseService
+    //     .update(values)
+    //     .then((result) => {
+    //       openNotification("Success", "Your disease has been updated");
+    //       navigate(`/diseases/details/${result.id}`);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //       openNotification("Fail", "Failed updating your disease  ");
+    //     });
+    // } else {
 
       values.photo = fileName?.file?.name; // default no photo photo
-      return diseaseService.diseases
+      return diseaseService
         .create(values)
         .then((result) => {
           openNotification("Success", "Has creado una nueva enfermedad");
@@ -91,7 +89,7 @@ const DiseaseForm = ({ isUpdate, disease = null }) => {
           console.log(error);
           openNotification("Fail", "Failed creating your disease");
         });
-    }
+    //}
   };
 
   const onCancel = () => {

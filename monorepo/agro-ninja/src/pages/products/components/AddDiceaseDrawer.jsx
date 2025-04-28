@@ -14,7 +14,7 @@ const AddiseaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await DiseaseTypeService.diseaseTypes.findAll();
+        const response = await DiseaseTypeService.findAll();
         setDiseaseTypes(response);
       } catch (error) {
         console.log(error);
@@ -29,7 +29,7 @@ const AddiseaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => {
   const onFinish = (values) => {
     values.photo = fileName.file.name;
     try {
-      DiseaseService.diseases.create(values)
+      DiseaseService.create(values)
         .then((result) => {
           // console.log(result)
           openNotification("Success", "El Registro ha sido actualizado");

@@ -69,7 +69,7 @@ const DiseaseForm2 = ({ isUpdate, diseases = null }) => {
       if (values.photo !== fileName?.file?.name) {
         values.photo = fileName?.file?.name;
       }
-      return DiseaseService.diseases
+      return DiseaseService
         .update(values)
         .then((result) => {
           openNotification("Success", "Your diseases has been updated");
@@ -81,7 +81,7 @@ const DiseaseForm2 = ({ isUpdate, diseases = null }) => {
         });
     } else {
       values.photo = fileName?.file?.name; // default no photo photo
-      return DiseaseService.diseases
+      return DiseaseService
         .create(values)
         .then((result) => {
           openNotification("Success", "Has creado un nuevo registro");

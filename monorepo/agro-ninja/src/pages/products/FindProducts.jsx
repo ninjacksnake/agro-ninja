@@ -26,11 +26,11 @@ const FindProducts = () => {
           key: product.id,
         };
       });
-      setProducts( enhancedData );
+      setProducts(enhancedData);
       setFiltredProducts(enhancedData);
     }).catch((error) => {
-       console.log(error);
-       // manejar el error 
+      console.log(error);
+      // manejar el error 
     });
   }, []);
 
@@ -38,34 +38,24 @@ const FindProducts = () => {
     if (e.target.value === undefined || e.target.value === "") {
       e.target.value = document.getElementById("si").value;
     }
-    
     const filteredProducts = products.filter((product) =>
       product.name.toLowerCase().includes(e.target.value.toLowerCase())
-  );
-  setFiltredProducts(filteredProducts);
-};
-
-  const showDrawer = (name) => {
-    const chosenProduct =
-      filtredProducts.find((product) => product.name === name) ?? null;
-    setSelectedProduct((p) => chosenProduct);
-    setOpen(true);
+    );
+    setFiltredProducts(filteredProducts);
   };
+
+  // const showDrawer = (name) => {
+  //   const chosenProduct =
+  //     filtredProducts.find((product) => product.name === name) ?? null;
+  //   setSelectedProduct((p) => chosenProduct);
+  //   setOpen(true);
+  // };
   const onClose = () => {
     setOpen(false);
   };
 
-  // const selectProduct = (name) => {
-  //   const chosenProduct =
-  //     filtredProducts.find((product) => product.name === name) ?? null;
-  //     setSelectedProduct((p) => chosenProduct);
-  //     setOpen(true);
-  // };
-
   const getChemicalId = (name) => {
-
     return selectedProduct.chemicals.find((chemical) => chemical.name === name)?.id;
-
   }
 
   return (
@@ -86,14 +76,14 @@ const FindProducts = () => {
         </Button>
       </Space.Compact>
       {/* {filtredProducts.length > 0 ? <TableComponent data={products} columns={columns} module={'products'} showDrawer={showDrawer} /> : ""} */}
-     
-     
-     
-     <ProductsTable  data={filtredProducts}  />
-    
-    
-    
-    
+
+
+
+      <ProductsTable data={filtredProducts} />
+
+
+
+
       <DrawerComponent
         open={open}
         onClose={onClose}

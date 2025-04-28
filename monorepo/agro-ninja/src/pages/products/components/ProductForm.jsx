@@ -28,7 +28,7 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-const ProductForm = ({ isUpdate, product = null }) => {
+const ProductForm = ({id}) => {
   const defaultDirectory = "../assets/images/products/";
   const [form] = Form.useForm();
   const [components, setComponents] = useState([]);
@@ -40,6 +40,7 @@ const ProductForm = ({ isUpdate, product = null }) => {
   const [openCChemicalDrawer, setOpenCChemicalDrawer] = useState(false); //CCH = Create Chemical
   const [openDiceaseDrawer, setOpenDiceaseDrawer] = useState(false);
   const [openCropsDrawer, setOpenCropsDrawer] = useState(false);
+  const [product, setProduct] = useState([]);
   const navigate = useNavigate();
 
   // open drawer functions
@@ -109,8 +110,8 @@ const ProductForm = ({ isUpdate, product = null }) => {
 
   // get info from db
   useEffect(() => {
-    console.log('Use effect ', product)
     const getInfo = async () => {
+      const product = await ProductService.findById(id)
       const dbChemicals = await ChemicalService.findAll();
       setComponents((ch) => dbChemicals);
       const dbCategories = await CategoryService.FindAll();
@@ -120,30 +121,13 @@ const ProductForm = ({ isUpdate, product = null }) => {
       setDiceases((d) => dbdiceases);
       const dbCrops = await CropService.findAll();
       setCrops(dbCrops);
-      if (isUpdate) {
-        // if is an update of a product set the photo to be shown 
-      }
     };
     getInfo();
 
-  }, [product?.photo, isUpdate, fileName]);
+  }, []);
 
   // function to finish the form
   const onFinish = (values) => {
-    //console.log("onFinish", values);
-    if (isUpdate) {
-      values.id = product.id;
-      values.photo = fileName?.file?.name || "";
-      return ProductService.updateProduct(values)
-        .then((result) => {
-          openNotification("Success", "El Producto ha sido actualizado");
-          navigate(`/products/details/${values.id}`, { state: result });
-        })
-        .catch((error) => {
-          console.log(error);
-          openNotification("Fail", "El Producto no ha sido actualizado");
-        });
-    } else {
       values.photo = fileName?.file?.name || "";
       return ProductService.createProduct(values)
         .then((result) => {
@@ -158,16 +142,15 @@ const ProductForm = ({ isUpdate, product = null }) => {
             error.request.response
           );
         });
-    }
+    // }
   };
 
   // function to reset the form
   const onCancel = () => {
-    console.log(isUpdate == true)
-    isUpdate == true ? navigate('/products/find') : clearForm();
+    navigate('/products/find');
   }
 
-  const module = appConfig.modules.products
+  const module = appConfig.modules.products;
 
   //component ui
   return (
@@ -178,23 +161,23 @@ const ProductForm = ({ isUpdate, product = null }) => {
         //  name="control-hooks"
         onFinish={onFinish}
         style={{ maxWidth: 600 }}
-        initialValues={
-          isUpdate
-            ? {
-              name: product?.name ?? "",
-              photo: product?.photo ?? "",
-              description: product?.description ?? "",
-              imageLocation: product?.photo ?? "",
-              category: product?.category ?? "",
-              dossage: product?.dossage ?? 0,
-              chemicals:
-                product?.chemicals?.map((chemical) => chemical.name) ?? [],
-              diceases:
-                product?.diceases?.map((chemical) => chemical.name) ?? [],
-              crops: product?.crops?.map((crop) => crop.id) ?? []
-            }
-            : null
-        }
+     // }
+      // initialValues={
+      //   isUpdate
+      //     ? {
+      //       name: product?.name ?? "",
+      //       photo: product?.photo ?? "",
+      //       description: product?.description ?? "",
+      //       imageLocation: product?.photo ?? "",
+      //       category: product?.category ?? "",
+      //       dossage: product?.dossage ?? 0,
+      //       chemicals:
+      //         product?.chemicals?.map((chemical) => chemical.name) ?? [],
+      //       diceases:
+      //         product?.diceases?.map((chemical) => chemical.name) ?? [],
+      //       crops: product?.crops?.map((crop) => crop.id) ?? []
+      //     }
+      //     : null
       >
         <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
           <ImageUploaderFB setFileName={setFileName} module={module} />

@@ -12,7 +12,9 @@ const CropStage = require('./cropStages');
 const User = require('./user');
 const initDb = process.env.INITDB;
 
-const sync = () => sequelize.sync({ force: true });
+const sync = () => sequelize.sync({ 
+  force: process.env.NODE_ENV !== 'production' // Prevent accidental data loss in production
+});
 
 const models = {
   sync,
@@ -52,12 +54,19 @@ Product.belongsToMany(Crop, { through: 'CropProducts' });
 Crop.belongsToMany(Product, { through: 'CropProducts' });
 
 // One-to-Many Relationships
+// Fix the Categories relationship
 Product.belongsTo(Categories);
-Categories.hasMany(Product, { foreignKey: 'id' });
+Categories.hasMany(Product); // Remove the foreignKey: 'id' as it's redundant
 
-// Many-to-One Relationships
+// Fix Chemical Types relationship
 Chemical.belongsTo(ChemicalTypes);
-ChemicalTypes.hasMany(Chemical, { foreignKey: 'id' });
+ChemicalTypes.hasMany(Chemical); // Remove the foreignKey: 'id'
+
+// Ensure consistent relationship definitions
+Disease.belongsTo(DiseaseType, {
+  foreignKey: 'diseaseTypeId',
+  as: 'diseaseType'
+});
 
 Crop.belongsTo(CropTypes);
 CropTypes.hasMany(Crop);
@@ -215,20 +224,28 @@ const defaultUser = [
     firstName: "Michael",
     lastName: "Fermin",
     email: "michaelv.fermin@gmail.com",
-    password: "12345678",
+    password: "12345678", // Consider hashing this password
     role: "admin",
     phoneNumber: "8297286407",
     isDeleted: 0,
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 ]; 
 
-if (initDb === "true") {
-  console.log('Inicializando la base de datos...');
-  Categories.bulkCreate(categoriesData);
-  CropTypes.bulkCreate(cropTypesData);
-  DiseaseType.bulkCreate(diseaseClassification);
-  ChemicalTypes.bulkCreate(chemicalTypesData);
-  User.bulkCreate(defaultUser);
+if (initDb === "true" && process.env.NODE_ENV !== 'production') {
+  console.log('Initializing database...');
+  Promise.all([
+    Categories.bulkCreate(categoriesData),
+    CropTypes.bulkCreate(cropTypesData),
+    DiseaseType.bulkCreate(diseaseClassification),
+    ChemicalTypes.bulkCreate(chemicalTypesData),
+    User.bulkCreate(defaultUser)
+  ]).then(() => {
+    console.log('Database initialized successfully');
+  }).catch(err => {
+    console.error('Error initializing database:', err);
+  });
 }
 
 

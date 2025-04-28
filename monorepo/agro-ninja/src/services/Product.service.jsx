@@ -41,7 +41,9 @@ const createProduct = (product) => {
 const updateProduct = (product) => {
   const callApi = async (product) => {
     try {
+      console.log(product)
       const response = await api.put(`/products`, product);
+
       return response.data;
     } catch (error) {   
       throw error;

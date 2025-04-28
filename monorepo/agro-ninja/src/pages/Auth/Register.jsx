@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, Row, Col, Typography, notification, Steps, Space, Divider } from 'antd';
+import { Form, Input, Button, Card, Row, Col, Typography, notification, Space, Divider } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const { Title, Text } = Typography;
-const { Step } = Steps;
+
 
 const Register = () => {
     const [form] = Form.useForm();
@@ -31,7 +31,7 @@ const Register = () => {
             // Remove the confirm password field before sending
             const { confirm, ...registrationData } = formData;
 
-            const response = await axios.post(process.env.REACT_APP_API_BASE_URL_DEVELOPMENT+'register', registrationData);
+            const response = await axios.post(process.env.REACT_APP_API_BASE_URL_DEVELOPMENT+'/register', registrationData);
             console.log(response.data);
             if (response.data.status === 'success') {
                 console.log('Registration successful!');
@@ -82,15 +82,6 @@ const Register = () => {
                         <Title level={2} style={{ marginBottom: 8 }}>Create Account</Title>
                         <Text type="secondary">Join our community today</Text>
                     </div>
-
-                    <Steps 
-                        current={currentStep}
-                        style={{ marginBottom: 24 }}
-                        items={[
-                            { title: 'Account' },
-                            { title: 'Personal Info' }
-                        ]}
-                    />
 
                     <Form
                         form={form}

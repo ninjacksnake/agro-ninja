@@ -2,11 +2,10 @@ import { Button, Form, Input, Select, notification } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChemicalService from "../../../services/Chemical.service.jsx";
-import ImageUploader1 from "../../components/ImageUploader1";
 import ImageUploaderFB from "../../components/ImageUploaderFB.jsx";
 import appConfig from "../../../app.config.js";
-import  ChemicalTypesService from "../../../services/ChemicalTypes.service.jsx";
 import chemicalTypesService from "../../../services/ChemicalTypes.service.jsx";
+import FormItem from "antd/es/form/FormItem/index.js";
 const noPhoto = require("../../../assets/images/no-photos.png");
 
 const module = appConfig.modules.chemicals;
@@ -62,7 +61,6 @@ const ChemicalForm = ({
         console.log(error);
       }).finally(() => {
         setFilename(chemical.photo);
-
       })
     };
 
@@ -75,7 +73,7 @@ const ChemicalForm = ({
       }
     }
     fetchChemicalTypes();
-  
+
 
 
 
@@ -84,9 +82,11 @@ const ChemicalForm = ({
 
   // Function to handle the form submission
   const onFinish = async (values) => {
-    values.photo = fileName?.file?.name; // Add the image URL to the form values
+    console.log(values) // Add the image URL to the form values
+    console.log(fileName)
     try {
       if (isUpdate) {
+        values.photo = fileName;
         values.id = chemical.id;
         await ChemicalService.updateChemical(values);
         openNotification(
@@ -95,7 +95,7 @@ const ChemicalForm = ({
         );
         navigate(`/chemicals/details/${chemical.id}`);
       } else {
-        values.photo = fileName.file.name || noPhoto; // Use the uploaded photo or a default
+        values.photo = fileName || noPhoto; // Use the uploaded photo or a default
         const result = await ChemicalService.createChemical(values);
         openNotification(
           "Success",
@@ -148,13 +148,17 @@ const ChemicalForm = ({
           }
           : null
       }
-    >
-      <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
+    >form
+
+      <Form.Item label="Foto" rules={[{ required: false }]}>
         <ImageUploaderFB
           setFileName={setFilename}
           module={module} />
-        <input type="text" name="photo" value={fileName?.file?.name} hidden />
       </Form.Item>
+      <FormItem label="" name={'photo'} >
+        <Input value={fileName}/>
+      </FormItem>
+      {/* <input type="text" name="photo" value={fileName?.file?.name}  /> */}
 
       <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
         <Input />

@@ -12,7 +12,7 @@ const FindChemical = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const result = await ChemicalService.Chemicals.findAll();
+        const result = await ChemicalService.findAll();
         setChemicals((r) => result);
         setFiltredChemicals((r) => result);
       } catch (error) {

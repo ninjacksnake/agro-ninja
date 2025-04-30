@@ -98,6 +98,7 @@ app.post("/api/upload/products", uploadProducts.single("file"),
       name: req.file.originalname,
       size: req.file.size,
     } = req.file;
+    fileDetails.imgUrl = `${process.env.API_URL}/upload/products/${fileDetails.filename}`;
     res.status(200).json({
       message: "Files uploaded successfully",
       file: fileDetails,
@@ -113,6 +114,7 @@ app.post("/api/upload/diseases", uploadDiceases.single("file"),
       name: req.file.originalname,
       size: req.file.size,
     } = req.file;
+    fileDetails.imgUrl = `${process.env.API_URL}/upload/diseases/${fileDetails.filename}`;
     res.status(200).json({
       message: "Files uploaded successfully",
       file: fileDetails,
@@ -128,6 +130,7 @@ app.post("/api/upload/chemicals", uploadChemicals.single("file"),
       name: req.file.originalname,
       size: req.file.size,
     } = req.file;
+    fileDetails.imgUrl = `${process.env.API_URL}/upload/chemicals/${fileDetails.filename}`;
     res.status(200).json({
       message: "Files uploaded successfully",
       file: fileDetails,
@@ -196,8 +199,10 @@ app.post("/api/upload/crops", uploadCrops.single("file"),
       name: req.file.originalname,
       size: req.file.size,
     } = req.file;
+    fileDetails.imgUrl = `${process.env.API_URL}/upload/crops/${fileDetails.filename}`;
     res.status(200).json({
       message: "Files uploaded successfully",
+
       file: fileDetails,
     })
   });

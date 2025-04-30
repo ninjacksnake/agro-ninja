@@ -10,6 +10,7 @@ import CropService from '../../../services/Crop.service.jsx';
 import Diseaseservice from '../../../services/Disease.service.jsx';
 import { useNavigate } from 'react-router-dom';
 import appConfig from '../../../app.config.js';
+import ImageUpdater from '../../components/ImageUpdater.jsx';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -155,7 +156,7 @@ const ProductForm2 = ({ isUpdate, product }
                         : null
                 }
             >
-                <ImageUploaderFB setFileName={setFileName} module={module} existingImagePath={existingImagePath} />
+                <ImageUpdater setFileName={setFileName} module={module} existingImagePath={existingImagePath} />
                 <Form.Item name="photo" label="" rules={[{ required: false }]}>
                     <input type="text" name="photo" value={fileName?.file?.name} hidden />
                 </Form.Item>

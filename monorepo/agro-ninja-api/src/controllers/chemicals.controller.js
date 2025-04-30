@@ -3,18 +3,18 @@ const Chemical = require("../models/index").Chemical;
 const ChemicalTypes = require("../models/index").ChemicalTypes;
 const Product = require("../models/index").Product;
 
-const COMMON_ASSOCIATIONS = {
-  include: [
+const COMMON_ASSOCIATIONS = [
+
     {
       model: Product,
       as: "products",
     },
     {
       model: ChemicalTypes,
-      as: "chemicalTypes",
+      as: "chemicalType",
     }
-  ]
-};
+  
+  ];
 // create a new record in the database
 const create = async (req, res, next) => {
   try {
@@ -24,7 +24,7 @@ const create = async (req, res, next) => {
         message: "photo can not be empty",
       });
     }
-    const chemicalType = await ChemicalTypes.findByPk(chemical.chemicalTypeId);
+    const chemicalType = await ChemicalTypes.findByPk(chemical.chemicalTypeId, {include: COMMON_ASSOCIATIONS });
     const newChemical = await Chemical.create(chemical);
     newChemical.chemicalTypeId = chemicalType.id;
     await newChemical.save(); // Save the newChemical instance
@@ -41,11 +41,11 @@ const find = async (req, res, next) => {
   try {
     let chemical;
     if (req.query.name) {
-      chemical = await Chemical.findAll({ where: { name: req.query.name },  COMMON_ASSOCIATIONS });
+      chemical = await Chemical.findAll({ where: { name: req.query.name }, include:  COMMON_ASSOCIATIONS });
     } else if (req.query.id) {
-      chemical = await Chemical.findAll({ where: { name: req.query.id },  COMMON_ASSOCIATIONS });
+      chemical = await Chemical.findAll({ where: { name: req.query.id }, include: COMMON_ASSOCIATIONS });
     } else {
-      chemical = await Chemical.findAll({  COMMON_ASSOCIATIONS });
+      chemical = await Chemical.findAll({include:  COMMON_ASSOCIATIONS });
     }
     res.status(200).send(chemical);
   } catch (err) {
@@ -58,7 +58,7 @@ const findById = async (req, res, next) => {
   try {
     const id = req.params.id;
     const result = await Chemical.findByPk(id, {
-      include: [{ model: Product }],
+      include: COMMON_ASSOCIATIONS,
       where: { id: id },
     });
     return res.status(200).send(result);

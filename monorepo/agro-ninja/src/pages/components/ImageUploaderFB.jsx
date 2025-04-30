@@ -47,6 +47,7 @@ const ImageUploaderFB = ({ setFileName = null, module = "" }) => {
                 
                 setFileList([newFile]);
                 setFileName(name);
+                console.log("ImageUploaderFB: ", name);
                 message.success('Image uploaded successfully!');
                 onSuccess(newFile); // Pass the file object to onSuccess
             } else {

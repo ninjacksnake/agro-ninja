@@ -28,6 +28,7 @@ const AppPrivateRoute = ({ children, roles = [] }) => {
 
     if (!user || !accessToken) {
         console.log("user is not logged in or accesToken is not valid")
+        alert("user is not logged in or accesToken is not valid")
         return <Navigate to="/login" />
     }
 

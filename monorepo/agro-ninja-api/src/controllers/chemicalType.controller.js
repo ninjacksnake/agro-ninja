@@ -1,4 +1,12 @@
 const ChemicalTypes = require('../models/index').ChemicalTypes;
+const Product = require('../models/index').Product;
+const DEFAULT_INCLUDES = [
+ 
+  {
+    model: Product,
+    as: 'Products',
+  }
+];
 
 const chemicalTypeController = {
   // Create a new chemical type
@@ -14,7 +22,7 @@ const chemicalTypeController = {
   // Get all chemical types
   getAll: async (req, res) => {
     try {
-      const chemicalTypes = await ChemicalTypes.findAll();
+      const chemicalTypes = await ChemicalTypes.findAll({include: DEFAULT_INCLUDES});
       res.status(200).json(chemicalTypes);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -24,7 +32,7 @@ const chemicalTypeController = {
   // Get a single chemical type by ID
   getById: async (req, res) => {
     try {
-      const chemicalType = await ChemicalTypes.findByPk(req.params.id);
+      const chemicalType = await ChemicalTypes.findByPk(req.params.id, {include: DEFAULT_INCLUDES});
       if (!chemicalType) {
         return res.status(404).json({ message: 'Chemical type not found' });
       }
@@ -43,7 +51,7 @@ const chemicalTypeController = {
       if (!updated) {
         return res.status(404).json({ message: 'Chemical type not found' });
       }
-      const updatedChemicalType = await ChemicalTypes.findByPk(req.params.id);
+      const updatedChemicalType = await ChemicalTypes.findByPk(req.params.id, {include: DEFAULT_INCLUDES});
       res.status(200).json(updatedChemicalType);
     } catch (error) {
       res.status(500).json({ error: error.message });

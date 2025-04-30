@@ -49,7 +49,7 @@ router.put("/api/categories", categoriesController.update);
 router.post("/api/crops", cropsController.create);
 router.get("/api/crops", cropsController.find);
 router.get("/api/crops/:id", cropsController.findById);
-router.put("/api/crops", cropsController.update);
+router.put("/api/crops/:id", cropsController.update);
 
 router.get("/api/cropType", cropTypesController.find);
 router.post("/api/cropType", cropTypesController.create);

@@ -29,7 +29,7 @@ const tailLayout = {
 };
 
 const ProductForm = ({id}) => {
-  const defaultDirectory = "../assets/images/products/";
+
   const [form] = Form.useForm();
   const [components, setComponents] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -39,7 +39,6 @@ const ProductForm = ({id}) => {
   const [openCCDrawer, setOpenCCDrawer] = useState(false); //CC = Create Category
   const [openCChemicalDrawer, setOpenCChemicalDrawer] = useState(false); //CCH = Create Chemical
   const [openDiceaseDrawer, setOpenDiceaseDrawer] = useState(false);
-  const [openCropsDrawer, setOpenCropsDrawer] = useState(false);
   const [product, setProduct] = useState([]);
   const navigate = useNavigate();
 
@@ -66,12 +65,7 @@ const ProductForm = ({id}) => {
     setOpenDiceaseDrawer(false);
   };
 
-  const openCropDrawer = () => {
-    setOpenCropsDrawer(true);
-  };
-  const onCloseCropDrawer = () => {
-    setOpenCropsDrawer(false);
-  };
+
 
   // notification functions
   const openNotification = (title, body, reason = "") => {
@@ -111,7 +105,6 @@ const ProductForm = ({id}) => {
   // get info from db
   useEffect(() => {
     const getInfo = async () => {
-      const product = await ProductService.findById(id)
       const dbChemicals = await ChemicalService.findAll();
       setComponents((ch) => dbChemicals);
       const dbCategories = await CategoryService.FindAll();
@@ -150,6 +143,16 @@ const ProductForm = ({id}) => {
     navigate('/products/find');
   }
 
+  const handleImageUpload = (url) => {
+    if (typeof url === "object") {
+      console.log(url);
+      url = url.file.name;
+    }
+    console.log(typeof url, url);
+    setFileName(url);
+    form.setFieldValue("photo", url);
+  };  
+
   const module = appConfig.modules.products;
 
   //component ui
@@ -161,26 +164,10 @@ const ProductForm = ({id}) => {
         //  name="control-hooks"
         onFinish={onFinish}
         style={{ maxWidth: 600 }}
-     // }
-      // initialValues={
-      //   isUpdate
-      //     ? {
-      //       name: product?.name ?? "",
-      //       photo: product?.photo ?? "",
-      //       description: product?.description ?? "",
-      //       imageLocation: product?.photo ?? "",
-      //       category: product?.category ?? "",
-      //       dossage: product?.dossage ?? 0,
-      //       chemicals:
-      //         product?.chemicals?.map((chemical) => chemical.name) ?? [],
-      //       diceases:
-      //         product?.diceases?.map((chemical) => chemical.name) ?? [],
-      //       crops: product?.crops?.map((crop) => crop.id) ?? []
-      //     }
-      //     : null
+   
       >
         <Form.Item name="photo" label="Foto" rules={[{ required: false }]}>
-          <ImageUploaderFB setFileName={setFileName} module={module} />
+          <ImageUploaderFB setFileName={handleImageUpload} module={module} />
           <input type="text" name="photo" value={fileName?.file?.name} hidden />
 
           {/*  Image uploader Component */}

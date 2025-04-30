@@ -1,17 +1,17 @@
 import React from 'react'
 import CropForm from './components/CropForm'
 import { useParams } from 'react-router-dom';
+import UpdateCropForm from './components/UpdateCropForm';
 
 
 const UpdateCrop = () => {
   const id = useParams();
-  const crop = JSON.parse(localStorage.getItem("SelectedcropsToUpdate"));
-  console.log(crop);
+
 
 
   
   return (
-    <CropForm isUpdate={true} crop={crop} id={id} />
+    <UpdateCropForm  id={id} />
   )
 }
 

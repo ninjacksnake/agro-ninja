@@ -1,9 +1,20 @@
 
 const Chemical = require("../models/index").Chemical;
-const ChemicalTypes  = require("../models/index").ChemicalTypes;
+const ChemicalTypes = require("../models/index").ChemicalTypes;
 const Product = require("../models/index").Product;
 
-
+const COMMON_ASSOCIATIONS = {
+  include: [
+    {
+      model: Product,
+      as: "products",
+    },
+    {
+      model: ChemicalTypes,
+      as: "chemicalTypes",
+    }
+  ]
+};
 // create a new record in the database
 const create = async (req, res, next) => {
   try {
@@ -30,11 +41,11 @@ const find = async (req, res, next) => {
   try {
     let chemical;
     if (req.query.name) {
-      chemical = await Chemical.findAll({ where: { name: req.query.name }, include: {model: ChemicalTypes}  });
+      chemical = await Chemical.findAll({ where: { name: req.query.name },  COMMON_ASSOCIATIONS });
     } else if (req.query.id) {
-      chemical = await Chemical.findAll({ where: { name: req.query.id }, include: {model: ChemicalTypes} });
+      chemical = await Chemical.findAll({ where: { name: req.query.id },  COMMON_ASSOCIATIONS });
     } else {
-      chemical = await Chemical.findAll({ include: {model: Product} , include: {model: ChemicalTypes} });
+      chemical = await Chemical.findAll({  COMMON_ASSOCIATIONS });
     }
     res.status(200).send(chemical);
   } catch (err) {
@@ -62,7 +73,7 @@ const update = async (req, res, next) => {
   try {
     const chemicalData = req.body;
     if (chemicalData.photo == null || chemicalData.photo == undefined || chemicalData.photo == "") {
-       chemicalData.photo = undefined; // set the photo to undefined if it is null or undefined or empty string   
+      chemicalData.photo = undefined; // set the photo to undefined if it is null or undefined or empty string   
     }
     const updatedChemical = await Chemical.update(chemicalData, {
       where: { id: chemicalData.id },

@@ -1,76 +1,108 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, message, Upload, Space, Row } from 'antd';
+import { Button, message, Upload } from 'antd';
 import appConfig from '../../app.config';
 import api from '../../services/api';
-import axios from 'axios';
 
+const ImageUploaderFB = ({ setFileName = null, module = "" }) => {
+    const uploadPath = appConfig.uploadPath;
+    const [fileList, setFileList] = useState([]);
 
-const ImageUploaderFB = ({ setFileName = null, module = "", existingImagePath = null }) => {
-  const apiUrl = appConfig.apiUrl;
-  const uploadPath = appConfig.uploadPath;
-  // Estado para controlar si se está subiendo un archivo
-  const [uploading, setUploading] = useState(false);
-  const [existingImage, setExistingImage] = useState({});
+    const noPhoto = {
+        name: "no-photo.png",
+        url: `${appConfig.apiUrl}/upload/no-photo`,
+        thumbUrl: `${appConfig.apiUrl}/upload/no-photo`,
+        uid: "-1",
+        status: 'done',
+    };
 
-  var noPhoto = {
-    name: "no-photo.png",
-    url: appConfig.apiUrl + "/upload/no-photo",
-    thumbUrl: appConfig.apiUrl + "/upload/no-photo",
-    uid: "photo",
-    status: 'done',
-}
-  const handleUpload = async (options) => {
+    useEffect(() => {
+ 
+            setFileList([noPhoto]);
+        
+    }, [ module]);
 
-    const { file, onSuccess, onError } = options;
+    const handleUpload = async (options) => {
+        const { file, onSuccess, onError } = options;
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('module', module);
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('module', module);
+        try {
+            const response = await api.post(`${uploadPath}${module}`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
 
-    setUploading(true);
+            if (response.status === 200) {
+                const data = response.data;
+                const name = data.file.filename;
+                
+                const newFile = {
+                    name,
+                    url: `${appConfig.apiUrl}/upload${module}/${name}`,
+                    thumbUrl: `${appConfig.apiUrl}/upload${module}/${name}`,
+                    uid: name,
+                    status: 'done'
+                };
+                
+                setFileList([newFile]);
+                setFileName(name);
+                message.success('Image uploaded successfully!');
+                onSuccess(newFile); // Pass the file object to onSuccess
+            } else {
+                throw new Error('Upload failed');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            message.error('Failed to upload image');
+            onError(error);
+        }
+    };
 
-    try {
-      const response = await api.post(`${uploadPath}${module}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-      if (response.statusText === 'OK') {
-        const data = response.data;
-        setFileName(data.file.path); // Save the uploaded image path    
-        message.success('Imagen Almacenada!');
-        onSuccess('Imagen almacenada');
-      } else {
-        throw new Error('Error almacenando Imagen');
-      }
-    } catch (error) {
-      console.error(error);
-      message.error('Error almacenando imagen');
-      onError(error);
-    } finally {
-      setUploading(false);
-    }
-  }
+    const handleChange = (info) => {
+        const { file } = info;
+        
+        if (file.status === 'removed') {
+            setFileList([noPhoto]);
+            setFileName("");
+            return;
+        }
 
-  
+        if (file.status === 'uploading') {
+            const uploadingFile = {
+                ...file,
+                status: 'uploading'
+            };
+            setFileList([uploadingFile]);
+            return;
+        }
 
-  return (
+        // Don't handle 'done' state here as it's handled in handleUpload
+    };
 
-    <div style={{ display: 'flex', flexDirection: "row", justifyContent: "center" }}>
-
-      <Upload
-        defaultFileList={[existingImagePath ?? noPhoto]}
-        customRequest={handleUpload}
-        listType="picture-circle"
-        multiple={false}
-       
-        maxCount={1}
-        onChange={setFileName}
-        type="file"
-      >
-        <Button type='text' style={{ textAlign: "match-parent" }} icon={<UploadOutlined />}>  </Button>
-      </Upload>
-
-    </div>
-
-  );
+    return (
+        <div style={{ display: 'flex', flexDirection: "row", justifyContent: "center" }}>
+            <Upload
+                fileList={fileList}
+                customRequest={handleUpload}
+                listType="picture-circle"
+                multiple={false}
+                maxCount={1}
+                onChange={handleChange}
+                onRemove={() => {
+                    setFileList([noPhoto]);
+                    setFileName("");
+                    return true;
+                }}
+            >
+                <Button 
+                    type='text' 
+                    style={{ textAlign: "center" }} 
+                    icon={<UploadOutlined />}
+                />
+            </Upload>
+        </div>
+    );
 };
 
-export default ImageUploaderFB; 
+export default ImageUploaderFB;

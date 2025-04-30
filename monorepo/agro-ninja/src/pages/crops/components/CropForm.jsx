@@ -23,7 +23,7 @@ const tailLayout = {
     wrapperCol: { offset: 8, span: 16 },
 };
 
-const CropForm = ({ isUpdate, crop = [], id = null }) => {
+const CropForm = () => {
 
     const [form] = Form.useForm();
     const [cropToUpdate, setCropToUpdate] = useState([]);
@@ -68,53 +68,45 @@ const CropForm = ({ isUpdate, crop = [], id = null }) => {
 
     useEffect(() => {
         const getInfo = async () => {
-            if (isUpdate) {
-                setCropToUpdate(crop);
-                setFileName(crop?.photo);
+
+            try {
+                Promise.all([
+                    ProductService.findAll(),
+                    CropTypeService.getAll(),
+                    ProductService.findAll(),
+                    DiseaseService.findAll(),
+                ]).then(([crop, cropTypes, products, diseases]) => {
+                    setCropToUpdate(crop);
+                    setCropTypes(cropTypes);
+                    setProducts(products);
+                    setDiseases(diseases);
+                });
+
+            } catch (error) {
+                console.log(error);
+                openNotification("Error", "Failed to load crop data");
             }
-            const productsDb = await ProductService.findAll();
-            setProducts(productsDb);
-            const cropTypesDb = await CropTypeService.findAll();
-            setCropTypes(cropTypesDb);
-            const diseasesDb = await DiseaseService.findAll();
-            setDiseases(diseasesDb);
         };
         getInfo();
         // console.log(products)
     }, []);
 
     const onFinish = (values) => {
-        if (isUpdate) {
-            values.id = cropToUpdate.id;
-            if (values.photo !== fileName?.file?.name) {
-                values.photo = fileName?.file?.name;
-            }
-            return CropService
-                .updateCrop(values)
-                .then((result) => {
-                    //     console.log(result)
-                    openNotification("Success", "Your crop has been updated");
-                    navigate(`/crops/details/${result.id}`);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    openNotification("Fail", "Failed updating your crop  ");
-                });
-        } else {
 
-            values.photo = fileName?.file?.name; // default no photo photo
-            return CropService
-                .createCrop(values)
-                .then((result) => {
-                    // console.log(result)
-                    openNotification("Success", "Has creado un cultivo");
-                    navigate(`/crops/details/${result.id}`);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    openNotification("Fail", "Falló al creal el cultivo");
-                });
-        }
+
+        values.photo = fileName?.file?.name; // default no photo photo
+        return CropService
+            .createCrop(values)
+            .then((result) => {
+                // console.log(result)
+                openNotification("Success", "Has creado un cultivo");
+                navigate(`/crops/details/${result.id}`);
+            })
+            .catch((error) => {
+                console.log(error);
+                openNotification("Fail", "Falló al creal el cultivo");
+            });
+
     };
 
 
@@ -128,7 +120,8 @@ const CropForm = ({ isUpdate, crop = [], id = null }) => {
     };
     const onCancel = () => {
         // console.log(isUpdate === true)
-        isUpdate === true ? navigate('/crops/find') : clearForm();
+        // isUpdate === true ? navigate('/crops/find') : clearForm();
+        navigate('/crops/find')
     }
 
     return (
@@ -138,31 +131,31 @@ const CropForm = ({ isUpdate, crop = [], id = null }) => {
                 form={form}
                 onFinish={onFinish}
                 style={{ maxWidth: 600 }}
-                initialValues={
-                    isUpdate
-                        ? {
-                            name: crop.name,
-                            photo: crop?.photo ?? "",
-                            description: crop?.description ?? "",
-                            products: crop?.products?.map((product) => (product.id)),
-                            diseases: crop?.diseases?.map((disease) => (disease.id)),
-                            type: crop?.type ?? "",
-                        }
-                        : null
-                }
+            // initialValues={
+            //     isUpdate
+            //         ? {
+            //             name: crop.name,
+            //             photo: crop?.photo ?? "",
+            //             description: crop?.description ?? "",
+            //             products: crop?.products?.map((product) => (product.id)),
+            //             diseases: crop?.diseases?.map((disease) => (disease.id)),
+            //             type: crop?.type ?? "",
+            //         }
+            //         : null
+            // }
             >
                 <Form.Item name="photoUploader" label="Guardar Imagen" rules={[{ required: false }]} >
                     <ImageUploaderFB
                         setFileName={setFileName}
                         module={module}
-                        existingImagePath={
-                            {
-                                url: apiUrl + '/upload/' + module + "/" + crop?.photo ?? "",
-                                uid: 1,
-                                name: crop?.photo?? "",
-                                status: 'done',
-                            }
-                        }
+                    // existingImagePath={
+                    //     {
+                    //         url: apiUrl + '/upload/' + module + "/" + crop?.photo ?? "",
+                    //         uid: 1,
+                    //         name: crop?.photo?? "",
+                    //         status: 'done',
+                    //     }
+                    // }
                     />
                 </Form.Item>
                 <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>

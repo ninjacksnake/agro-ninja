@@ -1,72 +1,51 @@
 import api from "./api";
-import appConfig from "../app.config";
 
-//const apiUrl = Utils.cropion.apiURl;
-const apiUrl = appConfig.apiUrl;
-
-
-const getCropTypeById = (id) => {
-  const callApi = async () => {
+class CropTypeService {
+  async getAll() {
     try {
-      const cropTypes = await api.get(`${apiUrl}/croptype/${id}`);
-      return cropTypes.data;
+      const response = await api.get('/croptype');
+      return response.data;
+      console.log(response.data)
     } catch (error) {
-      console.log(error);
-      throw error;
+      throw new Error(`Failed to fetch crop types: ${error.message}`);
     }
-  };
-  return callApi();
-};
+  }
 
-const createCropType = (cropType) => {
- 
-  const callApi = async (cropType) => {
+  async getById(id) {
     try {
-      const cropType = await api.post(`${apiUrl}/croptype`, cropType);
-      return cropType.data;
+      const response = await api.get(`/croptype/${id}`);
+      return response.data;
     } catch (error) {
-      console.log(error);
-      throw error;
+      throw new Error(`Failed to fetch crop type with id ${id}: ${error.message}`);
     }
-  };
-  return callApi(cropType);
-};
+  }
 
-const updateCropType = (cropType) => {
-  const callApi = async (cropType) => {
+  async create(cropType) {
     try {
-      const cropType = await api.put(`${apiUrl}/croptype`, cropType);
-      return cropType.data;
+      const response = await api.post('/croptype', cropType);
+      return response.data;
     } catch (error) {
-      console.log(error);
-      throw error;
+      throw new Error(`Failed to create crop type: ${error.message}`);
     }
-  };
-  return callApi(cropType);
-};
+  }
 
-
-const getCropTypes = () => {
-  const callApi = async () => {
+  async update(id, cropType) {
     try {
-      const cropTypes = await api.get(`${apiUrl}/croptype`);
-      return cropTypes.data;
+      const response = await api.put(`/croptype/${id}`, cropType);
+      return response.data;
     } catch (error) {
-      console.log(error);
-      throw error;
+      throw new Error(`Failed to update crop type with id ${id}: ${error.message}`);
     }
-  };
-  return callApi();
+  }
+
+  async delete(id) {
+    try {
+      const response = await api.delete(`/croptype/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to delete crop type with id ${id}: ${error.message}`);
+    }
+  }
 }
 
-const CropTypeService = {
-   
-    findAll: getCropTypes,
-    findById: getCropTypeById,
-    createCropType,
-    updateCropType,
-  
-
-};
-
-export default CropTypeService;
+export default new CropTypeService();

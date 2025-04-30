@@ -15,7 +15,7 @@ const Crop = sequelize.define("Crops", {
         type: DataTypes.STRING,
         alloNull: false,
     },
-    type:{
+    cropTypeId:{
         type: DataTypes.INTEGER,
         alloNull: false
     },

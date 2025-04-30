@@ -1,120 +1,142 @@
 const { where } = require("sequelize");
+const { Crop, Product, Disease, CropTypes } = require("../models/index");
 
-const Crops = require("../models/index").Crop;
-const Product = require("../models/index").Product;
-const Disease = require("../models/index").Disease;
+// Constants for common includes
+const DEFAULT_INCLUDES = [
+  { model: Product, as: 'products' },
+  { model: Disease, as: 'diseases' },
+  { model: CropTypes, as: 'cropType' }
+];
 
-const create = async (req, res, next) => {
-  const crop = req.body;
-  //console.log(crop)
+// Helper function for error responses
+const handleError = (res, error) => {
+  console.error('Error:', error);
+  return res.status(500).send(error.message);
+};
+
+const create = async (req, res) => {
   try {
-    const newCrop = await Crops.create(crop);
-    if (req.body.products !== undefined) {
+    const crop = req.body;
+    const newCrop = await Crop.create(crop);
+
+    // Handle products association
+    if (crop.products?.length) {
       const products = await Product.findAll({
-        where: { id: [...crop.products] },
+        where: { id: crop.products }
       });
       await newCrop.addProducts(products);
     }
 
-    if (req.body.diseases !== undefined) {
+    // Handle diseases association
+    if (crop.diseases?.length) {
       const diseases = await Disease.findAll({
-        where: { id: [...crop.diseases] },
+        where: { id: crop.diseases }
       });
       await newCrop.addDiseases(diseases);
     }
 
-
     return res.status(201).send(newCrop);
   } catch (error) {
-    console.log(error);
-    res.status(500).send(error.message);
+    return handleError(res, error);
   }
 };
 
-const find = async (req, res, next) => {
+const find = async (req, res) => {
   try {
-    let result;
-    const crop = req.query;
-    if (crop.cropId !== undefined) {
-      result = await Crops.findAll({
-        include: [{ model: Product }, { model: Disease }],
-        where: { cropId: crop.cropId },
-      });
-    } else if (crop.cropName !== undefined) {
-      result = await Crops.findAll({
-        where: { cropName: crop.cropName },
-        include: [{ model: Product }, { model: Disease }],
-      });
-    } else {
-      result = await Crops.findAll({ include: [{ model: Product }, { model: Disease }], });
-      return res.status(200).send(result);
+    const { cropId, cropName } = req.query;
+    const queryOptions = {
+      include: DEFAULT_INCLUDES
+    };
+
+    if (cropId) {
+      queryOptions.where = { cropId };
+    } else if (cropName) {
+      queryOptions.where = { cropName };
     }
-  } catch (err) {
-    res.status(500).send(err.message);
+
+    const result = await Crop.findAll(queryOptions);
+    return res.status(200).send(result);
+  } catch (error) {
+    return handleError(res, error);
   }
 };
 
-const update = async (req, res, next) => {
+const findById = async (req, res) => {
   try {
+    const { id } = req.params;
+    const result = await Crop.findByPk(id, {
+      include: DEFAULT_INCLUDES
+    });
+
+    if (!result) {
+      return res.status(404).send({ message: 'Crop not found' });
+    }
+
+    return res.status(200).send(result);
+  } catch (error) {
+    return handleError(res, error);
+  }
+};
+
+const update = async (req, res) => {
+  try {
+    const { id } = req.params;
     const cropData = req.body;
-    const crop = await Crops.findByPk(cropData.id);
+    const crop = await Crop.findByPk(id);
+
+    if (!crop) {
+      return res.status(404).send({ message: 'Crop not found' });
+    }
+
     await crop.update(cropData);
 
+    // Handle products association
     if (cropData.products !== undefined) {
       const products = await Product.findAll({
-        where: { id: [...cropData.products] },
+        where: { id: cropData.products }
       });
       await crop.setProducts(products);
     }
 
+    // Handle diseases association
     if (cropData.diseases !== undefined) {
-      // console.log("diseases CABRON", cropData.diseases)
       const diseases = await Disease.findAll({
-        where: { id: [...cropData.diseases] },
+        where: { id: cropData.diseases }
       });
-      console.log("diseases Cabron", diseases)
       await crop.setDiseases(diseases);
-    };
-    console.log("Updated crop", crop);
+    }
 
-    res.status(200).send({ id: cropData.id }); //
-  } catch (error) {
-    console.log(error);
-    res.status(500).send(error.message);
-  }
-};
-
-const remove = async (req, res, next) => {
-  try {
-    const cropData = req.body;
-    const newCrop = Crops.update(cropData, {});
-  } catch (error) {
-    console.log(error);
-    res.status(500).send(error.message);
-  }
-};
-
-
-const findById = async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const result = await Crops.findAll({
-      include: [{ model: Product }, { model: Disease }],
-      where: { id: id }
-
+    const updatedCrop = await Crop.findByPk(cropData.id, {
+      include: DEFAULT_INCLUDES
     });
-    return res.status(200).send(result);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send(err.message);
+
+    return res.status(200).send(updatedCrop);
+  } catch (error) {
+    return handleError(res, error);
   }
 };
 
+const remove = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Crop.destroy({
+      where: { id }
+    });
+
+    if (!result) {
+      return res.status(404).send({ message: 'Crop not found' });
+    }
+
+    return res.status(200).send({ message: 'Crop deleted successfully' });
+  } catch (error) {
+    return handleError(res, error);
+  }
+};
 
 module.exports = {
   create,
-  update,
   find,
+  update,
   remove,
-  findById,
+  findById
 };

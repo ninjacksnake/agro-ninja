@@ -23,11 +23,11 @@ const UpdateCropForm = ({ id }) => {
 
     const handleImageUpload = (url) => {
         if(typeof(url) === 'object'){
-            console.log(url)
+           
             url = url.file.name;
         }
         setImageUrl(url);
-       console.log(typeof(url))
+  
         form.setFieldValue('photo', url);
     };
    
@@ -103,17 +103,17 @@ const UpdateCropForm = ({ id }) => {
             style={{ maxWidth: 600 }}
             initialValues={initialValues}
         >
-            {console.log(initialValues)}
+           
             <Form.Item
                 name="photoUploader"
                 label="Guardar Imagen"
                 rules={[{ required: false }]}
             >
-                {console.log('Initial values',initialValues)}
+               
                 <ImageUpdater
                     setFileName={handleImageUpload}
                     module={module}
-                    existingImagePath={
+                    file={
                         initialValues?.photo ? {
                             url: `${apiUrl}/upload${module}/${initialValues.photo}`,
                             uid: initialValues.photo,  // Use the photo name as uid

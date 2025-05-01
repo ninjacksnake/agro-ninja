@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 
 import ChemicalService from "./../../services/Chemical.service";
 import { Input, Space, Button, Tooltip } from "antd";
-import ChemicalCardList from "./components/ChemicalCardList";
+
 import { NavLink } from "react-router-dom";
+import ChemicalTable from "./components/ChemicalTable";
 
 const FindChemical = () => {
   const [chemicals, setChemicals] = useState([]);
@@ -49,7 +50,8 @@ const FindChemical = () => {
           Buscar
         </Button>
       </Space.Compact>
-      <ChemicalCardList chemicals={filtredChemicals} />
+    <ChemicalTable chemicals={filtredChemicals} />
+      {/* <ChemicalCardList chemicals={filtredChemicals} /> */}
     </div>
   );
 };

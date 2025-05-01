@@ -1,12 +1,15 @@
 import React from 'react'
-import ChemicalForm from './components/ChemicalForm'
+
 import { useParams } from 'react-router-dom';
+import UpdateChemicalForm from './components/UpdateChemicalForm';
 
 const UpdateChemical = () => {
   const id = useParams();
-  const chemical = JSON.parse(localStorage.getItem("SelectedChemicalToUpdate"));
+  console.log(id)
+  
   return (
-    <ChemicalForm isUpdate={true} chemical={chemical} id={id} />
+     <UpdateChemicalForm  id={id.id} />
+  
   )
 }
 

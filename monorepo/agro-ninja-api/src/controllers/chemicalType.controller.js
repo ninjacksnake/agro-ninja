@@ -2,10 +2,7 @@ const ChemicalTypes = require('../models/index').ChemicalTypes;
 const Product = require('../models/index').Product;
 const DEFAULT_INCLUDES = [
  
-  {
-    model: Product,
-    as: 'Products',
-  }
+ 
 ];
 
 const chemicalTypeController = {

@@ -22,39 +22,39 @@ router.get("/api/products", authMiddleware, productsController.find);
 router.get("/api/products/:id", authMiddleware, productsController.findById);
 router.put("/api/products", authMiddleware, productsController.update);
 
-router.post("/api/diseases", diseasesController.create);
-router.get("/api/diseases", diseasesController.find);
-router.get("/api/diseases/:id", diseasesController.findById);
-router.put("/api/diseases", diseasesController.update);
+router.post("/api/diseases",authMiddleware, diseasesController.create);
+router.get("/api/diseases",authMiddleware, diseasesController.find);
+router.get("/api/diseases/:id", authMiddleware, diseasesController.findById);
+router.put("/api/diseases", authMiddleware, diseasesController.update);
 
-router.post("/api/diseasetypes", diseaseTypeController.create);
-router.get("/api/diseasetypes", diseaseTypeController.find);
-router.get("/api/diseasetypes/:id", diseaseTypeController.findById);
-router.put("/api/diseasetypes", diseaseTypeController.update);
+router.post("/api/diseasetypes", authMiddleware, diseaseTypeController.create);
+router.get("/api/diseasetypes", authMiddleware, diseaseTypeController.find);
+router.get("/api/diseasetypes/:id",authMiddleware,authMiddleware,authMiddleware,authMiddleware, diseaseTypeController.findById);
+router.put("/api/diseasetypes",authMiddleware,authMiddleware,authMiddleware,authMiddleware, diseaseTypeController.update);
 
-router.post("/api/chemicals", chemicalsController.create);
-router.get("/api/chemicals", chemicalsController.find);
-router.get("/api/chemicals/:id", chemicalsController.findById);
-router.put("/api/chemicals", chemicalsController.update);
+router.post("/api/chemicals",authMiddleware,authMiddleware,authMiddleware, chemicalsController.create);
+router.get("/api/chemicals",authMiddleware,authMiddleware,authMiddleware, chemicalsController.find);
+router.get("/api/chemicals/:id",authMiddleware,authMiddleware,authMiddleware, chemicalsController.findById);
+router.put("/api/chemicals/:id",authMiddleware,authMiddleware,authMiddleware, chemicalsController.update);
 
-router.post("/api/chemicalType", chemicalTypeController.create);
-router.get("/api/chemicalTypes", chemicalTypeController.getAll);
-router.get("/api/chemicalsType/:id", chemicalTypeController.getById);
-router.put("/api/chemicalsType", chemicalTypeController.update);
+router.post("/api/chemicalType",authMiddleware,authMiddleware, chemicalTypeController.create);
+router.get("/api/chemicalTypes", authMiddleware,authMiddleware,chemicalTypeController.getAll);
+router.get("/api/chemicalsType/:id",authMiddleware,authMiddleware, chemicalTypeController.getById);
+router.put("/api/chemicalsType",authMiddleware,authMiddleware, chemicalTypeController.update);
 
-router.post("/api/categories", categoriesController.create);
-router.get("/api/categories", categoriesController.find);
-router.put("/api/categories", categoriesController.update);
+router.post("/api/categories",authMiddleware,authMiddleware, categoriesController.create);
+router.get("/api/categories",authMiddleware,authMiddleware, categoriesController.find);
+router.put("/api/categories", authMiddleware,authMiddleware,categoriesController.update);
 
-router.post("/api/crops", cropsController.create);
-router.get("/api/crops", cropsController.find);
-router.get("/api/crops/:id", cropsController.findById);
-router.put("/api/crops/:id", cropsController.update);
+router.post("/api/crops",authMiddleware,authMiddleware, cropsController.create);
+router.get("/api/crops",authMiddleware,authMiddleware, cropsController.find);
+router.get("/api/crops/:id",authMiddleware,authMiddleware, cropsController.findById);
+router.put("/api/crops/:id",authMiddleware,authMiddleware, cropsController.update);
 
-router.get("/api/cropType", cropTypesController.find);
-router.post("/api/cropType", cropTypesController.create);
-router.put("/api/cropType", cropTypesController.update);
-router.get("/api/cropType/:id", cropTypesController.findById);
+router.get("/api/cropType",authMiddleware, cropTypesController.find);
+router.post("/api/cropType",authMiddleware, cropTypesController.create);
+router.put("/api/cropType", authMiddleware,cropTypesController.update);
+router.get("/api/cropType/:id",authMiddleware, cropTypesController.findById);
 
 
 router.post("/api/register", UserController.create);

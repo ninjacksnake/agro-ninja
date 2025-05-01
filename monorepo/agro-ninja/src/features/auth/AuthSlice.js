@@ -3,7 +3,6 @@ import {createSlice} from "@reduxjs/toolkit";
 const getDataFromLocalStorage = (key) => {
   try {
       const localStorageItem = JSON.parse(localStorage.getItem(key));
-      //console.log('localStorageItem is ', localStorageItem);
       return localStorageItem ? JSON.parse(localStorage.getItem(key)) : null;
   } catch (error) {
     console.error('Error getting data from local storage:', error);

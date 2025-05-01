@@ -33,16 +33,14 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/" element={<AppLayout />} />
-      <Route path="" element={<Navigate to="/home" replace />} />
       <Route path="/" element={<AppLayout />}>
-        <Route index element={
-           <AppPrivateRoute roles={['user']}>
+        <Route index element={<Navigate to="/home" replace />} />
+        <Route path="home" element={
+          <AppPrivateRoute roles={['user']}>
             <Home />
-          </AppPrivateRoute> 
-       
-      } />
-
+          </AppPrivateRoute>
+        } />
+        
         <Route path="products">
           <Route index element={
             <AppPrivateRoute roles={['user']}>

@@ -1,41 +1,57 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { useEffect, useState, useCallback } from "react";
 import Api from "../services/api";
 
 const AppPrivateRoute = ({ children, roles = [] }) => {
     const { accessToken, user } = useSelector(state => state.auth);
+    const [isValidating, setIsValidating] = useState(true);
+    const [isValid, setIsValid] = useState(false);
 
-    const isLogged = !!accessToken && !!user;
+    const validateToken = useCallback(async () => {
+        if (!accessToken || !user) {
+            setIsValid(false);
+            setIsValidating(false);
+            return;
+        }
 
-    if (isLogged) {
-        const isTokenValid = async () => {
-            try {
-                const result = await Api.post("/verify-token", {token: accessToken});
-               // console.log(result);
-                if(result.status !== 200) {
-                    return <Navigate to={'/login'}/>;
-                }
-                return result.data;
-            } catch (error) {
-                return <Navigate to={'/login'}/>;
-            }
+        try {
+            const result = await Api.post("verify-token", { token: accessToken });
+            setIsValid(result.status === 200);
+        } catch (error) {
+            //console.error('Token validation error:', error);
+            setIsValid(false);
+            // Clear localStorage on token validation failure
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+        } finally {
+            setIsValidating(false);
         }
-        const isValid = isTokenValid();
-        if (!isValid) {
-            return <Navigate to="/login" />
-        }
+    }, [accessToken, user]);
+
+    useEffect(() => {
+        // Add a small delay to prevent immediate validation on every render
+        const timeoutId = setTimeout(() => {
+            validateToken();
+        }, 100);
+
+        return () => clearTimeout(timeoutId);
+    }, [validateToken]);
+
+    if (isValidating) {
+        return <div>Loading...</div>; // Add a proper loading component
     }
 
-    if (!user || !accessToken) {
-        console.log("user is not logged in or accesToken is not valid")
-        alert("user is not logged in or accesToken is not valid")
-        return <Navigate to="/login" />
+    if (!isValid || !user || !accessToken) {
+        console.log('No accestoken or user',accessToken, user)
+       return <Navigate to="/login" replace />;
     }
 
     if (roles.length > 0 && !roles.includes(user.role)) {
-        return <Navigate to="/unauthorized" />
+        return <Navigate to="/unauthorized" replace />;
     }
-    return children
-}
 
-export default AppPrivateRoute
+    return children;
+};
+
+export default AppPrivateRoute;

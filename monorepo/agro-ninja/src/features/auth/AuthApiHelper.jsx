@@ -4,8 +4,11 @@ import { setCredentials } from "./AuthSlice";
 export const register = async (userData, dispatch) => {
   try {
     const response = await api.post("/api/register", userData);
-    dispatch(setCredentials({ ...response.data }));
-    return response.data;
+    const data = response.data;
+    localStorage.setItem('token', data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    dispatch(setCredentials({ ...data }));
+    return data;
   } catch (error) {
     return error.response.data;
   }
@@ -14,14 +17,26 @@ export const register = async (userData, dispatch) => {
 export const login = async (userData, dispatch) => {
   try {
     const response = await api.post("/api/login", userData);
-    dispatch(setCredentials({...response.data }));
-    return response.data;
+    const data = response.data;
+    localStorage.setItem('token', data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    dispatch(setCredentials({ ...data }));
+    return data;
   } catch (error) {
     return error.response.data;
   }
 }
 
 export const logout = async (dispatch) => {
- await api.post("/api/logout");
-  dispatch({type: "auth/logout"});
+  try {
+    await api.post("/api/logout");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    dispatch({type: "auth/logout"});
+  } catch (error) {
+    // Still clear local storage and redux state even if logout API fails
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    dispatch({type: "auth/logout"});
+  }
 }

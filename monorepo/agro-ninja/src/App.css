@@ -24,6 +24,52 @@
   color: #61dafb;
 }
 
+.Action-Button-red {
+  border: none;
+  width: 80px;
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  cursor: pointer;
+}
+
+.Action-Button-blue {
+  border: none;
+  width: 80px;
+  padding: 10px 20px;
+  background-color: #344CB7 ;
+  color: white;
+  cursor: pointer;
+}
+
+.Action-Button-blue-dark {
+  border: none;
+  width: 80px;
+  padding: 10px 20px;
+  background-color: #547792 ;
+  color: white;
+  cursor: pointer;
+}
+
+
+.Action-Button-green {
+  border: none;
+  width: 80px;
+  padding: 10px 20px;
+  background-color: #0DA574;
+  color: white;
+  cursor: pointer;
+}
+
+.Action-Button-gray {
+  border: none;
+  width: 80px;
+  padding: 10px 20px;
+  background-color: grey;
+  color: white;
+  cursor: pointer;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

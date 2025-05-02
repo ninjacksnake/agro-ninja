@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 
 import { Modal, Button, Form, Input, Select, Upload, message, notification } from 'antd';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import ImageUploaderFB from '../../components/ImageUploaderFB';
-import ProductService from '../../../services/Product.service';
-import CategoryService from '../../../services/CategoriesService';
+import ImageUploaderFB from '../../components/ImageUploaderFB.jsx';
+import ProductService from '../../../services/Product.service.jsx';
+import CategoryService from '../../../services/CategoriesService.jsx';
 import ChemicalService from '../../../services/Chemical.service.jsx';
 import CropService from '../../../services/Crop.service.jsx';
 import Diseaseservice from '../../../services/Disease.service.jsx';
@@ -15,10 +15,9 @@ import ImageUpdater from '../../components/ImageUpdater.jsx';
 const { TextArea } = Input;
 const { Option } = Select;
 
-const ProductForm2 = ({ isUpdate, product }
-
-) => {
+const UpdateProductForm = ({ id }) => {
     const [form] = Form.useForm();
+    const [product, setProduct] = useState({});
     const [categories, setCategories] = useState([]);
     const [components, setComponents] = useState([]);
     const [diseases, setDiseases] = useState([]);
@@ -30,27 +29,50 @@ const ProductForm2 = ({ isUpdate, product }
     const navigate = useNavigate();
     const module = appConfig.modules.products;
 
-
-
-
     useEffect(() => {
-
-        setFileName({ file: { name: product?.photo } });
+       
         const getInfo = async () => {
-            const dbChemicals = await ChemicalService.findAll();
-            setComponents((ch) => dbChemicals);
-            const dbCategories = await CategoryService.FindAll();
-            // console.log('dbCategories', dbCategories);
-            setCategories((ca) => dbCategories);
-            const dbdiseases = await Diseaseservice.findAll();
-            setDiseases((d) => dbdiseases);
-            const crops = await CropService.findAll();
-            setCrops((c) => crops);
-            //  console.log('crops', crops);
+            try {
+                const [dbProduct, dbChemicals, dbCategories, dbdiseases, crops] = await Promise.all([
+                    ProductService.findById(id),
+                    ChemicalService.findAll(),
+                    CategoryService.FindAll(),
+                    Diseaseservice.findAll(),
+                    CropService.findAll(),
+                ])
+                setProduct(dbProduct);
+                setFileName(dbProduct.photo);
+                setComponents((ch) => dbChemicals);
+                setCategories((ca) => dbCategories);
+                setDiseases((d) => dbdiseases);
+                setCrops((c) => crops);
+console.log(product)
+            } catch (error) {
+                console.log(error);
+                openNotification("Fail", "No se pudo cargar los datos");
+            }
         };
         getInfo();
+     
+    }, [id])
 
-    }, [isUpdate])
+    useEffect(() => {
+        if(product.id){
+           
+            form.setFieldsValue({
+                photo: fileName,
+                name: product.name,
+                description: product.description,
+                categoryId: product.categoryId,
+                dossage: product.dossage,
+                chemicals: product.chemicals.map((chemical) => chemical.name),
+                diseases: product.diseases.map((disease) => disease.name),
+                crops: product.crops.map((crop) => crop.name),
+            });
+        }
+      
+ 
+    }, [product, fileName, form])
 
 
 
@@ -67,36 +89,21 @@ const ProductForm2 = ({ isUpdate, product }
 
     // function to finish the form
     const onFinish = (values) => {
-        //console.log("onFinish", values);
-        if (isUpdate) {
-            values.id = product.id;
-            values.photo = fileName?.file?.name || "";
-            return ProductService.updateProduct(values)
-                .then((result) => {
-                    openNotification("Success", "El Producto ha sido actualizado");
-                    navigate(`/products/details/${values.id}`, { state: result });
-                })
-                .catch((error) => {
-                    console.log(error);
-                    openNotification("Fail", "El Producto no ha sido actualizado");
-                });
-        } else {
-            values.photo = fileName?.file?.name || "";
-            return ProductService.createProduct(values)
-                .then((result) => {
-                    openNotification("Success", "El producto ha sido creado");
-                    navigate(`/products/details/${result.id}`, { state: result });
-                })
-                .catch((error) => {
-                    console.log(error);
-                    openNotification(
-                        "Fail",
-                        "El producto no ha sido creado, ",
-                        error.request.response
-                    );
-                });
-        }
-    };
+        // console.log("onFinish", values);
+
+        values.id = product.id;
+        values.photo = fileName || "";
+        return ProductService.updateProduct(values)
+            .then((result) => {
+                openNotification("Success", "El Producto ha sido actualizado");
+                navigate(`/products/details/${values.id}`, { state: result });
+            })
+            .catch((error) => {
+                console.log(error);
+                openNotification("Fail", "El Producto no ha sido actualizado");
+            });
+
+    }
 
     const handleFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -125,40 +132,25 @@ const ProductForm2 = ({ isUpdate, product }
         uid: product?.photo,
         status: 'done',
     }
-   // appConfig.apiUrl + "/upload/" + product?.photo;
+    // appConfig.apiUrl + "/upload/" + product?.photo;
     return (
         <div style={{ padding: 10, border: '1px solidrgb(78, 78, 78)', borderRadius: 5, boxShadow: '0 0 5px rgba(1, 2, 1, 0.57)', width: '50%', }}>
             <Form
                 form={form}
                 layout="horizontal"
-                labelCol={{ span: 4 }}
-
+                labelCol={{ span: 6 }}
                 wrapperCol={{ span: 20 }}
                 size='medium'
                 onFinish={onFinish}
                 onFinishFailed={handleFinishFailed}
-                initialValues={
-                    isUpdate
-                        ? {
-                            name: product?.name ?? "",
-                            photo: product?.photo ?? "",
-                            description: product?.description ?? "",
-                            imageLocation: product?.photo ?? "",
-                            categoryId: product?.categoryId ?? "",
-                            dossage: product?.dossage ?? 0,
-                            chemicals:
-                                product?.chemicals?.map((chemical) => chemical.name) ?? [],
-                            diseases:
-                                product?.diseases?.map((disease) => disease.name) ?? [],
-                            crops:
-                                product?.Crops?.map((crop) => crop.name) ?? [],
-                        }
-                        : null
-                }
+               
             >
-                <ImageUpdater setFileName={setFileName} module={module} existingImagePath={existingImagePath} />
-                <Form.Item name="photo" label="" rules={[{ required: false }]}>
-                    <input type="text" name="photo" value={fileName?.file?.name} hidden />
+                <Form.Item name="imgUploader" label="" rules={[{ required: false }]}>
+                    
+                <ImageUpdater setFileName={setFileName} module={module} file={existingImagePath} />
+                </Form.Item>
+                <Form.Item name="photo" label="" rules={[{ required: false }]} hidden>
+                    <Input type="text" name="photo" value={fileName}  />
                 </Form.Item>
                 <Form.Item
                     name="name"
@@ -368,4 +360,4 @@ const ProductForm2 = ({ isUpdate, product }
     );
 };
 
-export default ProductForm2;
+export default UpdateProductForm;

@@ -23,10 +23,10 @@ const ProductsTable = ({ data }) => {
             render: (text, record) => (
 
                     <Space >
-                        <Button type="primary" size="small" >
+                        <Button className="Action-Button-blue" size="small" >
                             <Link to={`/products/update/${record.id}`}>Editar</Link>
                         </Button>
-                        <Button type="primary" green size="small" >
+                        <Button className="Action-Button-blue-dark" green size="small" >
                             <Link to={`/products/details/${record.id}`}>Detalles</Link>
                         </Button>
                     </Space>

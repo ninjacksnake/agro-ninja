@@ -53,7 +53,7 @@ const updateDisease = (disease) => {
     //  console.log("update disease ")
     try {
       const updatedDisease = await api.put(
-        `/categories/diseases
+        `/diseases
       `,
         disease
       );

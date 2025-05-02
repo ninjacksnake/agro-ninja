@@ -16,11 +16,11 @@ const columns = [
     key: 'description',
     dataIndex: 'description',
   },
-  {
-    title: 'Clasificación',
-    key: 'classification',
-    dataIndex: ['diseaseType','name'],
-  }
+  // {
+  //   title: 'Clasificación',
+  //   key: 'classification',
+  //   dataIndex: ['diseaseTypeId'],
+  // }
 ];
 
 const FindDisease = () => {
@@ -35,6 +35,7 @@ const FindDisease = () => {
       try {
         setLoading(true);
         const result = await diseasesService.findAll();
+        console.log(result); // Agrega este console.log para verificar el resultad
         setDiseases(result);
       } catch (error) {
         notification.error({

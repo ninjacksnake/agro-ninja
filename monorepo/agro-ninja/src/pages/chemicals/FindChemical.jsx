@@ -46,7 +46,7 @@ const FindChemical = () => {
           placeholder="Escriba aqui el quimico que desea buscar"
           onKeyUp={filterChemicals}
         />
-        <Button type="primary" onClick={filterChemicals}>
+        <Button type="primary" onClick={filterChemicals} >
           Buscar
         </Button>
       </Space.Compact>

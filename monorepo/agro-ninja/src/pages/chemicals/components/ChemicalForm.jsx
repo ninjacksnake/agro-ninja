@@ -150,12 +150,12 @@ const ChemicalForm = ({
       }
     >form
 
-      <Form.Item label="Foto" rules={[{ required: false }]}>
+      <Form.Item label="Foto" rules={[{ required: false }]} >
         <ImageUploaderFB
           setFileName={setFilename}
           module={module} />
       </Form.Item>
-      <FormItem label="" name={'photo'} >
+      <FormItem label="" name={'photo'} hidden>
         <Input value={fileName}/>
       </FormItem>
       {/* <input type="text" name="photo" value={fileName?.file?.name}  /> */}

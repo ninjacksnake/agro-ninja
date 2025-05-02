@@ -13,9 +13,13 @@ const ChemicalTable = ({ chemicals, loading, onDelete }) => {
   }, []);
 
   const onEdit = (chemical) => {
-    console.log(chemical)
+    
     navigate(`/chemicals/update/${chemical.id}`);
+  }
 
+  const onDetails = (chemical) => {
+    
+    navigate(`/chemicals/details/${chemical.id}`);
   }
 
   const columns = [
@@ -44,19 +48,21 @@ const ChemicalTable = ({ chemicals, loading, onDelete }) => {
       render: (_, record) => (
         <Space size="middle">
           <Button 
-            type="primary" 
-            icon={<EditOutlined />}
+          className='Action-Button-blue'
+            size='small'
+
             onClick={() => onEdit(record)}
           >
-            Edit
+            Editar
           </Button>
           <Button 
-            type="primary" 
-            danger 
-            icon={<DeleteOutlined />}
-            onClick={() => onDelete(record.id)}
+      
+            className='Action-Button-blue-dark'
+
+            onClick={() => onDetails(record)}
+            size='small'
           >
-            Delete
+            Detalles
           </Button>
         </Space>
       ),

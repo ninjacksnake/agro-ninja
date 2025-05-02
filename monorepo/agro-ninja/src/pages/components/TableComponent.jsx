@@ -52,23 +52,24 @@ const TableComponent = ({ data, columns, module, showDrawer }) => {
                 Componentes
               </Button>
             )}
-            {module === 'diseases' && (
-              <Button
-                type='primary'
+            {/* {module === 'diseases' && ( 
+              // <Button
+              //   type='primary'
                 
-                style={{ color: "black", backgroundColor: "lightblue"  }}
-                variant='outlined'
-                size='small'
-                onClick={() => showDrawer(record.name)}
-              >
-                Productos
-              </Button>
-            )}
+              //   style={{ color: "black", backgroundColor: "lightblue"  }}
+              //   variant='outlined'
+              //   size='small'
+              //   onClick={() => showDrawer(record.name)}
+              // >
+              //   Productos
+              // </Button>
+            )}*/}
 
             <Tooltip title="Editar" placement="bottom">
               <Button
-              type='primary'
-                style={{ color: "black", backgroundColor: "#7bc297" }}
+              //type='primary'
+                //style={{ color: "black", backgroundColor: "#7bc297" }}
+                className='Action-Button-blue'
                 variant='outlined'
                 size='small'
                 onClick={() => goUpdate(record.id)}
@@ -78,9 +79,9 @@ const TableComponent = ({ data, columns, module, showDrawer }) => {
             </Tooltip>
             <Tooltip title="Detalles" placement="bottom">
               <Button
-              type='primary'
+              className='Action-Button-blue-dark'
                 color='default'
-                style={{ color: "white",  }}
+                
                 variant='outlined'
                 size='small'
                 onClick={() => navigate(`/${module}/details/${record.id}`)}

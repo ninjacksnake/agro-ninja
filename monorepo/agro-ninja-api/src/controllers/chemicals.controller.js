@@ -24,7 +24,7 @@ const create = async (req, res, next) => {
         message: "photo can not be empty",
       });
     }
-    const chemicalType = await ChemicalTypes.findByPk(chemical.chemicalTypeId, {include: COMMON_ASSOCIATIONS });
+    const chemicalType = await ChemicalTypes.findByPk(chemical.chemicalTypeId,);
     const newChemical = await Chemical.create(chemical);
     newChemical.chemicalTypeId = chemicalType.id;
     await newChemical.save(); // Save the newChemical instance

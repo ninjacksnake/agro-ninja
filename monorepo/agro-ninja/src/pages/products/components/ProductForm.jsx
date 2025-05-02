@@ -121,7 +121,7 @@ const ProductForm = ({id}) => {
 
   // function to finish the form
   const onFinish = (values) => {
-      values.photo = fileName?.file?.name || "";
+      values.photo = fileName || "";
       return ProductService.createProduct(values)
         .then((result) => {
           openNotification("Success", "El producto ha sido creado");

@@ -25,11 +25,6 @@ const create = async (req, res, next) => {
     newDisease.description = diseaseInfo.description;
     newDisease.photo = diseaseInfo.photo;
     newDisease.diseaseTypeId = diseaseInfo.diseaseTypeId;
-
-    // const newdisease = await Disease.create(diseaseInfo);
-    // const diseaseType = await diseaseType.findByPk(diseaseInfo.diseaseTypeId);
-    // console.log(diseaseType);
-    // newdisease.diseaseType = diseaseType;
     newDisease.save();
     return res.status(201).send(newDisease);
   } catch (err) {

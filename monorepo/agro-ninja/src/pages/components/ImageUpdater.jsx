@@ -6,6 +6,8 @@ import appConfig from '../../app.config';
 import api from '../../services/api';
 
 const ImageUpdater = ({ setFileName = null, module = "", file = null }) => {
+    console.log(file);
+    console.log(module)
     const uploadPath = appConfig.uploadPath;
     const [imageObj, setImageObj] = useState(null);
     const [imageChange, setImageChange] = useState(false);

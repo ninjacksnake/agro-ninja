@@ -1,3 +1,4 @@
+
 const fs = require('fs');
 const express = require("express");
 const https = require("https");
@@ -8,8 +9,8 @@ const router = require("./routers/appRouter.js");
 const bodyParser = require("body-parser");
 const getUploadMiddleware = require("./utils/middlewares/uploader.middleware.js");
 const httpsOptions = {
-  key: fs.readFileSync('./certificates/key.pem'),
-  cert: fs.readFileSync('./certificates/cert.pem'),
+  key: fs.readFileSync('./src/certificates/server.key'),
+  cert: fs.readFileSync('./src/certificates/server.crt'),
 };
 const httpMode = process.env.HTTP_MODE;
 const server = https.createServer(httpsOptions, app);

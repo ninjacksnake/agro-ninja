@@ -11,7 +11,7 @@ yarn-error.log
 .env.*.local
 
 # SSL Certificates
-certificates/
+#certificates/
 *.pem
 *.key
 *.crt

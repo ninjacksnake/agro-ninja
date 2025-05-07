@@ -1,3 +1,59 @@
 node_modules
 node_modules
 uploads
+
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# SSL Certificates
+certificates/
+*.pem
+*.key
+*.crt
+
+# Build output
+dist/
+build/
+out/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+
+# Upload directories
+src/uploads/*
+!src/uploads/no-photo.png
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Debug files
+.debug
+
+# System Files
+.DS_Store
+Thumbs.db

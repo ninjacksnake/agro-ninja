@@ -1,10 +1,19 @@
+const fs = require('fs');
 const express = require("express");
+const https = require("https");
 const app = express();
 const cors = require("cors");
 const port = 3004;
 const router = require("./routers/appRouter.js");
 const bodyParser = require("body-parser");
 const getUploadMiddleware = require("./utils/middlewares/uploader.middleware.js");
+const httpsOptions = {
+  key: fs.readFileSync('./certificates/key.pem'),
+  cert: fs.readFileSync('./certificates/cert.pem'),
+};
+const httpMode = process.env.HTTP_MODE;
+const server = https.createServer(httpsOptions, app);
+
 const { syncDb } = require("./controllers/app.controller");
 const bcrypt = require("bcrypt");
 const { User } = require("./models/index.js");
@@ -12,19 +21,15 @@ const tokenFactory = require('./utils/authHelper/tokenFactory.js');
 const uploadProducts = getUploadMiddleware("products");
 const uploadChemicals = getUploadMiddleware("chemicals");
 const uploadDiceases = getUploadMiddleware("diceases");
-
 const uploadCrops = getUploadMiddleware("crops");
-
 const path = require("path");
-const fs = require('fs');
 require("dotenv").config();
 const executeDbSync = process.env.DBSYNC;
 
-//middlware
+//middleware
 app.use(express.json());
 app.use(bodyParser.json({ limit: "10mb" }));
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })); // here we set the cors origin to the client url
-// console.log(process.env.CLIENT_URL) // here we set the 
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(router);
 
 // route to log in and return a token
@@ -210,15 +215,25 @@ app.post("/api/upload/crops", uploadCrops.single("file"),
 app.get("/api/hi", (req, res) => {
   res.send("Hello World!");
 })
-const server = require("http").createServer(app);
 
-server.listen(port, () => {
-  if (executeDbSync === "true") {
-    syncDb();
-    console.log("Database synchronized");
-  }
-  console.log("Server listening port", port)
-});
+// Server startup configuration
+if (httpMode === 'http') {
+  app.listen(port, () => {
+    if (executeDbSync === "true") {
+      syncDb();
+      console.log("Database synchronized");
+    }
+    console.log("HTTP Server listening on port", port);
+  });
+} else {
+  server.listen(port, () => {
+    if (executeDbSync === "true") {
+      syncDb();
+      console.log("Database synchronized");
+    }
+    console.log("HTTPS Server listening on port", port);
+  });
+}
 
 server.on("error", (err) => {
   console.log("Server error", err);

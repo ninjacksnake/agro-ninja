@@ -4,7 +4,6 @@ import api from "./api";
 
 
 
-
 const getDiseases = () => {
   const callApi = async () => {
     try {

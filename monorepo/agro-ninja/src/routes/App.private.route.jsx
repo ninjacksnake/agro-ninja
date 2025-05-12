@@ -14,7 +14,6 @@ const AppPrivateRoute = ({ children, roles = [] }) => {
             setIsValidating(false);
             return;
         }
-
         try {
             const result = await Api.post("verify-token", { token: accessToken });
             setIsValid(result.status === 200);

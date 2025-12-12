@@ -1,10 +1,8 @@
-import React from 'react'
-import DiseaseForm from './components/DiseaseForm'
+import React from 'react';
+import DiseaseForm from './components/DiseaseForm';
 
-const Createdisease = () => {
-  return (
-   <DiseaseForm />
-  )
-}
+const CreateDisease = () => {
+  return <DiseaseForm isUpdate={false} />;
+};
 
-export default Createdisease
+export default CreateDisease;

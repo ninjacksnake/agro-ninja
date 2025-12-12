@@ -1,66 +1,109 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, notification, Select } from "antd";
+import { 
+    Button, 
+    Form, 
+    Input, 
+    notification, 
+    Select,
+    Card,
+    Row,
+    Col,
+    Typography,
+    Space,
+    Divider,
+    Spin,
+    message,
+    Modal
+} from "antd";
+import { 
+    PlusOutlined,
+    SaveOutlined,
+    CloseOutlined,
+    BugOutlined,
+    FileTextOutlined,
+    AppstoreOutlined,
+    PictureOutlined,
+    LoadingOutlined
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import appConfig from "../../../app.config";
 import DiseaseTypeService from "../../../services/DiseaseType.service";
 import DiseaseService from "../../../services/Disease.service";
 import ImageUpdater from "../../components/ImageUpdater";
 
-
-
-const noPhoto = require("../../../assets/images/diseases/no-photos.png"); // check the folder is for the module
+const { Title, Text } = Typography;
+const { TextArea } = Input;
+const noPhoto = "no-photo.png";
 const module = appConfig.modules.diseases;
 
 
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-};
-
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
-};
-
 const UpdateDiseaseForm = ({ id }) => {
-  //console.log("Dicease", diseases);
   const [form] = Form.useForm();
   const [disease, setDisease] = useState({});
   const [fileName, setFileName] = useState("");
-  const [deseaseTypes, setDiseaseTypes] = useState([]);
+  const [diseaseTypes, setDiseaseTypes] = useState([]);
+  const [currentImage, setCurrentImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [fetchingTypes, setFetchingTypes] = useState(true);
+  const [diseaseTypeModal, setDiseaseTypeModal] = useState(false);
   const navigate = useNavigate();
 
-  const openNotification = (title, body) => {
-    notification.open({
-      message: `${title}`,
-      description: `${body}`,
+  const openNotification = (title, body, type = "success") => {
+    notification[type === "error" ? "error" : "success"]({
+      message: title,
+      description: body,
       placement: "topRight",
-      style: {
-        backgroundColor: title === "Error" ? "#EB8696" : "beige",
-      },
+      duration: 4,
     });
   };
 
-  const clearForm = () => {
-    form.resetFields();
-  };
-
-
   useEffect(() => {
-  
     const getInfo = async () => {
-      const [dbDisease, dbDiseaseTypes] = await Promise.all([
-        DiseaseService.findById(id.id),
-        DiseaseTypeService.findAll(),
-      ]);
-      console.log(dbDisease);
-      if (dbDisease.id) {
-        setDisease(dbDisease);
-      }
-      if (dbDiseaseTypes.length > 0) {
-        setDiseaseTypes(dbDiseaseTypes);
+      setLoading(true);
+      setFetchingTypes(true);
+      try {
+        const diseaseId = id?.id || id;
+        const [dbDisease, dbDiseaseTypes] = await Promise.all([
+          DiseaseService.findById(diseaseId),
+          DiseaseTypeService.findAll(),
+        ]);
+        
+        if (dbDisease.id) {
+          setDisease(dbDisease);
+          setFileName(dbDisease.photo || "");
+          
+          // Set current image for ImageUpdater
+          if (dbDisease.photo) {
+            const imageObj = {
+              name: dbDisease.photo,
+              url: `${appConfig.apiUrl}/upload${module}/${dbDisease.photo}`,
+              thumbUrl: `${appConfig.apiUrl}/upload${module}/${dbDisease.photo}`,
+              uid: dbDisease.photo,
+              status: 'done'
+            };
+            setCurrentImage(imageObj);
+          }
+        }
+        
+        if (dbDiseaseTypes.length > 0) {
+          setDiseaseTypes(dbDiseaseTypes.map(type => ({
+            value: type.id,
+            label: type.name
+          })));
+        }
+      } catch (error) {
+        console.error(error);
+        message.error('Error al cargar los datos de la enfermedad');
+      } finally {
+        setLoading(false);
+        setFetchingTypes(false);
       }
     };
-    getInfo();
+    
+    if (id) {
+      getInfo();
+    }
   }, [id]);
 
   useEffect(() => {
@@ -69,86 +112,285 @@ const UpdateDiseaseForm = ({ id }) => {
         name: disease.name,
         description: disease.description,
         diseaseTypeId: disease.diseaseTypeId,
-        photo: disease.photo,
+        photo: fileName || disease.photo 
       });
     }
-  }, [disease, fileName]);
+  }, [disease, fileName, form]);
 
-  var existingImagePath = {
-    name: disease?.photo,
-    url: appConfig.apiUrl + "/upload/diseases/" + disease?.photo,
-    thumbUrl: appConfig.apiUrl + "/upload/diseases/" + disease?.photo,
-    uid: disease?.photo,
-    status: 'done',
-  };
-
-  const onFinish = (values) => {
-
-    values.id = disease.id;
-    if (values.photo !== fileName) {
-      //values.photo = disease ?? "";
-    }
-    return DiseaseService
-      .update(values)
-      .then((result) => {
-        openNotification("Success", "Your diseases has been updated");
+  const onFinish = async (values) => {
+    setSubmitting(true);
+    try {
+      values.id = disease.id;
+      values.photo = fileName || disease.photo || noPhoto;
+      const result = await DiseaseService.update(values);
+      openNotification("Éxito", "La enfermedad ha sido actualizada satisfactoriamente", "success");
+      setTimeout(() => {
         navigate(`/diseases/details/${result.id}`);
-      })
-      .catch((error) => {
-        console.log(error);
-        openNotification("Fail", "Falla al actualizar el registro");
-      });
+      }, 1000);
+    } catch (error) {
+      console.error(error);
+      openNotification("Error", "Error al actualizar la enfermedad. Por favor, intente nuevamente.", "error");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const onCancel = () => {
-    navigate('/diseases/find');   
+    navigate('/diseases/find');
+  };
+
+  const handleAddDiseaseType = async (values) => {
+    try {
+      const newType = await DiseaseTypeService.create({ 
+        name: values.diseaseType,
+        description: values.diseaseType || values.diseaseType
+      });
+      setDiseaseTypes([...diseaseTypes, {
+        value: newType.id,
+        label: newType.name
+      }]);
+      setDiseaseTypeModal(false);
+      message.success('Tipo de enfermedad agregado exitosamente');
+      form.setFieldValue('diseaseTypeId', newType.id);
+    } catch (error) {
+      console.error(error);
+      message.error('Error al crear el tipo de enfermedad');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '400px' 
+      }}>
+        <Spin 
+          size="large" 
+          indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
+          tip="Cargando datos de la enfermedad..."
+        />
+      </div>
+    );
   }
 
   return (
-    <Form
-      {...layout}
-      form={form}
-      onFinish={onFinish}
-      style={{ maxWidth: 600 }}
-   
-    >
-   <Form.Item style={{justifyItems:'center'}} >
+    <div style={{ padding: '24px', background: '#f0f2f5', minHeight: '100vh' }}>
+      <Row justify="center">
+        <Col xs={24} sm={22} md={20} lg={18} xl={16}>
+          <Card
+            bordered={false}
+            style={{
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+              borderRadius: '8px',
+            }}
+          >
+            <div style={{ marginBottom: 24 }}>
+              <Title level={2} style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <BugOutlined style={{ color: '#1890ff' }} />
+                Actualizar Enfermedad
+              </Title>
+              <Text type="secondary">
+                Modifica la información de la enfermedad. Todos los campos marcados con * son obligatorios.
+              </Text>
+            </div>
 
-   
-      <ImageUpdater
-        setFileName={setFileName}
-        module={module}
-        file={existingImagePath}
-        />
-        </Form.Item>
-      <Form.Item name="photo" label="" rules={[{ required: false }]} hidden >
-        <Input type="text" name="photo" value={fileName}  />
-      </Form.Item>
-      <Form.Item name="name" label="Nombre" rules={[{ required: true }]}>
-        <Input />
-      </Form.Item>
-      <Form.Item name="diseaseTypeId" label="Clasificación" rules={[{ required: true }]}>
-        <Select options={deseaseTypes.map((diseaseType) => ({ label: diseaseType.name, value: diseaseType.id }))}
-        />
-      </Form.Item>
-      <Form.Item
-        name="description"
-        label="Descripción"
-        rules={[{ required: true }]}
+            <Divider />
+
+            <Form
+              form={form}
+              onFinish={onFinish}
+              layout="vertical"
+              size="large"
+            >
+              <Row gutter={24}>
+                {/* Image Upload Section */}
+                <Col xs={24} md={24}>
+                  <Card
+                    size="small"
+                    style={{
+                      marginBottom: 24,
+                      background: '#fafafa',
+                      border: '1px dashed #d9d9d9'
+                    }}
+                  >
+                    <Form.Item 
+                      name="imgUploader"
+                      label={
+                        <span>
+                          <PictureOutlined style={{ marginRight: 8, color: '#1890ff' }} />
+                          Imagen de la Enfermedad
+                        </span>
+                      }
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <ImageUpdater
+                          setFileName={setFileName}
+                          module={module}
+                          file={currentImage || {
+                            name: "no-photo.png",
+                            url: `${appConfig.apiUrl}/upload/no-photo`,
+                            thumbUrl: `${appConfig.apiUrl}/upload/no-photo`,
+                            uid: "-1",
+                            status: 'done',
+                          }}
+                        />
+                      </div>
+                    </Form.Item>
+                    <Form.Item name="photo" hidden>
+                      <Input type="text" value={fileName || disease.photo} />
+                    </Form.Item>
+                  </Card>
+                </Col>
+
+                {/* Basic Information */}
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="name"
+                    label={
+                      <span>
+                        <BugOutlined style={{ marginRight: 8, color: '#1890ff' }} />
+                        Nombre <Text type="danger">*</Text>
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: 'El nombre es obligatorio' },
+                      { min: 2, message: 'El nombre debe tener al menos 2 caracteres' }
+                    ]}
+                  >
+                    <Input 
+                      placeholder="Nombre de la enfermedad"
+                      prefix={<BugOutlined style={{ color: '#bfbfbf' }} />}
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="diseaseTypeId"
+                    label={
+                      <span>
+                        <AppstoreOutlined style={{ marginRight: 8, color: '#1890ff' }} />
+                        Clasificación <Text type="danger">*</Text>
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: 'Debe seleccionar una clasificación' }
+                    ]}
+                    extra={
+                      <Button
+                        type="link"
+                        size="small"
+                        icon={<PlusOutlined />}
+                        onClick={() => setDiseaseTypeModal(true)}
+                        style={{ padding: 0 }}
+                      >
+                        Agregar clasificación
+                      </Button>
+                    }
+                  >
+                    <Select
+                      placeholder="Seleccione una clasificación"
+                      options={diseaseTypes}
+                      allowClear
+                      showSearch
+                      loading={fetchingTypes}
+                      filterOption={(input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                      }
+                      notFoundContent={
+                        fetchingTypes ? (
+                          <Spin size="small" />
+                        ) : (
+                          <Text type="secondary">No se encontraron clasificaciones</Text>
+                        )
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24}>
+                  <Form.Item
+                    name="description"
+                    label={
+                      <span>
+                        <FileTextOutlined style={{ marginRight: 8, color: '#1890ff' }} />
+                        Descripción <Text type="danger">*</Text>
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: 'La descripción es obligatoria' },
+                      { min: 10, message: 'La descripción debe tener al menos 10 caracteres' }
+                    ]}
+                  >
+                    <TextArea
+                      rows={4}
+                      placeholder="Descripción detallada de la enfermedad"
+                      showCount
+                      maxLength={500}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Divider />
+
+              {/* Action Buttons */}
+              <Form.Item style={{ marginBottom: 0, marginTop: 24 }}>
+                <Space size="large" style={{ width: '100%', justifyContent: 'flex-end' }}>
+                  <Button
+                    size="large"
+                    icon={<CloseOutlined />}
+                    onClick={onCancel}
+                    disabled={submitting}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="primary"
+                    size="large"
+                    htmlType="submit"
+                    icon={<SaveOutlined />}
+                    loading={submitting}
+                    style={{
+                      minWidth: 140,
+                      background: '#1890ff',
+                      borderColor: '#1890ff'
+                    }}
+                  >
+                    {submitting ? 'Guardando...' : 'Actualizar Enfermedad'}
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Form>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Disease Type Modal */}
+      <Modal
+        title="Agregar Clasificación"
+        open={diseaseTypeModal}
+        onCancel={() => setDiseaseTypeModal(false)}
+        footer={null}
       >
-        <Input />
-      </Form.Item>
-
-      <Form.Item {...tailLayout}>
-        <Button type="primary" htmlType="submit" style={{ marginRight: "8px" }}>
-          Guardar
-        </Button>
-
-        <Button htmlType="button" onClick={onCancel}>
-          Cancelar
-        </Button>
-      </Form.Item>
-    </Form>
+        <Form onFinish={handleAddDiseaseType}>
+          <Form.Item
+            name="diseaseType"
+            label="Clasificación"
+            rules={[{ required: true, message: 'Por favor ingrese el nombre de la clasificación' }]}
+          >
+            <Input placeholder="Nombre de la clasificación" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Agregar
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
   );
 };
 

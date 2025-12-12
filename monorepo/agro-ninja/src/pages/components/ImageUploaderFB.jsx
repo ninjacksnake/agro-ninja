@@ -17,9 +17,7 @@ const ImageUploaderFB = ({ setFileName = null, module = "" }) => {
     };
 
     useEffect(() => {
- 
             setFileList([noPhoto]);
-        
     }, [ module]);
 
     const handleUpload = async (options) => {
@@ -27,15 +25,13 @@ const ImageUploaderFB = ({ setFileName = null, module = "" }) => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('module', module);
-
         try {
             const response = await api.post(`${uploadPath}${module}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-
             if (response.status === 200) {
                 const data = response.data;
-                const name = data.file.filename;
+                const name = data.file.filename || file.name;
                 
                 const newFile = {
                     name,
@@ -43,11 +39,9 @@ const ImageUploaderFB = ({ setFileName = null, module = "" }) => {
                     thumbUrl: `${appConfig.apiUrl}/upload${module}/${name}`,
                     uid: name,
                     status: 'done'
-                };
-                
+                };    
                 setFileList([newFile]);
-                setFileName(name);
-                console.log("ImageUploaderFB: ", name);
+                setFileName(x => name);
                 message.success('Image uploaded successfully!');
                 onSuccess(newFile); // Pass the file object to onSuccess
             } else {
@@ -62,24 +56,60 @@ const ImageUploaderFB = ({ setFileName = null, module = "" }) => {
 
     const handleChange = (info) => {
         const { file } = info;
-        
-        if (file.status === 'removed') {
-            setFileList([noPhoto]);
-            setFileName("");
-            return;
-        }
 
         if (file.status === 'uploading') {
             const uploadingFile = {
                 ...file,
                 status: 'uploading'
             };
+            console.log("Uploading file:", uploadingFile);
+            if (file.name) {
+                console.log("File Name:", file.name);
+            }
             setFileList([uploadingFile]);
             return;
         }
-
-        // Don't handle 'done' state here as it's handled in handleUpload
+    
+        if (file.status === 'error') {
+            message.error('Failed to upload image');
+            setFileList([noPhoto]);
+            setFileName("");
+            return;
+        }
+    
+    
     };
+
+    // const handleChange = (info) => {
+    //     const { file } = info;
+    //     if (file.status === 'removed') {
+    //         setFileList([noPhoto]);
+    //         setFileName("");
+    //         return;
+    //     }
+    //     if (file.status === 'uploading') {
+    //         const uploadingFile = {
+    //             ...file,
+    //             status: 'uploading'
+    //         };
+    //         console.log("Uploading file:", uploadingFile);
+    //         setFileList([uploadingFile]);
+     
+    //         return;
+    //     }
+    //     if (file.status === 'error') {
+    //         message.error('Failed to upload image');
+    //         setFileList([noPhoto]);
+    //         setFileName("");
+    //         return;
+    //     }
+    //     if (file.status === 'done') {
+    //         setFileList((prevList) => [...prevList, file]);
+    //         return;
+    //     }
+
+    //     // Don't handle 'done' state here as it's handled in handleUpload
+    // };
 
     return (
         <div style={{ display: 'flex', flexDirection: "row", justifyContent: "center" }}>
@@ -92,7 +122,7 @@ const ImageUploaderFB = ({ setFileName = null, module = "" }) => {
                 onChange={handleChange}
                 onRemove={() => {
                     setFileList([noPhoto]);
-                    setFileName("");
+                    setFileName(x => fileList[0]?.name === "no-photo.png" ? "" : "");
                     return true;
                 }}
             >

@@ -11,6 +11,7 @@ function fileParser(file) {
   // console.log(base64Image);
   //   resolve(base64Image);
   // };
+ ``  
   // imageReader.readAsDataURL(file);
   //   } catch (error) {
   //     reject(error);
@@ -18,18 +19,18 @@ function fileParser(file) {
   // });
 }
 
-const ImageUploader = ({ onFileSelected, entity }) => {
+const ImageUploader = ({ onFileSelected,  module }) => {
   const [fileList, setFileList] = useState([]);
   const [currentImage, setCurrentImage] = useState([]);
   useEffect(() => {
     try {
-      if (entity?.photo) {
-        setCurrentImage(entity.photo);
+      if (module?.photo) {
+        setCurrentImage(module.photo);
       }
     } catch (error) {
       message.error("image is not valid try to set image again");
     }
-  }, [entity?.photo]);
+  }, [module?.photo]);
 
   const props = {
     preview: false,

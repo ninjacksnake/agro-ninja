@@ -7,7 +7,7 @@ import DiseaseTypeService from '../../../services/DiseaseType.service';
 
 const AddiseaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => {
   const [form] = Form.useForm();
-  const [fileName, setFileName] = useState(" ");
+  const [fileName, setFileName] = useState(null);
   const [diseaseTypes, setDiseaseTypes] = useState([]);
   const module = appConfig.modules.diseases;
 
@@ -27,7 +27,8 @@ const AddiseaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => {
     form.resetFields();
   };
   const onFinish = (values) => {
-    values.photo = fileName.file.name;
+ 
+  values.photo = fileName;
     try {
       DiseaseService.create(values)
         .then((result) => {
@@ -71,7 +72,7 @@ const AddiseaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => {
               setFileName={setFileName}
               module={module}
             />
-            <input type="text" name="photo" value={fileName?.file?.name} hidden />
+          
           </Form.Item>
           <Row gutter={16}>
             <Col span={20}>

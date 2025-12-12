@@ -4,6 +4,7 @@
   "private": false,
   "author": "Michael Fermin",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.10.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -18,13 +19,14 @@
     "nth-check": "^2.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^6.11.1",
     "react-scripts": "^5.0.1",
     "react-zlib-js": "^1.0.5",
     "recursive-readdir": "^2.2.3",
     "web-vitals": "^2.1.4"
   },
-  "homepage": ".",
+  "homepage": "http://.",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -52,5 +54,8 @@
   "devDependencies": {
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4"
-  }
+  },
+  "main": "index.js",
+  "license": "ISC",
+  "description": ""
 }

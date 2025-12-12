@@ -36,34 +36,34 @@ const AppRoutes = () => {
       <Route path="/" element={<AppLayout />}>
         <Route index element={<Navigate to="/home" replace />} />
         <Route path="home" element={
-          <AppPrivateRoute roles={['user']}>
+          <AppPrivateRoute roles={['user','admin']}>
             <Home />
           </AppPrivateRoute>
         } />
         
         <Route path="products">
           <Route index element={
-            <AppPrivateRoute roles={['user']}>
+            <AppPrivateRoute roles={['user','admin']}>
               <Products />
             </AppPrivateRoute>
           } />
           <Route path="add" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user","admin"]}>
               <CreateProduct />
             </AppPrivateRoute>
           } />
           <Route path="find" element={
-            <AppPrivateRoute roles={['user']}>
+            <AppPrivateRoute roles={['user',  'admin']}>
               <FindProducts />
             </AppPrivateRoute>
           } />
           <Route path="update/:id" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <UpdateProducts />
             </AppPrivateRoute>
           } />
           <Route path="details/:id" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user", "admin"]}>
               <DetailPage />
             </AppPrivateRoute>
           } />
@@ -73,27 +73,27 @@ const AppRoutes = () => {
         {/*  diseases routes */}
         <Route path="diseases">
           <Route index element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <Diseases />
             </AppPrivateRoute>
           } />
           <Route path="add" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <CreateDisease />
             </AppPrivateRoute>
           } />
           <Route path="find" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <FindDisease />
             </AppPrivateRoute>
           } />
           <Route path="update/:id" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <UpdateDisease />
             </AppPrivateRoute>
           } />
           <Route path="details/:id" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <DetailPage />
             </AppPrivateRoute>
           } />
@@ -102,27 +102,27 @@ const AppRoutes = () => {
         {/*  chemicals routes */}
         <Route path="chemicals">
           <Route index element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <Chemicals />
             </AppPrivateRoute>
           } />
           <Route path="add" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <CreateChemical />
             </AppPrivateRoute>
           } />
           <Route path="find" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <FindChemical />
             </AppPrivateRoute>
           } />
           <Route path="update/:id" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <UpdateChemical />
             </AppPrivateRoute>
           } />
           <Route path="details/:id" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <DetailPage />
             </AppPrivateRoute>
           } />
@@ -131,27 +131,27 @@ const AppRoutes = () => {
         {/*  crops routes */}
         <Route path="crops">
           <Route index element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user",  "admin"]}>
               <Crops />
             </AppPrivateRoute>
           } />
           <Route path="add" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user", "admin"]}>
               <CreateCrop />
             </AppPrivateRoute>
           } />
           <Route path="find" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user", "admin"]}>
               <FindCrop />
             </AppPrivateRoute>
           } />
           <Route path="update/:id" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user", "admin"]}>
               <UpdateCrop />
             </AppPrivateRoute>
           } />
           <Route path="details/:id" element={
-            <AppPrivateRoute roles={["user"]}>
+            <AppPrivateRoute roles={["user", "admin"]}>
               <DetailPage />
             </AppPrivateRoute>
           } />

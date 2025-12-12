@@ -1,7 +1,8 @@
-import CropForm from "./components/CropForm.jsx";
+import React from 'react';
+import CropForm from './components/CropForm';
 
-function CreateCrop(crop) {
-    return ( <CropForm crop={crop} isUpdate={false} /> );
-}
+const CreateCrop = () => {
+  return <CropForm isUpdate={false} />;
+};
 
 export default CreateCrop;

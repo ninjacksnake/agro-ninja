@@ -48,7 +48,6 @@ function getPhoto( urlEndpoint, uploadPath, module, photo){
   }else{
     return noPhoto;
   }
-
 } 
 
 const DetailPage = () => {
@@ -111,11 +110,12 @@ const DetailPage = () => {
       <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
         <Col className="gutter-row" span={8}>
           <div className="photo-box">
-             <Image
+             {/* <Image
               src={getPhoto(urlEndpoint, uploadPath, module, information?.photo)}
               alt={`Foto de ${information?.name}`}
-              width="250px"
-            /> 
+              width="250px" */}
+              <ImageViewer fileName={getPhoto(urlEndpoint, uploadPath, module, information?.photo)} 
+              module={module} size={250} />
           </div>
         </Col>
         <Col className="gutter-row" span={16}>

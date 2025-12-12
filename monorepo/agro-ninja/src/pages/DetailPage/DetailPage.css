@@ -1,28 +1,175 @@
-
-.photo-box{
-     display: flex;
-     flex-direction: column;
-     border: 0cm solid rgb(249, 243, 243);
-     justify-content: center;
-     align-items: center;
-    
- }
-
-.box-1{
-    padding: 8px 0;
-  
+.detail-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    background-color: #f5f5f5;
+    min-height: '100vh';
 }
-.box-2{
-     border: 1px solid black;
-     padding: 8px 0;
- }
- .box-3{
-     padding: 8px 0;
-     border: 1px solid black;
- }
 
-.tableContainer{
-    padding:10px;
-    border-radius: 5px;;
-    border: 1px solid rgb(246, 241, 241);
+.photo-card {
+    height: fit-content;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.photo-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.info-card {
+    height: fit-content;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.info-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.info-card .ant-card-head {
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.info-card .ant-card-head-title {
+    font-weight: 600;
+    color: #1890ff;
+}
+
+.table-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    margin-bottom: 40px;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.table-card .ant-card-head {
+    border-bottom: 2px solid #f0f0f0;
+    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+    padding: 20px 24px;
+}
+
+.table-card .ant-card-head-title {
+    font-weight: 600;
+    color: #1890ff;
+    font-size: 16px;
+    margin: 0;
+}
+
+.table-card .ant-card-body {
+    padding: 24px;
+}
+
+.table-card .ant-table-wrapper {
+    margin: -16px;
+}
+
+.table-card .ant-table {
+    border: none;
+}
+
+.table-card .ant-table-thead > tr > th {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    font-weight: 600;
+    border-bottom: 2px solid #d9d9d9;
+    padding: 16px 12px;
+    font-size: 14px;
+    color: #262626;
+    text-align: left;
+}
+
+.table-card .ant-table-tbody > tr:hover > td {
+    background-color: #f0f8ff;
+    transition: background-color 0.2s ease;
+}
+
+.table-card .ant-table-tbody > tr > td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    color: #595959;
+    transition: background-color 0.2s ease;
+}
+
+.table-card .ant-table-tbody > tr:last-child > td {
+    border-bottom: none;
+}
+
+.table-card .ant-table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-card .ant-table-container {
+    border-radius: 8px;
+}
+
+.table-card .ant-pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Loading state styling */
+.table-card .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+    background-color: transparent;
+}
+
+/* Better spacing for table content */
+.table-card .ant-card-body {
+    padding: 24px;
+}
+
+/* Zebra striping for better readability */
+.table-card .ant-table-tbody > tr:nth-child(even) > td {
+    background-color: #fafbfc;
+}
+
+.table-card .ant-table-tbody > tr:nth-child(even):hover > td {
+    background-color: #f0f8ff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .detail-page-container {
+        padding: 16px;
+    }
+
+    .photo-card,
+    .info-card,
+    .table-card {
+        margin-bottom: 32px;
+    }
+
+    .table-card .ant-card-body {
+        padding: 16px;
+    }
+
+    .table-card .ant-card-head {
+        padding: 16px;
+    }
+
+    .table-card .ant-table-thead > tr > th,
+    .table-card .ant-table-tbody > tr > td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+}
+
+/* Table specific responsive improvements */
+@media (max-width: 576px) {
+    .table-card .ant-table-thead > tr > th,
+    .table-card .ant-table-tbody > tr > td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+
+    .table-card .ant-card-head-title {
+        font-size: 14px;
+    }
 }

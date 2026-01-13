@@ -8,12 +8,13 @@ const port = 3004;
 const router = require("./routers/appRouter.js");
 const bodyParser = require("body-parser");
 const getUploadMiddleware = require("./utils/middlewares/uploader.middleware.js");
-const httpsOptions = {
-  key: fs.readFileSync('./src/certificates/server.key'),
-  cert: fs.readFileSync('./src/certificates/server.crt'),
-};
+// const httpsOptions = {
+//   key: fs.readFileSync('./src/certificates/server.key'),
+//   cert: fs.readFileSync('./src/certificates/server.crt'),
+// };
 const httpMode = process.env.HTTP_MODE;
-const server = https.createServer(httpsOptions, app);
+//const server = https.createServer(httpsOptions, app);
+const server = http.createServer(app);
 
 const { syncDb } = require("./controllers/app.controller");
 const bcrypt = require("bcrypt");
@@ -48,7 +49,7 @@ app.post("/api/login", async (req, res) => {
   }
   const accessToken = tokenFactory.generateToken(user);
   const refreshToken = tokenFactory.generateRefreshToken(user);
-user.password = undefined;
+  user.password = undefined;
   // save the refresh token to a db 
   res.status(200).cookie('refreshToken', refreshToken, {
     httpOnly: true,
@@ -58,7 +59,7 @@ user.password = undefined;
     maxAge: 7 * 24 * 60 * 60 * 1000,
   }).json({
     user,
-     accessToken,
+    accessToken,
   });
 });
 
@@ -69,7 +70,7 @@ app.post("/api/refresh-token", (req, res) => {
   try {
     const freshToken = tokenFactory.tokenRefresher(refreshToken);
     res.json({
-   // message: "login successful",
+      // message: "login successful",
       AccessToken: freshToken,
     })
   } catch (error) {
@@ -91,8 +92,8 @@ app.post("/api/verify-token", (req, res) => {
   }
 })
 
-app.post('/api/logout',(req, res)=>{
-  res.clearCookie('refreshToken', {path:"/api/refresh-token"});
+app.post('/api/logout', (req, res) => {
+  res.clearCookie('refreshToken', { path: "/api/refresh-token" });
   res.sendStatus(204);
 })
 app.post("/api/upload/products", uploadProducts.single("file"),
@@ -155,8 +156,8 @@ app.get("/api/upload/products/:file", (req, res) => {
 });
 
 app.get("/api/upload/no-photo", (req, res) => {
-   const filePath = path.join(__dirname, `uploads`, 'no-photo.png');
-   console.log('WOWOWOWOWO ', filePath);
+  const filePath = path.join(__dirname, `uploads`, 'no-photo.png');
+  console.log('WOWOWOWOWO ', filePath);
   if (fs.existsSync(filePath)) {
     res.sendFile(filePath);
   } else {

@@ -10,6 +10,9 @@ const Crop = require('./crops');
 const CropTypes = require('./cropTypes');
 const CropStage = require('./cropStages');
 const User = require('./user');
+const bcrypt = require('bcrypt');
+
+
 
 // Move all seed data to a separate file or keep it at the top
 const { cropTypesData, categoriesData, chemicalTypesData, diseaseClassification, defaultUser } = require('./seedData');
@@ -148,13 +151,19 @@ CropStage.hasOne(Crop, {
 if (process.env.INITDB === "true" && process.env.NODE_ENV !== 'production') {
   console.log('Initializing database...');
   const timestamp = new Date();
+
+  const hashedPassword = bcrypt.hashSync(defaultUser[0].password, 10);
+  console.log(hashedPassword);
+
+  // console.log('Hashing default user password...', hashedPassword);
+ 
   
   Promise.all([
     Categories.bulkCreate(categoriesData.map(item => ({ ...item, createdAt: timestamp, updatedAt: timestamp }))),
     CropTypes.bulkCreate(cropTypesData.map(item => ({ ...item, createdAt: timestamp, updatedAt: timestamp }))),
     DiseaseType.bulkCreate(diseaseClassification.map(item => ({ ...item, createdAt: timestamp, updatedAt: timestamp }))),
     ChemicalTypes.bulkCreate(chemicalTypesData.map(item => ({ ...item, createdAt: timestamp, updatedAt: timestamp }))),
-    User.bulkCreate(defaultUser)
+    User.bulkCreate(defaultUser.map(item => ({ ...item, password: hashedPassword, createdAt: timestamp, updatedAt: timestamp }))),
   ])
     .then(() => console.log('Database initialized successfully'))
     .catch(err => {

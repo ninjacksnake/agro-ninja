@@ -2,7 +2,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 
-const User = require("../models/index").User;
+const User = require("../models/user");
+
+
 
 const UserController = {
     findById: async function (req, res, next) {
@@ -30,24 +32,46 @@ const UserController = {
     create: async function (req, res, next) {
         try {
             const user = req.body;
-            // hash the password before saving it to the database
+            console.log(user);
+            
+            // Validate required fields
+            if (!user.email || !user.password || !user.firstName || !user.lastName || !user.phoneNumber) {
+                return res.status(400).send({ message: "Missing required fields" });
+            }
+            
+            // check if the user already exists
+            const existingUser = await User.findOne({ where: { email: user.email } });
+            if (existingUser) {
+                return res.status(400).send({ message: "User already exists" });    
+            }
+            
+            // hash the password before saving it to the database.
             const saltRounds = 10;
-            bcrypt.hash(user.password, saltRounds, async function (err, hash) {
-                if (err) {
-                    console.log(err);
-                    res.status(404).send({ message: "something went wrong, try again later" })
-                }
-                user.password = hash;
-                user.role == undefined ? user.role = 'user' : user.role = user.role;
-                user.isDeleted == undefined ? user.isDeleted = 0 : user.isDeleted = user.isDeleted;
-                const newUser = await User.create(user);
-                newUser.save();
-                res.status(201).send({ message: "User created" })
-            });
+            const hash = await bcrypt.hash(user.password, saltRounds);
+            
+            // Prepare user data
+            const userData = {
+                email: user.email,
+                password: hash,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                phoneNumber: user.phoneNumber,
+                role: user.role || 'user',
+                isDeleted: user.isDeleted !== undefined ? Boolean(user.isDeleted) : false
+            };
+            
+            const newUser = await User.create(userData);
+            res.status(201).send({ message: "User created", user: { id: newUser.id, email: newUser.email } });
         } catch (error) {
-            console.log(error);
-            //TODO: manejar el error de validacion de dat
-            res.status(404).send({ message: "something went wrong, try again later" })
+            console.log('Error creating user:', error);
+            // Handle Sequelize validation errors
+            if (error.name === 'SequelizeValidationError') {
+                return res.status(400).send({ message: "Validation error", errors: error.errors.map(e => e.message) });
+            }
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                return res.status(400).send({ message: "User with this email already exists" });
+            }
+            res.status(500).send({ message: "something went wrong, try again later" });
         }
 
     },
@@ -84,6 +108,11 @@ const UserController = {
         }
 
     },
+
+    hashPassword :  function(password) {
+        const saltRounds = 10;
+        return  bcrypt.hashSync(password, saltRounds);
+    }
 }
 
 module.exports = UserController;

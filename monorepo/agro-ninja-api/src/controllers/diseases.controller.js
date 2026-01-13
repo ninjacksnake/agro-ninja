@@ -75,6 +75,7 @@ const findById = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const diseaseInfo = req.body;
+    console.log(diseaseInfo)
     const diseaseTypeId = diseaseInfo.diseaseTypeId;
 
     const disease = await Disease.findByPk(diseaseInfo.id);

@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npm install",
     "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

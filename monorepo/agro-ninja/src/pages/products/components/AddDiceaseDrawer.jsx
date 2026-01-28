@@ -27,6 +27,7 @@ const AddiseaseDrawer = ({ open, onClose, openNotification, addCatOrComp }) => {
     form.resetFields();
   };
   const onFinish = (values) => {
+     
  
   values.photo = fileName;
     try {

@@ -12,7 +12,6 @@
     "axios": "^1.7.4",
     "browser-image-compression": "^2.0.2",
     "dotenv": "^10.0.0",
-    "firebase": "^11.1.0",
     "fs": "^0.0.1-security",
     "imagekitio-react": "^4.2.0",
     "nodemon": "3.1.4",

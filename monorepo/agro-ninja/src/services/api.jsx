@@ -20,7 +20,7 @@ api.interceptors.request.use((config) => {
     if (token) config.headers.Authorization = `Bearer ${token}`;
     config.headers['Access-Control-Allow-Credentials'] = true;
     return config;
-}, error =>{
+}, error => {
     return Promise.reject(error);
 });
 
@@ -31,12 +31,12 @@ api.interceptors.response.use(res => res, async (error) => {
         originalRequest._retry = true;
         try {
             const res = await axios.post(
-                'http://localhost:3004/api/refresh-token',
-                {},
-                { withCredentials: true ,
+                `${appConfig.apiUrl}/refresh-token`,
+                {
+                    withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json', 
+                        'Accept': 'application/json',
                     }
                 }
             );
@@ -46,7 +46,7 @@ api.interceptors.response.use(res => res, async (error) => {
                 accessToken: newToken,
                 user: res.data.user
             }));
-           originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
             return api(originalRequest);
         } catch (error) {
             store.dispatch(logout());

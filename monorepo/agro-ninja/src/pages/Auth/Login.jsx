@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Form, Input, Button, Card, Row, Col, Typography, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { replace, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { setCredentials } from '../../features/auth/AuthSlice';
 
@@ -19,21 +19,21 @@ const Login = () => {
         try {
             // authentication logic 
             const response = await api.post('/login', values)
- //           console.log('response data is ',response.data);
-            dispatch(setCredentials({user: response.data.user, accessToken: response.data.accessToken}));
+            //           console.log('response data is ',response.data);
+            dispatch(setCredentials({ user: response.data.user, accessToken: response.data.accessToken }));
             notification.success({
                 message: 'Success',
                 description: 'Login successful!',
                 placement: 'topRight'
             });
-          navigate('/', {replace: true});
+            navigate('/', { replace: true });
         } catch (error) {
             notification.error({
                 message: 'Error',
-                description: error.message.includes('Unauthorized')?"Check username or password" : "Failed to login" || 'Failed to login',
+                description: error.message.includes('Unauthorized') ? "Check username or password" : "Failed to login" || 'Failed to login',
                 placement: 'topRight'
             });
-          // return navigate('/login', {replace: true});
+            // return navigate('/login', {replace: true});
         } finally {
             setLoading(false);
         }

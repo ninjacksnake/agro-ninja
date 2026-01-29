@@ -1,6 +1,6 @@
 
-const  appConfig = {
-    apiUrl: process.env.REACT_APP_API_BASE_URL_DEVELOPMENT,
+const appConfig = {
+    apiUrl: process.env.REACT_APP_API_BASE_URL,
     authenticationEndpoint: '/auth',
     uploadPath: '/upload',
     modules: {

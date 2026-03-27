@@ -1,4 +1,123 @@
-# Agro Ninja
+# 🌱 Agro Ninja
+
+## Overview
+
+Agro Ninja is a web-based system designed to help agricultural businesses manage operations, track production, and improve decision-making through digital tools.
+
+This project simulates a real-world solution for managing agricultural workflows, replacing manual processes with a scalable and structured platform.
+
+---
+
+##  Problem
+
+Many small and medium agricultural businesses still rely on manual tracking (Excel, paper), leading to:
+
+* Poor visibility of production data
+* Inefficient resource management
+* Lack of centralized information
+
+---
+
+## 💡 Solution
+
+Agro Ninja provides a centralized platform where users can:
+
+* Manage products and agricultural assets
+* Track operations and activities
+* Organize data in a structured and scalable way
+* Be used like a tool to understand the agricultural process
+* Be used as a knowlegde transference platform for plants illness and medicine applied
+  
+
+---
+
+##  Tech Stack
+
+**Frontend**
+
+*  Angular 
+
+**Backend**
+
+*  NestJS  
+
+**Database**
+
+* PostgreSQL / SQL Server
+
+---
+
+##  Features
+
+* CRUD operations for agricultural entities
+* RESTful API integration
+* Scalable backend structure
+* Modular frontend architecture
+
+---
+
+##  Architecture
+
+This project follows a modular architecture separating:
+
+* Controllers (request handling)
+* Services (business logic)
+* Data access layer
+
+The goal is to ensure scalability and maintainability.
+
+---
+
+## 📸 Screenshots
+
+<img width="1715" height="960" alt="image" src="https://github.com/user-attachments/assets/c0b9f263-ec53-412a-ba35-05b388940b7e" />
+
+<img width="1715" height="960" alt="image" src="https://github.com/user-attachments/assets/f00a58cd-a5ba-4f07-9136-8ccac68e1fde" />
+
+<img width="1715" height="960" alt="image" src="https://github.com/user-attachments/assets/2dfe8c3a-4016-4bc9-ab30-e02ce95d6b36" />
+
+<img width="1715" height="960" alt="image" src="https://github.com/user-attachments/assets/4726102c-548d-46dd-a04c-3d2cdeac189e" />
+
+---
+
+##  Getting Started
+
+### Backend
+
+```bash
+Add your environment variables
+npm install
+npm run start
+```
+
+### Frontend
+
+```bash
+Add your environment variables
+npm install
+npm start
+```
+
+---
+
+##  Future Improvements
+
+* Authentication & authorization (JWT)
+* Role-based access
+* Dashboard analytics
+* Cloud deployment (AWS / Vercel /R ender)
+
+---
+
+##  Author
+
+Michael Fermin
+Full Stack Developer | Node.js | React | .NET
+
+
+Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+
+
 
 Agro Ninja is a comprehensive agricultural management system that helps track and manage crops, diseases, chemicals, and products in the agricultural industry.
 

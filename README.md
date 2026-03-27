@@ -102,17 +102,11 @@ npm start
 
 ##  Future Improvements
 
-* Authentication & authorization (JWT)
-* Role-based access
 * Dashboard analytics
 * Cloud deployment (AWS / Vercel /R ender)
 
 ---
 
-##  Author
-
-Michael Fermin
-Full Stack Developer | Node.js | React | .NET
 
 
 Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
@@ -180,7 +174,6 @@ src/
 - Framework : Express.js
 - Database : PostgreSQL / sqlite3
 - ORM : Sequelize
--
 
 ## Environment Variables
 
@@ -211,8 +204,9 @@ JWT_REFRESH_EXPIRATION=7d
 API_URL=http://localhost:3004
 DBSYNC=true
 
-## License
-ISC
+##  Author
 
-## Author
 Michael Fermin
+Full Stack Developer | Node.js | React | .NET
+
+

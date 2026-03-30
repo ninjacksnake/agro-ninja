@@ -4,17 +4,18 @@
 
 Agro Ninja is a web-based system designed to help agricultural businesses manage operations, track production, and improve decision-making through digital tools.
 
-This project simulates a real-world solution for managing agricultural workflows, replacing manual processes with a scalable and structured platform.
+This project is a solution for managing agricultural workflows, replacing manual processes with a scalable and structured platform.
 
 ---
 
 ##  Problem
 
-Many small and medium agricultural businesses still rely on manual tracking (Excel, paper), leading to:
+Many small and medium agricultural businesses still rely on manual tracking of their crops (Excel, paper), leading to:
 
 * Poor visibility of production data
 * Inefficient resource management
 * Lack of centralized information
+* Commiting mistakes when deciding to treat a crop illness
 
 ---
 
@@ -35,7 +36,7 @@ Agro Ninja provides a centralized platform where users can:
 
 **Frontend**
 
-*  Angular 
+*  React 
 
 **Backend**
 
@@ -49,10 +50,11 @@ Agro Ninja provides a centralized platform where users can:
 
 ##  Features
 
-* CRUD operations for agricultural entities
-* RESTful API integration
-* Scalable backend structure
-* Modular frontend architecture
+* CRUD operations for agricultural entities.
+* Multiple Relationship between crops, illneses, medicine and treatment and chemical components.
+* RESTful API integration.
+* Scalable backend structure.
+* Modular frontend architecture.
 
 ---
 
@@ -61,6 +63,8 @@ Agro Ninja provides a centralized platform where users can:
 This project follows a modular architecture separating:
 
 * Controllers (request handling)
+* Views
+* Components
 * Services (business logic)
 * Data access layer
 
